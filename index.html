@@ -2164,6 +2164,7 @@
             syncCardQtyDisplays();
         }
 
+        // ORDEN DE FILTROS INTELIGENTES
         function renderFilters() {
             var filterBar = document.getElementById('filterBar');
             var categories = {};
@@ -2771,6 +2772,9 @@
             updateBuyBtn(itemIds.map(function(id){ return getProductById(id); }).filter(Boolean));
         }
 
+
+
+        // ESTRUCTURA DE FACTURA DE PEDIDOS
         function updateBuyBtn(products) {
             var btn = document.getElementById('btnCartBuy');
             if (!btn) return;
@@ -2816,7 +2820,6 @@
             msg += '   \uD83C\uDD94 C\u00E9dula: \n';
             msg += '   \uD83D\uDCCD Direcci\u00F3n / Ubicaci\u00F3n: \n';
             msg += sep + '\n\n';
-            msg += '_Por favor completa tus datos antes de enviar este mensaje \uD83D\uDE4F_';
             btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
             btn.target = '_blank';
             btn.onclick = null;
