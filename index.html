@@ -1111,6 +1111,504 @@
             color: var(--text-light);
         }
 
+        /* ══════════════════════════════════════
+           SISTEMA DE CARRITO
+        ══════════════════════════════════════ */
+
+        /* ── Botón flotante añadir al carrito en tarjeta ── */
+        .card-img {
+            position: relative;
+        }
+        .btn-add-cart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 14px rgba(139,46,59,0.35);
+            transition: var(--transition);
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.7);
+        }
+        .product-card:hover .btn-add-cart {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .btn-add-cart:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.15) !important;
+        }
+        @media (max-width: 768px) {
+            .btn-add-cart {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .btn-add-cart svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ── Contador de cantidad en tarjeta ── */
+        .card-qty-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .card-qty-label {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .qty-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--bg);
+        }
+        .qty-btn {
+            width: 28px;
+            height: 26px;
+            border: none;
+            background: transparent;
+            color: var(--secondary);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .qty-btn:hover { background: var(--bg3); }
+        .qty-val {
+            min-width: 24px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            padding: 0 2px;
+        }
+
+        /* ── Botón flotante del carrito (esquina inferior derecha) ── */
+        #cartFloatBtn {
+            position: fixed;
+            bottom: 52px;
+            right: 16px;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 28px rgba(139,46,59,0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 600;
+            transition: var(--transition);
+        }
+        #cartFloatBtn:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.1);
+        }
+        #cartFloatBtn svg {
+            width: 26px;
+            height: 26px;
+        }
+        #cartBadge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #e63946;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        #cartBadge.hidden { display: none; }
+
+        /* ── Overlay oscuro del carrito ── */
+        #cartOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 580;
+        }
+        #cartOverlay.open {
+            display: block;
+        }
+
+        /* ── Panel flotante del carrito ── */
+        #cartPanel {
+            position: fixed;
+            bottom: 120px;
+            right: 16px;
+            width: min(380px, calc(100vw - 32px));
+            max-height: 70vh;
+            background: var(--bg2);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius);
+            box-shadow: 0 16px 60px rgba(0,0,0,0.2);
+            z-index: 590;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: cartPop 0.25s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #cartPanel.hidden {
+            display: none;
+        }
+        @keyframes cartPop {
+            from { opacity: 0; transform: scale(0.9) translateY(16px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .cart-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--primary);
+            background: var(--bg3);
+            flex-shrink: 0;
+        }
+        .cart-panel-title {
+            font-family: 'Lora', serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cart-panel-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--secondary);
+        }
+        .cart-close-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 20px;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+            line-height: 1;
+        }
+        .cart-close-btn:hover { background: var(--primary); }
+
+        .cart-items-list {
+            overflow-y: auto;
+            flex: 1;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .cart-items-list::-webkit-scrollbar { width: 4px; }
+        .cart-items-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        .cart-empty-msg {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .cart-empty-msg svg {
+            width: 40px;
+            height: 40px;
+            opacity: 0.3;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: var(--bg);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            transition: var(--transition);
+            position: relative;
+        }
+        .cart-item.marked-delete {
+            opacity: 0.45;
+            background: #fde8e8;
+            border-color: #e63946;
+        }
+        .cart-item-img {
+            width: 54px;
+            height: 54px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: var(--bg3);
+        }
+        .cart-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+        .cart-item-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cart-item-desc {
+            font-size: 10px;
+            color: var(--text-light);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .cart-item-price {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: 2px;
+        }
+        .cart-item-mark-del {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 1.5px solid var(--primary);
+            background: var(--bg2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            font-size: 10px;
+        }
+        .cart-item-mark-del:hover { border-color: #e63946; background: #fde8e8; }
+        .cart-item.marked-delete .cart-item-mark-del {
+            background: #e63946;
+            border-color: #e63946;
+            color: #fff;
+        }
+
+        /* ── Modo eliminación: banner ── */
+        .cart-delete-bar {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #fde8e8;
+            border-bottom: 1px solid #f5c2c2;
+            font-size: 12px;
+            color: #c0392b;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .cart-delete-bar.visible { display: flex; }
+        .cart-delete-bar svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+        /* ── Footer del carrito ── */
+        .cart-panel-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+            background: var(--bg2);
+        }
+        .cart-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .cart-total-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .cart-total-vals {
+            text-align: right;
+        }
+        .cart-total-bs {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1;
+        }
+        .cart-total-usd {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .cart-actions-row {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-cart-manage {
+            flex: 0 0 auto;
+            padding: 9px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-cart-manage:hover { border-color: var(--secondary); color: var(--secondary); }
+        .btn-cart-manage.danger { border-color: #e63946; color: #e63946; }
+        .btn-cart-manage.danger:hover { background: #e63946; color: #fff; }
+        .btn-cart-buy {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: #25D366;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+        .btn-cart-buy:hover { background: #1dab52; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(37,211,102,0.35); }
+        .btn-cart-buy svg { width: 16px; height: 16px; }
+        .btn-cart-buy:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+        /* ── Qty en el carrito ── */
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            margin-top: 4px;
+        }
+        .cart-item-qty .qty-ctrl {
+            transform: scale(0.88);
+            transform-origin: left center;
+        }
+
+        /* ── Botón añadir al carrito en vista detalle ── */
+        .btn-add-cart-detail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--bg3);
+            color: var(--secondary);
+            padding: 13px 20px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--secondary);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+        }
+        .btn-add-cart-detail:hover {
+            background: var(--secondary);
+            color: #fff;
+        }
+        .btn-add-cart-detail svg { width: 18px; height: 18px; }
+        .detail-qty-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: var(--bg3);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--primary);
+        }
+        .detail-qty-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            flex: 1;
+        }
+        .detail-qty-row .qty-ctrl {
+            border-color: var(--secondary);
+        }
+        .detail-qty-row .qty-btn {
+            width: 32px;
+            height: 30px;
+            font-size: 18px;
+        }
+        .detail-qty-row .qty-val {
+            min-width: 30px;
+            font-size: 15px;
+        }
+
+        /* toast notificación */
+        #cartToast {
+            position: fixed;
+            bottom: 130px;
+            right: 16px;
+            background: var(--secondary);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 6px 24px rgba(139,46,59,0.35);
+            z-index: 700;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #cartToast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
     </style>
 
 </head>
@@ -1169,14 +1667,63 @@
 
         <div class="products-grid" id="productsGrid">
         </div>
-        <!-- Indicador de tasa flotante -->
-        <div id="rateBadge" style="display:none;position:fixed;bottom:16px;right:16px;z-index:500;background:var(--bg2);border:1px solid var(--primary);border-radius:50px;padding:7px 14px;font-size:11px;color:var(--text-light);box-shadow:var(--shadow);gap:4px;align-items:center;"></div>
     </div>
 
     <div id="detail" class="page">
         <div id="detailContent">
         </div>
     </div>
+
+    <!-- ══ CARRITO FLOTANTE ══ -->
+    <button id="cartFloatBtn" onclick="toggleCartPanel()" title="Ver carrito" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        <span id="cartBadge" class="hidden">0</span>
+    </button>
+    <!-- Indicador de tasa flotante (debajo del botón de carrito) -->
+    <div id="rateBadge" style="display:none;position:fixed;bottom:16px;right:16px;z-index:500;background:var(--bg2);border:1px solid var(--primary);border-radius:50px;padding:7px 14px;font-size:11px;color:var(--text-light);box-shadow:var(--shadow);gap:4px;align-items:center;max-width:calc(100vw - 32px);flex-wrap:wrap;"></div>
+
+    <!-- ══ OVERLAY CARRITO ══ -->
+    <div id="cartOverlay" onclick="toggleCartPanel()"></div>
+
+    <div id="cartPanel" class="hidden">
+        <div class="cart-panel-header">
+            <div class="cart-panel-title">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                Mi Carrito
+            </div>
+            <button class="cart-close-btn" onclick="toggleCartPanel()">&#x2715;</button>
+        </div>
+        <div class="cart-delete-bar" id="cartDeleteBar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            Marca los productos a eliminar, luego confirma abajo
+        </div>
+        <div class="cart-items-list" id="cartItemsList"></div>
+        <div class="cart-panel-footer">
+            <div class="cart-total-row">
+                <span class="cart-total-label">Total a pagar:</span>
+                <div class="cart-total-vals">
+                    <div class="cart-total-bs" id="cartTotalBs">Bs. 0,00</div>
+                    <div class="cart-total-usd" id="cartTotalUsd">$ 0.00 USD</div>
+                </div>
+            </div>
+            <div class="cart-actions-row">
+                <button class="btn-cart-manage" id="btnDeleteMode" onclick="toggleDeleteMode()">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    Eliminar
+                </button>
+                <button class="btn-cart-manage danger" id="btnConfirmDelete" style="display:none;" onclick="confirmDeleteMarked()">
+                    <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                    Confirmar eliminaci&#xF3;n
+                </button>
+                <a id="btnCartBuy" class="btn-cart-buy" href="#" onclick="return false;">
+                    <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                    Comprar por WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="cartToast"></div>
 
     <!-- ══ MODAL MAPA ══ -->
     <div class="map-modal-overlay" id="mapModalOverlay" onclick="closeMapModal(event)">
@@ -1208,7 +1755,7 @@
         // ── CONFIGURACIÓN MULTI-CLIENTE ──────────────────────────────────────────────
         const listaClientes = {
         HectorFinanciamiento: "584121402126",
-        MiguelCamacaro: "584220109811"
+        MiguelCamacaro: "584245961533"
         // Agrega más clientes aquí: id: "numero_internacional_sin_+"
 };
 
@@ -1322,8 +1869,11 @@
                     var bsStr = formatBs(product.price, CURRENT_RATE);
                     priceHtml = '<div class="card-price">' + bsStr + '</div><div class="card-price-usd">$ ' + product.price.toFixed(2) + ' USD</div>';
                 }
-                html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + product.id + '\')">' +
-                    '<div class="card-img">' + imgHtml + '</div>' +
+                var pid = product.id;
+                html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
+                    '<div class="card-img">' + imgHtml +
+                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg></button>' +
+                    '</div>' +
                     '<div class="card-body">' +
                     '<span class="card-cat">' + product.cat_label + '</span>' +
                     '<h3 class="card-name">' + product.name + '</h3>' +
@@ -1334,6 +1884,7 @@
                     '</div>';
             }
             grid.innerHTML = html;
+            syncCardQtyDisplays();
         }
 
         function renderFilters() {
@@ -1488,9 +2039,18 @@
                 var bsDetail = formatBs(p.price, CURRENT_RATE);
                 priceDetailHtml = '<div class="detail-price-block">' +
                     '<div class="detail-price-bs">' + bsDetail + '</div>' +
-                    '<div class="detail-price-usd">$ ' + p.price.toFixed(2) + ' USD · Tasa: Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/$</div>' +
+                    '<div class="detail-price-usd">$ ' + p.price.toFixed(2) + ' USD &middot; Tasa: Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/$</div>' +
                     '</div>';
             }
+
+            var detailQtyHtml = '<div class="detail-qty-row">' +
+                '<span class="detail-qty-label">Cantidad a comprar:</span>' +
+                '<div class="qty-ctrl"><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',-1)">&#8722;</button><span class="qty-val" id="detailQty_' + p.id + '">0</span><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',1)">&#43;</button></div>' +
+                '</div>';
+
+            var addCartDetailHtml = '<button class="btn-add-cart-detail" onclick="addToCartFromDetail(\'' + p.id + '\')">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg>' +
+                'A&#xF1;adir al carrito</button>';
 
             var detailHTML =
                 '<button class="back-btn" onclick="handleBack()" style="position:fixed;top:16px;left:16px;z-index:1000;background:var(--secondary);color:white;border:none;border-radius:50px;" title="Regresar">' +
@@ -1511,10 +2071,9 @@
                     '<p class="detail-desc">' + p.desc + '</p>' +
                     priceDetailHtml +
                     '<p class="specs-title">Especificaciones</p>' +
-                    '<table class="specs-table"><thead><tr><th>Característica</th><th>Valor</th></tr></thead><tbody>' + specsRows + '</tbody></table>' +
-                    '<a href="' + waLink + '" target="_blank" class="wa-btn">' +
-                    '<svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>' +
-                    'Consultar por WhatsApp</a>' +
+                    '<table class="specs-table"><thead><tr><th>Caracter&#xED;stica</th><th>Valor</th></tr></thead><tbody>' + specsRows + '</tbody></table>' +
+                    detailQtyHtml +
+                    addCartDetailHtml +
                   '</div>' +
                 '</div>';
 
@@ -1534,6 +2093,8 @@
             }
 
             navigateTo('detail');
+            // Sync detail qty display after navigation
+            setTimeout(function(){ syncDetailQtyDisplay(p.id); }, 50);
         }
 
         var currentSlide = 0;
@@ -1584,13 +2145,52 @@
         var CURRENT_RATE = 0;
         var RATE_DATE = '';
 
-        // Indicador de tasa flotante (esquina inferior derecha del catálogo)
-        function showRateBadge() {
+        /* ── PROTECCIÓN DE PRECIOS: Piso de tasa ──────────────────────────────
+           Se guarda la tasa más alta registrada en localStorage.
+           Si la tasa actual de la API es menor a la guardada,
+           se usa la guardada para evitar que los precios bajen.
+        ─────────────────────────────────────────────────────────────────────── */
+        var RATE_FLOOR_KEY = 'catalogRateFloor';
+
+        function getStoredRateFloor() {
+            try {
+                var val = localStorage.getItem(RATE_FLOOR_KEY);
+                return val ? parseFloat(val) : 0;
+            } catch(e) { return 0; }
+        }
+
+        function updateRateFloor(newRate) {
+            try {
+                var stored = getStoredRateFloor();
+                if (newRate > stored) {
+                    localStorage.setItem(RATE_FLOOR_KEY, newRate.toString());
+                    return newRate;
+                }
+                return stored;
+            } catch(e) { return newRate; }
+        }
+
+        /* Devuelve la tasa efectiva a usar (nunca por debajo del piso guardado) */
+        function getEffectiveRate(apiRate) {
+            var floor = updateRateFloor(apiRate);
+            return Math.max(apiRate, floor);
+        }
+
+        // Indicador de tasa flotante (debajo del botón de carrito)
+        function showRateBadge(apiRate) {
             var badge = document.getElementById('rateBadge');
             if (!badge) return;
             if (CURRENT_RATE > 0) {
-                badge.innerHTML = '💵 Tasa: <strong>Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '</strong> / $' + (RATE_DATE ? ' · ' + RATE_DATE : '');
-                badge.style.display = 'flex';
+                var usingFloor = (typeof apiRate === 'number') && (CURRENT_RATE > apiRate);
+                var rateLabel = CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2});
+                var floorNote = usingFloor
+                    ? ' <span title="El dólar bajó; se mantiene el precio más alto registrado para proteger los precios." style="background:var(--secondary);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;cursor:help;">🔒 Piso activo</span>'
+                    : '';
+                badge.innerHTML = '💵 Tasa: <strong>Bs. ' + rateLabel + '</strong> / $' + (RATE_DATE ? ' · ' + RATE_DATE : '') + floorNote;
+                // Posicionar justo DEBAJO del botón del carrito (bottom: 16px = debajo del btn que está en bottom:52px)
+                badge.style.bottom = '16px';
+                // Solo mostrar si estamos en el catálogo
+                badge.style.display = (currentPage === 'catalog') ? 'flex' : 'none';
             } else {
                 badge.style.display = 'none';
             }
@@ -1616,8 +2216,11 @@
                     priceHtml = '<div class="card-price">' + bsStr + '</div>' +
                                 '<div class="card-price-usd">$ ' + product.price.toFixed(2) + ' USD</div>';
                 }
-                html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + product.id + '\')">' +
-                    '<div class="card-img">' + imgHtml + '</div>' +
+                var pid = product.id;
+                html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
+                    '<div class="card-img">' + imgHtml +
+                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg></button>' +
+                    '</div>' +
                     '<div class="card-body">' +
                     '<span class="card-cat">' + product.cat_label + '</span>' +
                     '<h3 class="card-name">' + product.name + '</h3>' +
@@ -1628,6 +2231,7 @@
                     '</div>';
             }
             grid.innerHTML = html;
+            syncCardQtyDisplays();
             // Reaplicar filtro activo
             var activeBtn = document.querySelector('.filter-btn.active');
             if (activeBtn) {
@@ -1642,15 +2246,365 @@
                 .then(function(r){ return r.json(); })
                 .then(function(data){
                     if (data && data.rates && data.rates.VES) {
-                        CURRENT_RATE = data.rates.VES;
+                        var apiRate = data.rates.VES;
                         if (data.time_last_update_utc) {
                             RATE_DATE = new Date(data.time_last_update_utc).toLocaleDateString('es-VE');
                         }
+                        /* Aplicar piso de tasa: si el dólar bajó, se usa la tasa
+                           más alta registrada para no reducir los precios. */
+                        CURRENT_RATE = getEffectiveRate(apiRate);
                         renderProductsWithPrices(CURRENT_RATE);
-                        showRateBadge();
+                        showRateBadge(apiRate);
                     }
                 })
                 .catch(function(){ /* falla silenciosamente; sin precios en Bs */ });
+        }
+
+        /* ══════════════════════════════════════
+           SISTEMA DE CARRITO
+        ══════════════════════════════════════ */
+
+        var cart = {}; // { productId: qty }
+        var cartDeleteMode = false;
+        var cartMarked = {}; // { productId: true }
+        var cartPanelOpen = false;
+
+        // Mostrar/ocultar botón flotante del carrito según página
+        function updateCartBtnVisibility() {
+            var btn = document.getElementById('cartFloatBtn');
+            var badge = document.getElementById('rateBadge');
+            if (!btn) return;
+            if (currentPage === 'catalog' || currentPage === 'detail') {
+                btn.style.display = 'flex';
+            } else {
+                btn.style.display = 'none';
+                // Cerrar panel si se va al landing
+                if (cartPanelOpen) toggleCartPanel();
+            }
+            // El badge de tasa solo aparece en el catálogo
+            if (badge && badge.innerHTML !== '') {
+                badge.style.display = (currentPage === 'catalog') ? 'flex' : 'none';
+            }
+        }
+
+        // Parchear navigateTo para actualizar visibilidad del carrito
+        var _origNavigateTo = navigateTo;
+        navigateTo = function(targetId) {
+            _origNavigateTo(targetId);
+            setTimeout(updateCartBtnVisibility, 460);
+        };
+
+        function getCartItemCount() {
+            var total = 0;
+            for (var id in cart) { if (cart[id] > 0) total += cart[id]; }
+            return total;
+        }
+
+        function updateCartBadge() {
+            var badge = document.getElementById('cartBadge');
+            var count = getCartItemCount();
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+            }
+        }
+
+        function getCartTotals() {
+            var totalUsd = 0;
+            for (var id in cart) {
+                if (cart[id] > 0) {
+                    var p = getProductById(id);
+                    if (p && p.price) totalUsd += p.price * cart[id];
+                }
+            }
+            var totalBs = CURRENT_RATE > 0 ? totalUsd * CURRENT_RATE : 0;
+            return { usd: totalUsd, bs: totalBs };
+        }
+
+        function getProductById(pid) {
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                if (PRODUCTS[i].id === pid) return PRODUCTS[i];
+            }
+            return null;
+        }
+
+        function addToCartById(pid) {
+            var p = getProductById(pid);
+            if (!p) return;
+            var qty = cart[pid] || 0;
+            // Si la cantidad en tarjeta es > 0, usa esa, sino añade 1
+            var cardQtyEl = document.getElementById('cardQty_' + pid);
+            var cardQty = cardQtyEl ? parseInt(cardQtyEl.textContent) || 0 : 0;
+            var addQty = cardQty > 0 ? cardQty : 1;
+            cart[pid] = qty + addQty;
+            syncCardQtyDisplays();
+            updateCartBadge();
+            renderCartItems();
+            showCartToast('\u2705 ' + p.name.substring(0,30) + ' a\xF1adido al carrito');
+        }
+
+        function addToCartFromDetail(pid) {
+            var p = getProductById(pid);
+            if (!p) return;
+            var detailQtyEl = document.getElementById('detailQty_' + pid);
+            var qty = detailQtyEl ? parseInt(detailQtyEl.textContent) || 0 : 0;
+            var addQty = qty > 0 ? qty : 1;
+            cart[pid] = (cart[pid] || 0) + addQty;
+            updateCartBadge();
+            renderCartItems();
+            showCartToast('\u2705 ' + p.name.substring(0,30) + ' a\xF1adido al carrito');
+        }
+
+        function changeCardQty(pid, delta) {
+            var el = document.getElementById('cardQty_' + pid);
+            if (!el) return;
+            var val = parseInt(el.textContent) || 0;
+            val = Math.max(0, val + delta);
+            el.textContent = val;
+            // Si ya está en carrito, actualizar también el carrito
+            if (cart[pid] !== undefined && cart[pid] > 0) {
+                cart[pid] = Math.max(0, (cart[pid] || 0) + delta);
+                if (cart[pid] === 0) delete cart[pid];
+                updateCartBadge();
+                renderCartItems();
+            }
+        }
+
+        function changeDetailQty(pid, delta) {
+            var el = document.getElementById('detailQty_' + pid);
+            if (!el) return;
+            var val = parseInt(el.textContent) || 0;
+            val = Math.max(0, val + delta);
+            el.textContent = val;
+            // Si está en carrito, sincronizar
+            if (cart[pid] !== undefined && cart[pid] > 0) {
+                cart[pid] = val;
+                if (cart[pid] <= 0) delete cart[pid];
+                updateCartBadge();
+                renderCartItems();
+            }
+        }
+
+        function syncDetailQtyDisplay(pid) {
+            var el = document.getElementById('detailQty_' + pid);
+            if (el) el.textContent = cart[pid] || 0;
+        }
+
+        function syncCardQtyDisplays() {
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                var pid = PRODUCTS[i].id;
+                var el = document.getElementById('cardQty_' + pid);
+                if (el) el.textContent = cart[pid] || 0;
+            }
+        }
+
+        function changeCartItemQty(pid, delta) {
+            var current = cart[pid] || 0;
+            var newVal = Math.max(0, current + delta);
+            if (newVal === 0) {
+                delete cart[pid];
+            } else {
+                cart[pid] = newVal;
+            }
+            syncCardQtyDisplays();
+            updateCartBadge();
+            renderCartItems();
+        }
+
+        function toggleCartPanel() {
+            var panel = document.getElementById('cartPanel');
+            var overlay = document.getElementById('cartOverlay');
+            if (!panel) return;
+            cartPanelOpen = !cartPanelOpen;
+            if (cartPanelOpen) {
+                panel.classList.remove('hidden');
+                if (overlay) overlay.classList.add('open');
+                renderCartItems();
+            } else {
+                panel.classList.add('hidden');
+                if (overlay) overlay.classList.remove('open');
+                if (cartDeleteMode) exitDeleteMode();
+            }
+        }
+
+        function renderCartItems() {
+            var list = document.getElementById('cartItemsList');
+            var totalBsEl = document.getElementById('cartTotalBs');
+            var totalUsdEl = document.getElementById('cartTotalUsd');
+            if (!list) return;
+
+            var itemIds = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
+
+            if (itemIds.length === 0) {
+                list.innerHTML = '<div class="cart-empty-msg">' +
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>' +
+                    '<span>Tu carrito est&#xE1; vac&#xED;o</span></div>';
+                if (totalBsEl) totalBsEl.textContent = 'Bs. 0,00';
+                if (totalUsdEl) totalUsdEl.textContent = '$ 0.00 USD';
+                updateBuyBtn([]);
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < itemIds.length; i++) {
+                var pid = itemIds[i];
+                var p = getProductById(pid);
+                if (!p) continue;
+                var qty = cart[pid];
+                var isMarked = cartMarked[pid] ? ' marked-delete' : '';
+                var markIcon = cartMarked[pid] ? '&#x2714;' : '&#x2715;';
+                var markTitle = cartMarked[pid] ? 'Desmarcar' : 'Marcar para eliminar';
+                var imgTag = p.img ? '<img class="cart-item-img" src="' + p.img + '" alt="' + p.name + '"/>' : '<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-light);">Sin img</div>';
+                var priceStr = '';
+                if (p.price && p.price > 0) {
+                    var lineUsd = p.price * qty;
+                    var lineBs = CURRENT_RATE > 0 ? formatBs(lineUsd, 1) : '';
+                    if (CURRENT_RATE > 0) {
+                        priceStr = formatBs(lineUsd, CURRENT_RATE) + ' &middot; $' + lineUsd.toFixed(2);
+                    } else {
+                        priceStr = '$' + lineUsd.toFixed(2) + ' USD';
+                    }
+                }
+                var markBtn = cartDeleteMode
+                    ? '<button class="cart-item-mark-del" onclick="toggleMarkItem(\'' + pid + '\')" title="' + markTitle + '">' + markIcon + '</button>'
+                    : '';
+                html += '<div class="cart-item' + isMarked + '" id="cartItem_' + pid + '">' +
+                    imgTag +
+                    '<div class="cart-item-info">' +
+                    '<div class="cart-item-name">' + p.name + '</div>' +
+                    '<div class="cart-item-desc">' + p.desc.substring(0,60) + '...</div>' +
+                    '<div class="cart-item-price">' + priceStr + '</div>' +
+                    '<div class="cart-item-qty"><div class="qty-ctrl"><button class="qty-btn" onclick="changeCartItemQty(\'' + pid + '\',-1)">&#8722;</button><span class="qty-val">' + qty + '</span><button class="qty-btn" onclick="changeCartItemQty(\'' + pid + '\',1)">&#43;</button></div></div>' +
+                    '</div>' +
+                    markBtn +
+                    '</div>';
+            }
+            list.innerHTML = html;
+
+            var totals = getCartTotals();
+            if (totalBsEl) {
+                if (CURRENT_RATE > 0) {
+                    totalBsEl.textContent = formatBs(totals.usd, CURRENT_RATE);
+                } else {
+                    totalBsEl.textContent = 'Tasa no disponible';
+                }
+            }
+            if (totalUsdEl) totalUsdEl.textContent = '$ ' + totals.usd.toFixed(2) + ' USD';
+
+            updateBuyBtn(itemIds.map(function(id){ return getProductById(id); }).filter(Boolean));
+        }
+
+        function updateBuyBtn(products) {
+            var btn = document.getElementById('btnCartBuy');
+            if (!btn) return;
+            if (products.length === 0) {
+                btn.style.opacity = '0.4';
+                btn.style.pointerEvents = 'none';
+                btn.href = '#';
+                return;
+            }
+            btn.style.opacity = '';
+            btn.style.pointerEvents = '';
+
+            var totals = getCartTotals();
+            var itemIds = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
+            var sep = '━━━━━━━━━━━━━━━━━━━━━━';
+            var msg = '🛒 *PEDIDO DE COMPRA*\n';
+            msg += sep + '\n\n';
+            for (var i = 0; i < itemIds.length; i++) {
+                var p = getProductById(itemIds[i]);
+                if (!p) continue;
+                var qty = cart[itemIds[i]];
+                var lineUsd = p.price ? p.price * qty : 0;
+                var lineBs = (p.price && CURRENT_RATE > 0) ? formatBs(lineUsd, CURRENT_RATE) : '';
+                msg += '📦 *' + p.name + '*\n';
+                msg += '   🔢 Cantidad: ' + qty + ' unidad' + (qty > 1 ? 'es' : '') + '\n';
+                if (p.price) {
+                    msg += '   💲 Precio unit.: $' + p.price.toFixed(2) + ' USD\n';
+                    msg += '   💰 Subtotal: $' + lineUsd.toFixed(2) + ' USD' + (lineBs ? ' · ' + lineBs : '') + '\n';
+                }
+                msg += '\n';
+            }
+            msg += sep + '\n';
+            msg += '🧾 *RESUMEN FINAL*\n';
+            msg += '   📦 Productos: ' + itemIds.length + '\n';
+            msg += '   💵 *Total USD: $' + totals.usd.toFixed(2) + ' USD*\n';
+            if (CURRENT_RATE > 0) {
+                msg += '   🇻🇪 *Total Bs.: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
+                msg += '   📊 Tasa: Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/$\n';
+            }
+            msg += sep + '\n';
+            msg += '\uD83D\uDCCB *DATOS DEL CLIENTE*\n';
+            msg += '   \uD83D\uDC64 Nombre: \n';
+            msg += '   \uD83C\uDD94 C\u00E9dula: \n';
+            msg += '   \uD83D\uDCCD Direcci\u00F3n / Ubicaci\u00F3n: \n';
+            msg += sep + '\n\n';
+            msg += '_Por favor completa tus datos antes de enviar este mensaje \uD83D\uDE4F_';
+            btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+            btn.target = '_blank';
+            btn.onclick = null;
+        }
+
+        function toggleDeleteMode() {
+            cartDeleteMode = !cartDeleteMode;
+            var bar = document.getElementById('cartDeleteBar');
+            var btnDel = document.getElementById('btnDeleteMode');
+            var btnConf = document.getElementById('btnConfirmDelete');
+            if (cartDeleteMode) {
+                if (bar) bar.classList.add('visible');
+                if (btnDel) { btnDel.textContent = 'Cancelar'; btnDel.style.borderColor = '#e63946'; btnDel.style.color = '#e63946'; }
+                if (btnConf) btnConf.style.display = 'flex';
+                cartMarked = {};
+            } else {
+                exitDeleteMode();
+            }
+            renderCartItems();
+        }
+
+        function exitDeleteMode() {
+            cartDeleteMode = false;
+            cartMarked = {};
+            var bar = document.getElementById('cartDeleteBar');
+            var btnDel = document.getElementById('btnDeleteMode');
+            var btnConf = document.getElementById('btnConfirmDelete');
+            if (bar) bar.classList.remove('visible');
+            if (btnDel) {
+                btnDel.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Eliminar';
+                btnDel.style.borderColor = '';
+                btnDel.style.color = '';
+            }
+            if (btnConf) btnConf.style.display = 'none';
+        }
+
+        function toggleMarkItem(pid) {
+            if (cartMarked[pid]) {
+                delete cartMarked[pid];
+            } else {
+                cartMarked[pid] = true;
+            }
+            renderCartItems();
+        }
+
+        function confirmDeleteMarked() {
+            var count = Object.keys(cartMarked).length;
+            if (count === 0) { exitDeleteMode(); renderCartItems(); return; }
+            for (var id in cartMarked) {
+                delete cart[id];
+            }
+            cartMarked = {};
+            exitDeleteMode();
+            syncCardQtyDisplays();
+            updateCartBadge();
+            renderCartItems();
+            showCartToast('\uD83D\uDDD1\uFE0F ' + count + ' producto(s) eliminado(s) del carrito');
+        }
+
+        function showCartToast(msg) {
+            var toast = document.getElementById('cartToast');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function(){ toast.classList.remove('show'); }, 2500);
         }
 
     </script>
