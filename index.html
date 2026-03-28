@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="https://images.emojiterra.com/twitter/v14.0/512px/1f534.png" type="image/x-icon">
     
     <!-- GOOGLE FONTS -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Lora:wght@600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
     <!-- Metaetiquetas de Open Graph -->
     <meta property="og:title" content="Catálogo de Electrodomésticos - 2026">
@@ -55,7 +55,7 @@
         body {
             background: var(--bg);
             color: var(--text);
-            font-family: 'Poppins', sans-serif;
+            font-family: "Inter", sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -157,7 +157,6 @@
         }
 
         .hero-title {
-            font-family: 'Lora', serif;
             font-size: clamp(28px, 7vw, 52px);
             font-weight: 700;
             line-height: 1.1;
@@ -179,7 +178,6 @@
         .hero-cta {
             background: var(--secondary);
             color: #ffffff;
-            font-family: 'Poppins', sans-serif;
             font-size: 15px;
             font-weight: 700;
             padding: 15px 40px;
@@ -274,7 +272,6 @@
         }
 
         .catalog-title {
-            font-family: 'Lora', serif;
             font-size: 1.2rem;
             font-weight: 700;
             margin: 5px 0px 3px 0px;
@@ -448,7 +445,6 @@
         }
 
         .card-name {
-            font-family: 'Lora', serif;
             font-size: clamp(13px, 2.5vw, 15px);
             font-weight: 600;
             color: var(--text);
@@ -726,7 +722,6 @@
         }
 
         .detail-name {
-            font-family: 'Lora', serif;
             font-size: clamp(20px, 5.5vw, 30px);
             font-weight: 700;
             color: var(--text);
@@ -884,7 +879,6 @@
             border-bottom: 1px solid var(--primary);
         }
         .map-modal-header h3 {
-            font-family: 'Lora', serif;
             font-size: 16px;
             font-weight: 700;
             color: var(--text);
@@ -949,7 +943,6 @@
             background: var(--bg3);
         }
         .price-panel-header h3 {
-            font-family: 'Lora', serif;
             font-size: 17px;
             font-weight: 700;
         }
@@ -985,7 +978,6 @@
             font-size: 13px;
             background: var(--bg);
             color: var(--text);
-            font-family: 'Poppins', sans-serif;
         }
         .rate-bar input:focus { outline: none; border-color: var(--secondary); }
         .rate-info {
@@ -1036,7 +1028,6 @@
             font-size: 13px;
             background: var(--bg);
             color: var(--text);
-            font-family: 'Poppins', sans-serif;
         }
         .price-input-usd:focus { outline: none; border-color: var(--secondary); }
         .price-bs-display {
@@ -1063,7 +1054,6 @@
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
-            font-family: 'Poppins', sans-serif;
         }
         .btn-apply-prices:hover { background: var(--secondary-dark); transform: translateY(-1px); }
         .btn-cancel-prices {
@@ -1076,7 +1066,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            font-family: 'Poppins', sans-serif;
         }
         .btn-cancel-prices:hover { border-color: var(--secondary); color: var(--secondary); }
 
@@ -1112,7 +1101,7 @@
         }
 
         /* ══════════════════════════════════════
-           SISTEMA DE CARRITO
+        SISTEMA DE CARRITO
         ══════════════════════════════════════ */
 
         /* ── Botón flotante añadir al carrito en tarjeta ── */
@@ -1123,9 +1112,9 @@
             position: absolute;
             top: 10px;
             right: 10px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            height: 34px;
+            padding: 0 10px 0 8px;
+            border-radius: 50px;
             background: var(--secondary);
             color: #fff;
             border: none;
@@ -1133,7 +1122,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
             box-shadow: 0 4px 14px rgba(46, 48, 139, 0.35);
             transition: var(--transition);
             z-index: 10;
@@ -1146,7 +1139,8 @@
         }
         .btn-add-cart:hover {
             background: var(--secondary-dark);
-            transform: scale(1.15) !important;
+            transform: scale(1.08) !important;
+            box-shadow: 0 6px 20px rgba(46, 48, 139, 0.5);
         }
         @media (max-width: 768px) {
             .btn-add-cart {
@@ -1155,8 +1149,9 @@
             }
         }
         .btn-add-cart svg {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
         }
 
         /* ── Contador de cantidad en tarjeta ── */
@@ -1298,7 +1293,6 @@
             flex-shrink: 0;
         }
         .cart-panel-title {
-            font-family: 'Lora', serif;
             font-size: 15px;
             font-weight: 700;
             color: var(--text);
@@ -1495,7 +1489,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            font-family: 'Poppins', sans-serif;
             display: flex;
             align-items: center;
             gap: 5px;
@@ -1514,7 +1507,6 @@
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
-            font-family: 'Poppins', sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1550,7 +1542,6 @@
             font-size: 14px;
             cursor: pointer;
             transition: var(--transition);
-            font-family: 'Poppins', sans-serif;
             width: 100%;
         }
         .btn-add-cart-detail:hover {
@@ -1586,6 +1577,114 @@
             font-size: 15px;
         }
 
+        /* ══════════════════════════════════════
+        BLOQUES PUBLICITARIOS
+        ══════════════════════════════════════ */
+        /* ── Banner: usa el mismo padding horizontal que .products-grid ── */
+        .ad-sentinel {
+            /* grid-column: 1 / -1 se aplica inline; aquí sólo padding */
+            padding: 0;   /* el wrapper interno maneja el espaciado */
+        }
+        .ad-banner-wrapper {
+            width: 100%;
+            /* ── Alinear con el padding del grid ──────────────────────────
+            Estos valores deben coincidir con el padding de .products-grid
+               móvil: 20px  |  base: 24px  |  desktop (≥1024px): 32px       */
+            padding: 0 24px 18px;           /* base */
+        }
+        @media (max-width: 640px) {
+            .ad-banner-wrapper { padding: 0 0px 14px; }   /* móvil */
+        }
+        @media (min-width: 1024px) {
+            .ad-banner-wrapper { padding: 0 0px 24px; }   /* desktop */
+        }
+        .ad-banner {
+            width: 100%;
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            background: var(--bg3);
+            border: 1px solid var(--primary);
+            box-shadow: var(--shadow);
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            display: block;
+            text-decoration: none;
+        }
+        .ad-banner:hover {
+            border-color: var(--secondary);
+            box-shadow: 0 12px 48px rgba(46,52,139,0.18);
+            transform: translateY(-2px);
+        }
+        /* ── Altura del banner (imagen) ────────────────────────────────────
+        Ajusta estos valores para controlar el tamaño del banner:
+        móvil  → height en .ad-banner img.ad-media  (actualmente 140px)
+        tablet → @media (min-width: 640px)           (actualmente 180px)
+           desktop→ @media (min-width: 1024px)          (actualmente 220px) */
+        .ad-banner img.ad-media {
+            width: 100%;
+            height: 140px;          /* ← ALTURA MÓVIL — ajusta aquí */
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        @media (min-width: 640px) {
+            .ad-banner img.ad-media { height: 180px; }     /* ← ALTURA TABLET */
+        }
+        @media (min-width: 1024px) {
+            .ad-banner img.ad-media { height: 150px; }     /* ← ALTURA DESKTOP */
+        }
+        .ad-banner:hover img.ad-media { transform: scale(1.02); }
+        /* ── Altura del banner (video) ── */
+        .ad-banner video.ad-media {
+            width: 100%;
+            height: 140px;          /* ← ALTURA MÓVIL VIDEO */
+            object-fit: cover;
+            display: block;
+        }
+        @media (min-width: 640px) {
+            .ad-banner video.ad-media { height: 180px; }
+        }
+        @media (min-width: 1024px) {
+            .ad-banner video.ad-media { height: 220px; }
+        }
+        .ad-banner-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 50px;
+            pointer-events: none;
+        }
+        /* ── Animación de brillo al entrar en viewport ── */
+        @keyframes ad-shine {
+            0%   { left: -80%; }
+            100% { left: 130%; }
+        }
+        .ad-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.45) 50%, transparent 80%);
+            transform: skewX(-20deg);
+            pointer-events: none;
+            opacity: 0;
+        }
+        .ad-banner.shine-active::after {
+            opacity: 1;
+            animation: ad-shine 0.9s ease forwards;
+        }
+        .ad-banner.hidden { display: none; }
+
         /* toast notificación */
         #cartToast {
             position: fixed;
@@ -1609,6 +1708,103 @@
             transform: translateY(0);
         }
 
+
+        /* ══ FOOTER ══ */
+        .site-footer {
+            background: var(--secondary-dark);
+            color: rgba(255,255,255,0.85);
+            padding: 40px 24px 24px;
+            margin-top: 2rem;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px 24px;
+            max-width: 960px;
+            margin: 0 auto 32px;
+        }
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+        }
+        .footer-brand-col .footer-logo-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .footer-brand-col p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.65);
+            max-width: 280px;
+        }
+        .footer-col-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 14px;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .footer-col ul li a {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-col ul li a:hover { color: #fff; }
+        .footer-social-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .footer-social-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .footer-social-btn:hover {
+            background: rgba(255,255,255,0.22);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+        .footer-social-btn svg { width: 18px; height: 18px; }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.12);
+            padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .footer-bottom p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+        .footer-bottom a {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            text-decoration: none;
+        }
+        .footer-bottom a:hover { color: rgba(255,255,255,0.7); }
+
     </style>
 
 </head>
@@ -1620,12 +1816,19 @@
         </div>
 
         <div class="hero-content">
-            <span class="hero-brand">Electrodomésticos Premium</span>
+            <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+                <div style="width:42px;height:42px;border-radius:50%;overflow:hidden;border:2px solid var(--secondary);flex-shrink:0;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+                    <img src="" alt="Logo" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='<svg viewBox=\'0 0 24 24\' fill=\'currentColor\' style=\'width:22px;height:22px;color:var(--secondary);\'><path d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z\'/></svg>'"/>
+                </div>
+                <span class="hero-brand">Electrodomésticos Premium</span>
+            </div>
             <h1 class="hero-title">Electrodomésticos de <span>Calidad</span></h1>
             <p class="hero-desc">Descubre nuestra amplia gama de televisores, aires acondicionados, refrigeradores, cocinas, lavadoras y más. Marcas reconocidas con garantía incluida.</p>
             <button class="hero-cta" id="cta-button">Explorar Catálogo</button>
         </div>
 
+        <!-- ══ REDES SOCIALES PORTADA ══
+        Reemplaza cada href="#" con la URL real de tu red social    -->
         <div class="social-bar">
             <a href="https://wa.me/584245961533" id="wa-portada" target="_blank" class="social-link" title="WhatsApp">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
@@ -1665,7 +1868,9 @@
             </div>
         </div>
 
-        <div class="products-grid" id="productsGrid">
+        <div id="catalogContent">
+            <div class="products-grid" id="productsGrid">
+            </div>
         </div>
     </div>
 
@@ -1739,10 +1944,59 @@
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3928.3652436786906!2d-69.3572006!3d10.069128899999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e8766f28265100b%3A0x8ed66b71df362867!2sPreca!5e0!3m2!1ses!2sve!4v1774624516425!5m2!1ses!2sve" width="600" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             <div class="map-modal-footer">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                <span>Visitanos en nuestra cede fisica ubicada en <code>El oeste de barquisimeto, rectorado obelisco, frente a redvital</code>. Abre tu Google Maps.</span>
+                <span>Visitanos en nuestra cede fisica. <code>Abre tu Google Maps.</code></span>
             </div>
         </div>
     </div>
+
+
+    <!-- ══ FOOTER ══
+        Personaliza los enlaces, texto y redes sociales aquí abajo  -->
+    <footer class="site-footer" id="siteFooter">
+        <div class="footer-grid">
+            <!-- Columna marca -->
+            <div class="footer-brand-col footer-col">
+                <div class="footer-logo-name">⚡ Electrodomésticos Premium</div>
+                <p>Tu tienda de confianza para televisores, smartphones, aires acondicionados y más. Calidad garantizada y las mejores marcas del mercado.</p>
+                <div class="footer-social-row">
+                    <!-- Reemplaza href="#" con la URL de tu red social -->
+                    <a href="#" target="_blank" class="footer-social-btn" title="TikTok">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.41a8.16 8.16 0 004.77 1.52V7.49a4.85 4.85 0 01-1-.8z"/></svg>
+                    </a>
+                    <a href="#" target="_blank" class="footer-social-btn" title="Facebook">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073C24 5.41 18.627 0 12 0S0 5.41 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.668 4.533-4.668 1.312 0 2.686.234 2.686.234v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                    </a>
+                    <a href="#" target="_blank" class="footer-social-btn" title="Instagram">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://wa.me/584245961533" target="_blank" class="footer-social-btn" title="WhatsApp">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                    </a>
+                </div>
+            </div>
+            <!-- Columna navegación -->
+            <div class="footer-col">
+                <div class="footer-col-title">Navegación</div>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('landing');return false;">Inicio</a></li>
+                    <li><a href="#" onclick="showCatalog();return false;">Catálogo</a></li>
+                    <li><a href="#" onclick="openMapModal();return false;">Nuestra Ubicación</a></li>
+                </ul>
+            </div>
+            <!-- Columna contacto -->
+            <div class="footer-col">
+                <div class="footer-col-title">Contacto</div>
+                <ul>
+                    <li><a href="https://wa.me/584245961533" target="_blank">📞 WhatsApp</a></li>
+                    <!-- Agrega más canales de contacto aquí -->
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Electrodomésticos Premium. Todos los derechos reservados.</p>
+            <p>Hecho con ♥ en Venezuela</p>
+        </div>
+    </footer>
 
     <script>
         const PRODUCTS = [];
@@ -1770,6 +2024,251 @@
             initializeApp();
         });
 
+
+        /* ══════════════════════════════════════════════════════════════════
+         *  CONFIGURACIÓN DE BANNERS PUBLICITARIOS
+         *
+         *  Cada objeto representa un bloque publicitario. Campos:
+         *
+         *  type       → "image" o "video"
+         *  src        → URL de la imagen o video
+         *  productId  → ID del producto al que enlaza (debe coincidir con
+         *               el campo "id" del producto en PRODUCTS). Déjalo ""
+         *               si no quieres que el banner enlace a ningún producto.
+         *  label      → (opcional) Texto del badge superior izquierdo.
+         *               Ej: "Oferta", "Nuevo", "Destacado". Déjalo "" para
+         *               no mostrar badge.
+         *  ctaText    → (opcional) Texto del botón inferior derecho.
+         *               Déjalo "" para ocultarlo.
+         *  categories → Array de categorías en las que aparece este banner.
+         *               Usa ["all"] para que aparezca en todas.
+         *               Ej: ["televisores", "smartphones_tebletas_y_laptos"]
+         *
+         *  Los banners se intercalan automáticamente cada 2 filas completas
+         *  de productos. Si hay más banners que "slots" disponibles, los
+         *  sobrantes se ignoran. Si hay menos, los slots vacíos no se muestran.
+         * ══════════════════════════════════════════════════════════════════ */
+        const AD_BANNERS = [
+            {
+                type: "image",
+                src: "https://i.ibb.co/Hp2JRrT8/Televisor-Daewoo-43in-QLED-43-DA25-QL.jpg",                          // ← URL de tu imagen publicitaria
+                productId: "tv_43_daewoo",        // ← ID del producto a enlazar
+                label: "Oferta Especial",
+                ctaText: "Ver producto",
+                categories: ["all"]
+            },
+            {
+                type: "image",
+                src: "",                          // ← URL de tu imagen publicitaria
+                productId: "iphone_12_64_128gb_usado",
+                label: "Nuevo",
+                ctaText: "Ver producto",
+                categories: ["smartphones_tebletas_y_laptos"]
+            },
+            {
+                type: "video",
+                src: "",                          // ← URL de tu video (mp4)
+                productId: "",
+                label: "Destacado",
+                ctaText: "",
+                categories: ["all"]
+            }
+            // ── Agrega más banners aquí siguiendo el mismo formato ──────────
+        ];
+
+        /* ── Renderiza los banners intercalados en el catálogo ── */
+        function renderAds(activeCategory) {
+            var container = document.getElementById('catalogContent');
+            if (!container) return;
+
+            // Eliminar banners previos
+            var oldBanners = container.querySelectorAll('.ad-banner-wrapper');
+            for (var b = 0; b < oldBanners.length; b++) {
+                oldBanners[b].parentNode.removeChild(oldBanners[b]);
+            }
+
+            // Filtrar banners aplicables a la categoría activa
+            var cat = activeCategory || 'all';
+            var applicable = AD_BANNERS.filter(function(ad) {
+                if (!ad.src) return false; // no mostrar si no hay src
+                return ad.categories.indexOf('all') !== -1 || ad.categories.indexOf(cat) !== -1;
+            });
+            if (applicable.length === 0) return;
+
+            // Calcular columnas actuales del grid
+            var grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            var cols = Math.round(grid.offsetWidth / (grid.firstElementChild ? grid.firstElementChild.offsetWidth : 220)) || 2;
+            cols = Math.max(1, cols);
+            var rowSize = cols;       // tarjetas por fila
+            var insertEvery = rowSize * 2; // insertar cada 2 filas completas
+
+            // Tarjetas visibles (las no ocultas)
+            var allCards = grid.querySelectorAll('.product-card:not(.hidden)');
+            var total = allCards.length;
+            var bannerIdx = 0;
+
+            // Insertar wrappers antes de la tarjeta que abre cada slot
+            for (var slot = insertEvery; slot < total && bannerIdx < applicable.length; slot += insertEvery) {
+                var ad = applicable[bannerIdx];
+                var wrapper = buildAdBanner(ad);
+                var anchorCard = allCards[slot];
+                container.insertBefore(wrapper, grid); // temporal: lo reubicamos
+                // Insertar el wrapper antes del nodo `anchorCard` dentro del grid-parent
+                grid.parentNode.insertBefore(wrapper, grid);
+                bannerIdx++;
+            }
+
+            // Reinsertar correctamente: necesitamos anidar wrappers entre el grid
+            // Estrategia: convertimos catalogContent en una columna de bloques
+            rebuildCatalogLayout(applicable, cat, rowSize, insertEvery);
+        }
+
+        function rebuildCatalogLayout(applicable, cat, rowSize, insertEvery) {
+            var container = document.getElementById('catalogContent');
+            if (!container) return;
+
+            // Limpiar banners sueltos que pudimos haber insertado antes
+            var loose = container.querySelectorAll('.ad-banner-wrapper');
+            for (var x = 0; x < loose.length; x++) {
+                loose[x].parentNode.removeChild(loose[x]);
+            }
+
+            var grid = document.getElementById('productsGrid');
+            var allCards = grid.querySelectorAll('.product-card:not(.hidden)');
+            var total = allCards.length;
+            var bannerIdx = 0;
+
+            // Reconstruir: vaciar container, meter grid al final, insertar wrappers
+            // entre slices del grid NO es viable sin romper el grid CSS.
+            // Solución real: usar un flex-column en catalogContent y partir el grid
+            // en sub-grids. Para no tocar el CSS del grid, usamos "sentinel" divs
+            // dentro del grid con column-span.
+
+            // Limpiar sentinelas anteriores
+            var sentinels = grid.querySelectorAll('.ad-sentinel');
+            for (var s = 0; s < sentinels.length; s++) {
+                sentinels[s].parentNode.removeChild(sentinels[s]);
+            }
+
+            // Re-obtener cards porque el DOM puede haber cambiado
+            allCards = grid.querySelectorAll('.product-card:not(.hidden)');
+            total = allCards.length;
+
+            // ── Regla: insertar 1 banner ANTES de la primera fila ──
+            if (applicable.length > 0) {
+                var firstAd = applicable[bannerIdx];
+                var firstSentinel = document.createElement('div');
+                firstSentinel.className = 'ad-sentinel';
+                firstSentinel.style.cssText = 'grid-column: 1 / -1; width: 100%; margin: 0;';
+                firstSentinel.appendChild(buildAdBanner(firstAd));
+                grid.insertBefore(firstSentinel, allCards[0]);
+                bannerIdx++;
+            }
+
+            // ── Resto: cada 2 filas completas ──
+            for (var slot = insertEvery; slot < total && bannerIdx < applicable.length; slot += insertEvery, bannerIdx++) {
+                var ad = applicable[bannerIdx];
+                var sentinel = document.createElement('div');
+                sentinel.className = 'ad-sentinel';
+                sentinel.style.cssText = 'grid-column: 1 / -1; width: 100%; margin: 0;';
+
+                var inner = buildAdBanner(ad);
+                sentinel.appendChild(inner);
+
+                // Insertar antes de la tarjeta en posición `slot`
+                var anchor = allCards[slot];
+                grid.insertBefore(sentinel, anchor);
+            }
+        }
+
+        function buildAdBanner(ad) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'ad-banner-wrapper';
+            // Si el slot es dentro del grid lo hacemos sentinel style
+            wrapper.style.cssText = 'grid-column: 1 / -1;';
+
+            var banner = document.createElement(ad.productId ? 'div' : 'div');
+            banner.className = 'ad-banner';
+            if (ad.productId) {
+                banner.style.cursor = 'pointer';
+                banner.onclick = (function(pid) {
+                    return function() { showProduct(pid); };
+                })(ad.productId);
+            } else {
+                banner.style.cursor = 'default';
+            }
+
+            // Media
+            var media;
+            if (ad.type === 'video') {
+                media = document.createElement('video');
+                media.className = 'ad-media';
+                media.src = ad.src;
+                media.autoplay = true;
+                media.muted = true;
+                media.loop = true;
+                media.playsInline = true;
+            } else {
+                media = document.createElement('img');
+                media.className = 'ad-media';
+                media.src = ad.src;
+                media.alt = ad.label || 'Publicidad';
+            }
+            banner.appendChild(media);
+
+            // Badge
+            if (ad.label) {
+                var badge = document.createElement('div');
+                badge.className = 'ad-banner-badge';
+                badge.textContent = ad.label;
+                banner.appendChild(badge);
+            }
+
+            // Animación de brillo al entrar en viewport
+            (function(b) {
+                if ('IntersectionObserver' in window) {
+                    var obs = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                b.classList.remove('shine-active');
+                                void b.offsetWidth; // reflow para reiniciar animación
+                                b.classList.add('shine-active');
+                                obs.unobserve(b);
+                            }
+                        });
+                    }, { threshold: 0.25 });
+                    obs.observe(b);
+                }
+            })(banner);
+
+            wrapper.appendChild(banner);
+            return wrapper;
+        }
+
+        /* ── Actualiza banners al cambiar de categoría ── */
+        function updateAdsForCategory(cat) {
+            var grid = document.getElementById('productsGrid');
+            // Quitar sentinelas anteriores
+            var sentinels = grid ? grid.querySelectorAll('.ad-sentinel') : [];
+            for (var s = 0; s < sentinels.length; s++) {
+                sentinels[s].parentNode.removeChild(sentinels[s]);
+            }
+            // Recalcular columnas tras reflow
+            setTimeout(function() {
+                var cols = 2;
+                if (grid && grid.firstElementChild) {
+                    cols = Math.max(1, Math.round(grid.offsetWidth / grid.firstElementChild.offsetWidth));
+                }
+                var insertEvery = cols * 2;
+                var applicable = AD_BANNERS.filter(function(ad) {
+                    if (!ad.src) return false;
+                    return ad.categories.indexOf('all') !== -1 || ad.categories.indexOf(cat) !== -1;
+                });
+                rebuildCatalogLayout(applicable, cat, cols, insertEvery);
+            }, 50);
+        }
+
         function initializeApp() {
             loadProducts();
             setupEventListeners();
@@ -1778,6 +2277,8 @@
             renderFilters();
             initFilterScroll();
             fetchRateAuto();
+            // Insertar banners publicitarios tras renderizar productos
+            setTimeout(function() { updateAdsForCategory('all'); }, 100);
         }
 
         function loadProducts() {
@@ -1807,63 +2308,6 @@
                     desc: "Gigantesca pantalla QLED de 60 pulgadas con tecnología 4K QLED+ y Eye Care. Perfecta para salas amplias y experiencias cinematográficas inmersivas.",
                     specs: [["Modelo", "60DA25QL"], ["Pantalla", "60\" QLED+"], ["Resolución", "4K Ultra HD"], ["Tecnología", "Eye Care / QLED+"], ["Audio", "Dolby Atmos + Dolby Vision"], ["Conectividad", "Wi-Fi, HDMI x3, USB x2, Bluetooth"], ["Sistema", "Google TV"], ["Garantía", "1 año"]]},
 
-                    {id: "tv_65_daewoo", name: "Televisor Daewoo 65\" QLED Series – 65DA25QL", category: "televisores", cat_label: "TELEVISORES",
-                    price: 180,
-                    imgs: ["https://i.ibb.co/Tq0jx8ZB/Televisor-Daewoo-65in-QLED-65-DA25-QL.jpg","https://i.ibb.co/jPZ1B2kk/Televisor-Daewoo-65in-QLED-65-DA25-QL-VAR-2.jpg","https://i.ibb.co/2Yy7vWWJ/Televisor-Daewoo-65in-QLED-65-DA25-QL-VAR-3.jpg"],
-                    img: "https://i.ibb.co/Tq0jx8ZB/Televisor-Daewoo-65in-QLED-65-DA25-QL.jpg",
-                    desc: "La experiencia de cine definitiva con pantalla QLED de 65 pulgadas, 4K nativo y Google TV. Disfruta de una imagen de máxima claridad con sonido envolvente Dolby.",
-                    specs: [["Modelo", "65DA25QL"], ["Pantalla", "65\" QLED"], ["Resolución", "4K Ultra HD"], ["Sistema", "Google TV"], ["Audio", "Dolby Atmos + Dolby Vision"], ["Conectividad", "Wi-Fi, HDMI, USB, Google Cast"], ["Apps", "Netflix, YouTube, Prime Video, Spotify"], ["Garantía", "1 año"]]},
-
-                    {id: "tv_40_daewoo", name: "Televisor Daewoo 40\" Google TV – 40DA500ZS", category: "televisores", cat_label: "TELEVISORES",
-                    price: 165,
-                    imgs: ["https://i.ibb.co/YFxCjp4C/Televisor-Daewoo-40in-Google-TV-40-DA500-ZS.png","https://i.ibb.co/WvxFY4vm/Televisor-Daewoo-40in-Google-TV-40-DA500-ZS-VAR-2.jpg","https://i.ibb.co/jcgnQvj/Televisor-Daewoo-40in-Google-TV-40-DA500-ZS-VAR-3.png"],
-
-                    img: "https://i.ibb.co/YFxCjp4C/Televisor-Daewoo-40in-Google-TV-40-DA500-ZS.png",
-
-                    desc: "Smart TV compacto de 40 pulgadas con Google TV y sonido Dolby Audio. Perfecto para habitaciones o espacios medianos. Incluye Google Cast para espejear tu celular.",
-                    specs: [["Modelo", "40DA500ZS"], ["Pantalla", "40\" LED"], ["Resolución", "Full HD (1920×1080)"], ["Sistema", "Google TV"], ["Audio", "Dolby Audio"], ["Conectividad", "Wi-Fi, HDMI, USB, Google Cast"], ["Apps", "Netflix, YouTube, Prime Video"], ["Garantía", "1 año"]]},
-
-                    {id: "tv_40_hyundai", name: "Televisor Hyundai 40\" FHD Google TV – HY40GT2S", category: "televisores", cat_label: "TELEVISORES",
-                    price: 210,
-                    imgs: ["https://i.ibb.co/HDcJh1rC/Televisor-Hyundai-40in-FHD-Google-TV-HY40-GT2-S.jpg","https://i.ibb.co/0RFvqtjk/Televisor-Hyundai-40in-FHD-Google-TV-HY40-GT2-S-VAR-2.png","https://i.ibb.co/pC8pxVc/Televisor-Hyundai-40in-FHD-Google-TV-HY40-GT2-S-VAR-3.jpg"],
-                    img: "https://i.ibb.co/HDcJh1rC/Televisor-Hyundai-40in-FHD-Google-TV-HY40-GT2-S.jpg",
-                    desc: "Smart TV Full HD de 40 pulgadas con Google TV y Google Cast. Diseño elegante con marco delgado, ideal para hogar u oficina. Compatible con Dolby Audio para un sonido nítido.",
-                    specs: [["Modelo", "HY40GT2S"], ["Pantalla", "40\" LED FHD"], ["Resolución", "Full HD (1920×1080)"], ["Sistema", "Google TV"], ["Audio", "Dolby Audio"], ["Conectividad", "Wi-Fi, HDMI, USB, Google Cast"], ["Apps", "Netflix, YouTube, Prime Video, Google Play"], ["Garantía", "1 año"]]},
-
-                    {id: "tv_50_hyundai", name: "Televisor Hyundai 50\" FHD Google TV", category: "televisores", cat_label: "TELEVISORES",
-                    price: 198,
-                    imgs: ["https://i.ibb.co/mCR3MDhj/Televisor-Hyundai-50in-FHD-Google-TV.jpg","https://i.ibb.co/jZPPnLxw/Televisor-Hyundai-50in-FHD-Google-TV-VAR-2.jpg","https://i.ibb.co/Mkn27HHm/Televisor-Hyundai-50in-FHD-Google-TV-VAR-3.jpg"],
-                    img: "https://i.ibb.co/mCR3MDhj/Televisor-Hyundai-50in-FHD-Google-TV.jpg",
-                    desc: "Smart TV Full HD de 50 pulgadas con Google TV integrado. Compatible con Google Cast, Dolby Audio y principales apps de streaming como Netflix, YouTube y Prime Video.",
-                    specs: [["Pantalla", "50\" FHD (1920×1080)"], ["Sistema", "Google TV"], ["Audio", "Dolby Audio"], ["Streaming", "Netflix, YouTube, Prime Video, Google Play"], ["Conectividad", "WiFi, HDMI, Google Cast"], ["Marca", "Hyundai"], ["Voltaje", "110V / 60Hz"], ["Garantía", "1 año"]]},
-                
-                    {id: "tv_sansui_32_hd_san25gt32", name: "Televisor Smart TV Sansui 32\" HD - SAN-25GT32", category: "televisores", cat_label: "TELEVISORES",
-                    price: 250,
-    imgs: ["https://i.ibb.co/VYV6R31Q/Televisor-Smart-TV-Sansui-32-HD-SAN-25-GT32.jpg"],
-    img: "https://i.ibb.co/VYV6R31Q/Televisor-Smart-TV-Sansui-32-HD-SAN-25-GT32.jpg",
-    desc: "Smart TV de 32 pulgadas con Google TV integrado y resolución HD. Pantalla de alta definición con colores vivos, sistema de streaming rápido y acceso a todas las aplicaciones de entretenimiento. Diseño delgado con marcos reducidos.",
-    specs: [["Marca", "Sansui"], ["Modelo", "SAN-25GT32"], ["Pantalla", "32\" HD (1366 x 768 px)"], ["Sistema Operativo", "Google TV"], ["Audio", "Dolby Audio"], ["Conectividad", "Wi-Fi, HDMI, Google Cast"], ["Apps", "Netflix, YouTube, Prime Video, Google Play"], ["Garantía", "1 año"]]},
-
-                    {id: "tv_sansui_43_fhd_san25gt43", name: "Televisor Smart TV Sansui 43\" FHD - SAN-25GT43", category: "televisores", cat_label: "TELEVISORES",
-                    price: 175,
-    imgs: ["https://i.ibb.co/Ng0jNPqw/Televisor-Smart-TV-Sansui-43-FHD-SAN-25-GT43.jpg"],
-    img: "https://i.ibb.co/Ng0jNPqw/Televisor-Smart-TV-Sansui-43-FHD-SAN-25-GT43.jpg",
-    desc: "Televisor Smart TV de 43 pulgadas con resolución Full HD y Google TV. Perfecta relación calidad-precio para sala o comedor. Con Google Cast integrado, streaming fluido y acceso a todo el ecosistema de apps de entretenimiento.",
-    specs: [["Marca", "Sansui"], ["Modelo", "SAN-25GT43"], ["Pantalla", "43\" Full HD (1920 x 1080 px)"], ["Sistema Operativo", "Google TV"], ["Audio", "Dolby Audio"], ["Conectividad", "Wi-Fi, HDMI, Google Cast"], ["Apps", "Netflix, YouTube, Prime Video, Google Play"], ["Garantía", "1 año"]]},
-
-                    {id: "tv_sansui_40_fhd_san25gt40", name: "Televisor Smart TV Sansui 40\" FHD - SAN-25GT40", category: "televisores", cat_label: "TELEVISORES",
-                    price: 145,
-    imgs: ["https://i.ibb.co/1Gv3TmCy/Televisor-Smart-TV-Sansui-40-FHD-SAN-25-GT40.jpg"],
-    img: "https://i.ibb.co/1Gv3TmCy/Televisor-Smart-TV-Sansui-40-FHD-SAN-25-GT40.jpg",
-    desc: "Smart TV de 40 pulgadas Full HD con Google TV. Ideal para el hogar, combina tecnología de punta con un diseño elegante. Streaming ultrarrápido, Dolby Audio y compatibilidad con todas las plataformas de contenido.",
-    specs: [["Marca", "Sansui"], ["Modelo", "SAN-25GT40"], ["Pantalla", "40\" Full HD (1920 x 1080 px)"], ["Sistema Operativo", "Google TV"], ["Audio", "Dolby Audio"], ["Conectividad", "Wi-Fi, HDMI, Google Cast"], ["Apps", "Netflix, YouTube, Prime Video"], ["Garantía", "1 año"]]},
-
-                    {id: "tv_daewoo_32_qled_32da25ql", name: "Televisor Smart TV Daewoo 32\" QLED - 32DA25QL", category: "televisores", cat_label: "TELEVISORES",
-                    price: 135,
-                imgs: ["https://i.ibb.co/XrXZ1NKc/Televisor-Smart-TV-Daewoo-32-QLED-32-DA25-QL.jpg"],
-                img: "https://i.ibb.co/XrXZ1NKc/Televisor-Smart-TV-Daewoo-32-QLED-32-DA25-QL.jpg",
-                desc: "Smart TV QLED de 32 pulgadas con Google TV y tecnología Quantum LED para colores más brillantes y profundos. Diseño en blanco elegante con marcos ultra delgados. Ideal para dormitorios y espacios compactos con exigencia visual.",
-                specs: [["Marca", "Daewoo"], ["Modelo", "32DA25QL"], ["Pantalla", "32\" QLED"], ["Sistema Operativo", "Google TV"], ["Audio", "Dolby Audio"], ["Conectividad", "Wi-Fi, Google Cast, HDMI"], ["Apps", "Netflix, YouTube, Prime Video"], ["Color", "Blanco"], ["Garantía", "1 año"]]},
 
 
                     // ============================================================
@@ -1884,154 +2328,11 @@
     desc: "iPhone 13 Pro Max en excelente condición, disponible en verde alpino y azul sierra. Pantalla ProMotion de 120Hz, sistema de triple cámara Pro con teleobjetivo, chip A15 Bionic y batería de larga duración. El tope de gama Apple a precio de seminuevo.",
     specs: [["Modelo", "iPhone 13 Pro Max"], ["Almacenamiento", "128GB / 256GB"], ["Pantalla", "6.7\" Super Retina XDR ProMotion 120Hz"], ["Cámara", "Triple 12MP + LiDAR"], ["Chip", "Apple A15 Bionic"], ["5G", "Compatible"], ["Estado", "Usado - Batería 84-87%"], ["Colores", "Verde Alpino, Azul Sierra"]]},
 
-                    {id: "tecno_spark_km4_64gb_nuevo", name: "Tecno Spark KM4 - 64GB+3GB (Nuevo)", category: "smartphones_tebletas_y_laptos", cat_label: "SMARTPHONES",
-                    price: 280,
-    imgs: ["https://i.ibb.co/8ZPj7kN/Tecno-Spark-KM4-64-GB-3-GB-Nuevo.jpg"],
-    img: "https://i.ibb.co/8ZPj7kN/Tecno-Spark-KM4-64-GB-3-GB-Nuevo.jpg",
-    desc: "Smartphone Tecno Spark KM4 de entrada con excelente relación precio-rendimiento. Diseño moderno con doble cámara trasera, pantalla HD+ de gran tamaño y batería de larga duración. Disponible en blanco y verde.",
-    specs: [["Modelo", "Tecno Spark KM4"], ["RAM", "3 GB"], ["Almacenamiento", "64 GB"], ["Cámaras", "Doble trasera + Flash LED"], ["Pantalla", "HD+ pantalla amplia"], ["Sistema", "Android"], ["Estado", "Nuevo"], ["Colores", "Blanco, Verde"]]},
-
-                    {id: "infinix_hot40pro_x6728_256gb_nuevo", name: "Infinix Hot 40 Pro - X6728 256GB+4GB (Nuevo)", category: "smartphones_tebletas_y_laptos", cat_label: "SMARTPHONES",
-                    price: 300,
-    imgs: ["https://i.ibb.co/20ZVWJHp/Infinix-Hot-40-Pro-X6728-256-GB-4-GB-Nuevo.jpg"],
-    img: "https://i.ibb.co/20ZVWJHp/Infinix-Hot-40-Pro-X6728-256-GB-4-GB-Nuevo.jpg",
-    desc: "Smartphone Infinix Hot 40 Pro con triple cámara trasera y gran capacidad de almacenamiento. Pantalla de alta frecuencia de refresco, diseño premium y batería de gran autonomía. Disponible en negro, azul y plata.",
-    specs: [["Modelo", "Infinix X6728 (Hot 40 Pro)"], ["RAM", "4 GB"], ["Almacenamiento", "256 GB"], ["Cámaras", "Triple trasera"], ["Pantalla", "FHD+ alta frecuencia de refresco"], ["Sistema", "Android"], ["Estado", "Nuevo"], ["Colores", "Negro, Azul, Plata"]]},
-
-                    {id: "xiaomi_redmi_5c_nuevo", name: "Xiaomi Redmi 5C (Nuevo)", category: "smartphones_tebletas_y_laptos", cat_label: "SMARTPHONES",
-                    price: 150,
-    imgs: ["https://i.ibb.co/FkQZgScn/Xiaomi-Redmi-5-C-Nuevo.jpg"],
-    img: "https://i.ibb.co/FkQZgScn/Xiaomi-Redmi-5-C-Nuevo.jpg",
-    desc: "Smartphone Xiaomi Redmi con cámara principal de 50MP AI CAM y diseño compacto moderno. Batería de larga duración, interfaz MIUI y excelente rendimiento para uso cotidiano. Disponible en negro y verde claro.",
-    specs: [["Modelo", "Xiaomi Redmi 5C"], ["Cámara principal", "50 MP AI CAM"], ["Pantalla", "FHD+ compacta"], ["Sistema", "MIUI / Android"], ["Batería", "Gran capacidad"], ["Estado", "Nuevo"], ["Colores", "Negro, Verde claro"]]},
-
-                    {id: "xiaomi_redmi_note_14_pro_5g",
-        name: "Xiaomi Redmi Note 14 Pro 5G",
-        category: "smartphones_tebletas_y_laptos",
-        cat_label: "CELULARES Y SMARTPHONES",
-        price: 180,
-        imgs: ["https://i.ibb.co/YrWWf2R/Xiaomi-Redmi-Note-14-Pro-5-G-png.jpg"],
-        img: "https://i.ibb.co/YrWWf2R/Xiaomi-Redmi-Note-14-Pro-5-G-png.jpg",
-        desc: "Potencia y fotografía profesional en un smartphone 5G de gama media-alta. Cuenta con una impresionante cámara de 200 MP con IA, pantalla AMOLED de alta frecuencia de actualización y batería de larga duración. Ideal para quienes buscan rendimiento premium sin sacrificar el precio.",
-        specs: [
-            ["Pantalla", "6.67\" AMOLED, 120 Hz, 1080×2400 px"],
-            ["Procesador", "MediaTek Dimensity 7300 Ultra"],
-            ["Cámara Principal", "200 MP (principal) + 8 MP (ultra gran angular) + 2 MP (macro)"],
-            ["Cámara Frontal", "20 MP"],
-            ["RAM / Almacenamiento", "8 GB RAM / 256 GB"],
-            ["Batería", "5110 mAh, carga rápida 45 W"],
-            ["Conectividad", "5G, Wi-Fi 6, Bluetooth 5.3, NFC, USB-C"],
-            ["Sistema Operativo", "Android 14 (MIUI 14)"],
-            ["Color disponible", "Negro Midnight"]
-        ]
-    },
-
-                    {id: "honor_magic6_lite_5g",
-        name: "Honor Magic6 Lite 5G",
-        category: "smartphones_tebletas_y_laptos",
-        cat_label: "CELULARES Y SMARTPHONES",
-        price: 145,
-        imgs: ["https://i.ibb.co/mdq6GXb/Honor-Magic6-Lite-5-G-png.jpg"],
-        img: "https://i.ibb.co/mdq6GXb/Honor-Magic6-Lite-5-G-png.jpg",
-        desc: "Smartphone 5G con batería súper resistente y pantalla de alta resolución. Diseño elegante con acabado premium, procesador eficiente y conectividad 5G de última generación. Perfecto para usuarios activos que necesitan autonomía todo el día.",
-        specs: [
-            ["Pantalla", "6.78\" AMOLED, 120 Hz, 1080×2392 px"],
-            ["Procesador", "Snapdragon 695"],
-            ["Cámara Principal", "108 MP + 5 MP + 2 MP"],
-            ["Cámara Frontal", "16 MP"],
-            ["RAM / Almacenamiento", "8 GB RAM / 256 GB"],
-            ["Batería", "5300 mAh, carga rápida 35 W"],
-            ["Conectividad", "5G, Wi-Fi, Bluetooth 5.1, USB-C"],
-            ["Sistema Operativo", "Android 13 (MagicOS 7.1)"],
-            ["Color disponible", "Titanium Silver"]
-        ]
-    },
-
-                    {id: "honor_x7d",
-        name: "Honor X7d",
-        category: "smartphones_tebletas_y_laptos",
-        cat_label: "CELULARES Y SMARTPHONES",
-        price: 150,
-        imgs: ["https://i.ibb.co/BHtNQxjD/Honor-X7d-png.jpg"],
-        img: "https://i.ibb.co/BHtNQxjD/Honor-X7d-png.jpg",
-        desc: "Smartphone robusto con batería de celda dual de 6500 mAh, resistencia al agua IP65 y certificación de caídas SGS de 5 estrellas. Altavoces duales con aumento de volumen del 400% y botón AI integrado para edición creativa. Ideal para uso intensivo y condiciones exigentes.",
-        specs: [
-            ["Pantalla", "6.8\" IPS LCD, 90 Hz, 720×1600 px"],
-            ["Procesador", "MediaTek Helio G88"],
-            ["Cámara Principal", "108 MP + 5 MP + 2 MP"],
-            ["Cámara Frontal", "8 MP"],
-            ["RAM / Almacenamiento", "8 GB RAM / 256 GB"],
-            ["Batería", "6500 mAh (celda dual), carga 35 W"],
-            ["Resistencia", "IP65, certificación caídas SGS 5 estrellas"],
-            ["Audio", "Altavoces duales +400% volumen"],
-            ["Conectividad", "4G LTE, Wi-Fi, Bluetooth 5.1, USB-C"]
-        ]
-    },
-
-                    {id: "samsung_galaxy_a16",
-        name: "Samsung Galaxy A16",
-        category: "smartphones_tebletas_y_laptos",
-        cat_label: "CELULARES Y SMARTPHONES",
-                    price: 156,
-        imgs: [
-            "https://i.ibb.co/LXn9TC0z/Samsung-Galaxy-A16.jpg",
-            "https://i.ibb.co/Qvj8w8vw/Samsung-Galaxy-A16-png.jpg"
-        ],
-        img: "https://i.ibb.co/LXn9TC0z/Samsung-Galaxy-A16.jpg",
-        desc: "El Galaxy A16 combina diseño moderno con funcionalidades esenciales para el día a día. Con triple cámara trasera, pantalla Super AMOLED y batería de larga duración, es la opción perfecta para quienes buscan confiabilidad y estilo al mejor precio.",
-        specs: [
-            ["Pantalla", "6.7\" Super AMOLED, 90 Hz, 1080×2340 px"],
-            ["Procesador", "MediaTek Helio G99"],
-            ["Cámara Principal", "50 MP + 5 MP (ultra gran angular) + 2 MP (macro)"],
-            ["Cámara Frontal", "13 MP"],
-            ["RAM / Almacenamiento", "4 GB RAM / 128 GB (expandible microSD)"],
-            ["Batería", "5000 mAh, carga rápida 25 W"],
-            ["Conectividad", "4G LTE, Wi-Fi 5, Bluetooth 5.3, USB-C"],
-            ["Sistema Operativo", "Android 14 (One UI 6.0)"],
-            ["Color disponible", "Negro Titanio"]
-        ]
-    },
-
-                    {id: "samsung_galaxy_a56_5g",
-        name: "Samsung Galaxy A56 5G",
-        category: "smartphones_tebletas_y_laptos",
-        cat_label: "CELULARES Y SMARTPHONES",
-                    price: 135,
-        imgs: ["https://i.ibb.co/Qvj8w8vw/Samsung-Galaxy-A16-png.jpg"],
-        img: "https://i.ibb.co/Qvj8w8vw/Samsung-Galaxy-A16-png.jpg",
-        desc: "Experiencia premium con conectividad 5G. El Galaxy A56 destaca por su triple cámara con IA, pantalla AMOLED de 120 Hz y procesador Exynos de última generación. Un smartphone de alto rendimiento con acabados de nivel superior.",
-        specs: [
-            ["Pantalla", "6.7\" Super AMOLED, 120 Hz, 1080×2340 px"],
-            ["Procesador", "Exynos 1580"],
-            ["Cámara Principal", "50 MP + 12 MP + 5 MP"],
-            ["Cámara Frontal", "12 MP"],
-            ["RAM / Almacenamiento", "8 GB RAM / 256 GB"],
-            ["Batería", "5000 mAh, carga 45 W"],
-            ["Conectividad", "5G, Wi-Fi 6, Bluetooth 5.3, NFC, USB-C"],
-            ["Sistema Operativo", "Android 15 (One UI 7)"],
-            ["Color disponible", "Awesome Navy"]
-        ]
-    },
 
 
                     // ============================================================
                     // LIMPIEZA Y ORGANIZACION
                     // ============================================================
-
-                    {id: "plancha_inalambrica_vapor_daewoo", name: "Plancha Inalámbrica con Vapor Daewoo - Cordless Iron", category: "limpieza-organizacion", cat_label: "LIMPIEZA Y ORGANIZACION",
-                    price: 75,
-    imgs: ["https://i.ibb.co/KzWZtH47/Plancha-Inal-mbrica-con-Vapor-Daewoo-Cordless-Iron.jpg"],
-    img: "https://i.ibb.co/KzWZtH47/Plancha-Inal-mbrica-con-Vapor-Daewoo-Cordless-Iron.jpg",
-    desc: "Plancha de ropa inalámbrica con función de vapor para un planchado preciso y sin enredos. Base de carga inteligente, suela antiadherente de alta calidad y depósito de agua para vapor continuo. Diseño ergonómico gris y negro.",
-    specs: [["Marca", "Daewoo"], ["Tipo", "Inalámbrica con vapor"], ["Sistema", "Carga en base"], ["Suela", "Antiadherente"], ["Vapor", "Continuo y golpe de vapor"], ["Color", "Gris / Negro"], ["Garantía", "3 meses"]]},
-
-                    {id: "plancha_vapor_oster_nonstick", name: "Plancha a Vapor Oster - Suela Nonstick Duradera", category: "limpieza-organizacion", cat_label: "PLANCHAS",
-                    price: 86,
-    imgs: ["https://i.ibb.co/tphXJMq6/Plancha-a-Vapor-Oster-Suela-Nonstick-Duradera.jpg"],
-    img: "https://i.ibb.co/tphXJMq6/Plancha-a-Vapor-Oster-Suela-Nonstick-Duradera.jpg",
-    desc: "Plancha de vapor Oster con suela antiadherente de alta resistencia que ofrece 30% más de cobertura. Punta de precisión para pliegues difíciles, sistema anti-calc, 40% más de vapor que modelos estándar y luz indicadora de encendido.",
-    specs: [["Marca", "Oster"], ["Tipo", "Plancha a vapor"], ["Suela", "Nonstick durable (+30% cobertura)"], ["Vapor", "40% más vs estándar"], ["Anti-calc", "Sistema integrado"], ["Punta", "Precisión para bordes"], ["Color", "Azul / Blanco"], ["Voltaje", "110-120V"], ["Garantía", "3 meses"]]},
-
                     {id: "hidrolavadora_hyundai", name: "Hidrojet / Hidrolavadora Profesional Hyundai", category: "limpieza-organizacion", cat_label: "Hidrojet",
                     price: 110,
                     imgs: ["https://i.ibb.co/C3p3CZDJ/Hidrojet-Hidrolavadora-Profesional-Hyundai.png"],
@@ -2039,9 +2340,6 @@
                     desc: "Hidrolavadora eléctrica de alta presión marca Hyundai. Perfecta para limpiar vehículos, fachadas y pisos. Diseño ergonómico con pistola de presión variable incluida.",
                     specs: [["Marca", "Hyundai"], ["Tipo", "Hidrojet eléctrico"], ["Potencia", "1,800 W"], ["Presión máx.", "135 bar / 1,957 PSI"], ["Caudal", "6.5 L/min"], ["Voltaje", "120V / 60Hz"], ["Peso", "5.7 kg"], , ["Garantía", "3 meses"]]},
 
-                    // ============================================================
-                    // LIMPIEZA Y ASPIRADORAS
-                    // ============================================================
                     {id: "aspiradora_hyundai_hyn_vc82",
     name: "Aspiradora Hyundai HYN-VC82 – 1.5 Lt",
     category: "limpieza-organizacion",
@@ -2149,7 +2447,7 @@
                 var pid = product.id;
                 html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
                     '<div class="card-img">' + imgHtml +
-                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg></button>' +
+                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span style="font-size:14px;font-weight:900;line-height:1;">+</span> A&#xF1;adir</button>' +
                     '</div>' +
                     '<div class="card-body">' +
                     '<span class="card-cat">' + product.cat_label + '</span>' +
@@ -2252,6 +2550,8 @@
                     allCards[j].classList.add('hidden');
                 }
             }
+            // Actualizar banners publicitarios para la categoría seleccionada
+            updateAdsForCategory(cat);
         }
 
         function showProduct(pid) {
@@ -2323,7 +2623,7 @@
 
             var detailQtyHtml = '<div class="detail-qty-row">' +
                 '<span class="detail-qty-label">Cantidad a comprar:</span>' +
-                '<div class="qty-ctrl"><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',-1)">&#8722;</button><span class="qty-val" id="detailQty_' + p.id + '">0</span><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',1)">&#43;</button></div>' +
+                '<div class="qty-ctrl"><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',-1)">&#8722;</button><span class="qty-val" id="detailQty_' + p.id + '">1</span><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',1)">&#43;</button></div>' +
                 '</div>';
 
             var addCartDetailHtml = '<button class="btn-add-cart-detail" onclick="addToCartFromDetail(\'' + p.id + '\')">' +
@@ -2497,7 +2797,7 @@
                 var pid = product.id;
                 html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
                     '<div class="card-img">' + imgHtml +
-                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg></button>' +
+                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span style="font-size:14px;font-weight:900;line-height:1;">+</span> A&#xF1;adir</button>' +
                     '</div>' +
                     '<div class="card-body">' +
                     '<span class="card-cat">' + product.cat_label + '</span>' +
@@ -2651,8 +2951,8 @@
         function changeDetailQty(pid, delta) {
             var el = document.getElementById('detailQty_' + pid);
             if (!el) return;
-            var val = parseInt(el.textContent) || 0;
-            val = Math.max(0, val + delta);
+            var val = parseInt(el.textContent) || 1;
+            val = Math.max(1, val + delta);
             el.textContent = val;
             // Si está en carrito, sincronizar
             if (cart[pid] !== undefined && cart[pid] > 0) {
@@ -2665,7 +2965,7 @@
 
         function syncDetailQtyDisplay(pid) {
             var el = document.getElementById('detailQty_' + pid);
-            if (el) el.textContent = cart[pid] || 0;
+            if (el) el.textContent = cart[pid] || 1;
         }
 
         function syncCardQtyDisplays() {
