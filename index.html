@@ -41,6 +41,8 @@
             --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
         }
 
+        /* Reset universal: elimina márgenes y paddings por defecto,
+           aplica box-sizing y quita el resaltado azul al tocar en móvil */
         * {
             margin: 0;
             padding: 0;
@@ -48,10 +50,13 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* Activa el desplazamiento suave al navegar entre anclas */
         html {
             scroll-behavior: smooth;
         }
 
+        /* Estilos base del cuerpo: fondo, color de texto, fuente,
+           altura mínima y ocultamiento del desbordamiento horizontal */
         body {
             background: var(--bg);
             color: var(--text);
@@ -60,6 +65,8 @@
             overflow-x: hidden;
         }
 
+        /* Estado inactivo de las páginas: ocultas, sin eventos de puntero,
+           posición absoluta y altura 0 para no ocupar espacio */
         .page {
             display: none;
             opacity: 0;
@@ -73,6 +80,7 @@
             transition: opacity 0.45s cubic-bezier(0.4,0,0.2,1);
         }
 
+        /* Estado activo de la página: visible, interactiva y con altura automática */
         .page.active {
             display: block;
             opacity: 1;
@@ -82,6 +90,7 @@
             overflow: visible;
         }
 
+        /* Página de inicio: columna flex que ocupa toda la altura de la ventana */
         #landing {
             display: flex;
             flex-direction: column;
@@ -89,6 +98,8 @@
             background: var(--bg);
         }
 
+        /* Carrusel principal de la portada: altura relativa al viewport
+           con límites mínimo y máximo, desbordamiento oculto */
         .hero-carousel {
             width: 100%;
             height: 55vw;
@@ -105,6 +116,8 @@
         }
         }
 
+        /* Pista del carrusel: fila flex con animación de desplazamiento infinita,
+           se pausa al pasar el cursor encima */
         .carousel-track {
             display: flex;
             height: 100%;
@@ -112,10 +125,12 @@
             will-change: transform;
         }
 
+        /* Pausa la animación del carrusel al hacer hover */
         .carousel-track:hover {
             animation-play-state: paused;
         }
 
+        /* Cada elemento del carrusel: ancho relativo al viewport con límites */
         .carousel-item {
             flex: 0 0 auto;
             width: calc(55vw);
@@ -125,6 +140,7 @@
             padding: 0 6px;
         }
 
+        /* Imagen de cada elemento del carrusel: cubre su contenedor con bordes redondeados */
         .carousel-item img {
             width: 100%;
             height: 100%;
@@ -133,11 +149,14 @@
             display: block;
         }
 
+        /* Animación de desplazamiento horizontal del carrusel (se mueve al 50% para el loop) */
         @keyframes scroll-carousel {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
 
+        /* Área de contenido principal de la portada: columna centrada
+           con espaciado interno y separación entre elementos */
         .hero-content {
             padding: 32px 24px 16px;
             text-align: center;
@@ -148,6 +167,7 @@
             gap: 16px;
         }
 
+        /* Nombre de la marca en portada: texto pequeño en mayúsculas con espaciado de letras */
         .hero-brand {
             font-size: 11px;
             letter-spacing: 3px;
@@ -156,6 +176,7 @@
             font-weight: 500;
         }
 
+        /* Título principal de portada: tamaño fluido con clamp(), peso fuerte */
         .hero-title {
             font-size: clamp(28px, 7vw, 52px);
             font-weight: 700;
@@ -163,10 +184,12 @@
             color: var(--text);
         }
 
+        /* Palabra destacada dentro del título: color dorado de la marca */
         .hero-title span {
             color: var(--secondary);
         }
 
+        /* Párrafo descriptivo de portada: tamaño fluido, ancho máximo controlado */
         .hero-desc {
             font-size: clamp(14px, 3.5vw, 17px);
             color: var(--text-light);
@@ -175,6 +198,7 @@
             font-weight: 300;
         }
 
+        /* Botón principal de llamada a la acción en portada: estilo píldora dorado con sombra */
         .hero-cta {
             background: var(--secondary);
             color: #ffffff;
@@ -189,12 +213,14 @@
             box-shadow: 0 4px 24px rgba(139, 101, 8, 0.25);
         }
 
+        /* Hover del botón CTA: oscurece el fondo y eleva visualmente el botón */
         .hero-cta:hover {
             background: var(--secondary-dark);
             transform: translateY(-2px);
             box-shadow: 0 8px 32px rgba(139, 101, 8, 0.4);
         }
 
+        /* Barra de redes sociales: fila centrada con espaciado y padding interno */
         .social-bar {
             display: flex;
             justify-content: center;
@@ -202,6 +228,7 @@
             padding: 20px;
         }
 
+        /* Enlace de red social: fila con ícono + texto, color dorado y transición suave */
         .social-link {
             display: flex;
             align-items: center;
@@ -215,21 +242,26 @@
             cursor: pointer;
         }
 
+        /* Ícono SVG dentro del enlace social: tamaño fijo con transición */
         .social-link svg {
             width: 24px;
             height: 24px;
             transition: var(--transition);
         }
 
+        /* Hover del enlace social: sube ligeramente y oscurece el color */
         .social-link:hover {
             transform: translateY(-3px);
             color: var(--secondary-dark);
         }
 
+        /* Página del catálogo: sin padding superior para que el header pegue arriba */
         #catalog {
             padding-top: 0;
         }
 
+        /* Cabecera del catálogo: pegada al tope (sticky), fondo secundario
+           con borde inferior y z-index alto para solapar el contenido al hacer scroll */
         .catalog-header {
             position: sticky;
             top: 0;
@@ -239,6 +271,7 @@
             z-index: 100;
         }
 
+        /* Fila superior del catálogo: alinea el botón de regreso, título y ubicación */
         .catalog-top {
             display: flex;
             align-items: center;
@@ -246,11 +279,12 @@
             margin-bottom: 16px;
         }
 
+        /* Botón de regreso: estilo píldora transparente con borde, icono centrado */
         .back-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 10px 12px;
+            padding: 12px 12px;
             border: 1px solid var(--primary);
             background: transparent;
             color: var(--text);
@@ -261,34 +295,40 @@
             transition: var(--transition);
         }
 
+        /* Hover del botón de regreso: cambia el borde y texto al color dorado */
         .back-btn:hover {
             border-color: var(--secondary);
             color: var(--secondary);
         }
 
+        /* Bloque del título del catálogo: ocupa el espacio disponible en la fila */
         .catalog-title-block {
             flex: 1.3;
             margin: 0px 0px -10px 0px;
         }
 
+        /* Título principal dentro de la cabecera del catálogo */
         .catalog-title {
             font-size: 1rem;
             font-weight: 700;
             margin: 5px 0px 3px 0px;
         }
 
+        /* Subtítulo descriptivo debajo del título del catálogo */
         .catalog-subtitle {
             font-size: 12px;
             color: var(--text-light);
         }
 
         /* ── Filter wrapper con botones de scroll (solo PC) ── */
+        /* Contenedor de la barra de filtros con sus botones de navegación lateral */
         .filter-wrapper {
             position: relative;
             display: flex;
             align-items: center;
         }
 
+        /* Botones de flecha para desplazar la barra de filtros en escritorio */
         .filter-scroll-btn {
             display: flex;
             align-items: center;
@@ -305,18 +345,21 @@
             z-index: 5;
         }
 
+        /* Hover del botón de flecha: resalta con color dorado */
         .filter-scroll-btn:hover {
             border-color: var(--secondary);
             color: var(--secondary);
             transform: scale(1.1);
         }
 
+        /* Ícono SVG dentro del botón de flecha del filtro */
         .filter-scroll-btn svg {
             width: 16px;
             height: 16px;
         }
 
         /* Estado oculto: invisible pero mantiene su espacio para no saltar el layout */
+        /* El botón se vuelve invisible y no recibe clics, pero mantiene su espacio en el DOM */
         .filter-scroll-btn.hidden-btn {
             opacity: 0;
             pointer-events: none;
@@ -324,12 +367,15 @@
         }
 
         /* En móviles los botones no existen */
+        /* Oculta completamente los botones de flecha en pantallas pequeñas,
+           donde el scroll táctil hace innecesaria la navegación con flechas */
         @media (max-width: 768px) {
             .filter-scroll-btn {
                 display: none;
             }
         }
 
+        /* Barra de filtros deslizable: fila horizontal con scroll sin barra visible */
         .filter-bar {
             display: flex;
             gap: 8px;
@@ -340,14 +386,16 @@
             flex: 1;
         }
 
+        /* Oculta la barra de desplazamiento en WebKit (Chrome, Safari) */
         .filter-bar::-webkit-scrollbar {
             display: none;
         }
 
+        /* Botón individual de categoría: pastilla con borde, sin fondo por defecto */
         .filter-btn {
             white-space: nowrap;
             padding: 8px 16px;
-            border-radius: var(--radius-sm);
+            border-radius: 50px;
             border: 1px solid var(--primary);
             background: transparent;
             color: var(--text);
@@ -358,17 +406,20 @@
             flex-shrink: 0;
         }
 
+        /* Hover del botón de filtro: resalta borde y texto en dorado */
         .filter-btn:hover {
             border-color: var(--secondary);
             color: var(--secondary);
         }
 
+        /* Estado activo del filtro: fondo dorado sólido con texto blanco */
         .filter-btn.active {
             background: var(--secondary);
             color: #ffffff;
             border-color: var(--secondary);
         }
 
+        /* Cuadrícula de productos: columnas automáticas con ancho mínimo de 220px */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -376,6 +427,7 @@
             padding: 24px;
         }
 
+        /* En móviles: columnas más pequeñas (160px) y menor espaciado */
         @media (max-width: 640px) {
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -384,14 +436,16 @@
             }
         }
 
+        /* En escritorio (≥1024px): columnas más grandes (260px) y mayor espaciado */
         @media (min-width: 1024px) {
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
                 gap: 24px;
                 padding: 32px;
             }
         }
 
+        /* Tarjeta de producto: fondo secundario con borde, bordes redondeados y transición */
         .product-card {
             background: var(--bg2);
             border: 1px solid var(--primary);
@@ -401,16 +455,19 @@
             transition: var(--transition);
         }
 
+        /* Hover de la tarjeta: eleva la card con sombra dorada y borde resaltado */
         .product-card:hover {
             border-color: var(--secondary);
             transform: translateY(-4px);
             box-shadow: 0 16px 48px rgba(139, 101, 8, 0.15);
         }
 
+        /* Tarjeta oculta por filtro activo: se retira completamente del flujo */
         .product-card.hidden {
             display: none;
         }
 
+        /* Contenedor de imagen de la tarjeta: cuadrado perfecto (1:1) con fondo neutro */
         .card-img {
             width: 100%;
             aspect-ratio: 1;
@@ -418,6 +475,7 @@
             background: var(--bg3);
         }
 
+        /* Imagen dentro de la tarjeta: cubre todo el contenedor con zoom al hacer hover */
         .card-img img {
             width: 100%;
             height: 100%;
@@ -425,10 +483,12 @@
             transition: var(--transition);
         }
 
+        /* Al hacer hover en la tarjeta, la imagen hace zoom suave */
         .product-card:hover .card-img img {
             transform: scale(1.07);
         }
 
+        /* Cuerpo de la tarjeta: columna con padding y separación entre elementos */
         .card-body {
             padding: 14px;
             display: flex;
@@ -436,6 +496,7 @@
             gap: 8px;
         }
 
+        /* Etiqueta de categoría en la tarjeta: texto pequeño dorado en mayúsculas */
         .card-cat {
             font-size: 10px;
             letter-spacing: 1px;
@@ -444,6 +505,7 @@
             font-weight: 600;
         }
 
+        /* Nombre del producto en la tarjeta: tamaño fluido con clamp(), peso semibold */
         .card-name {
             font-size: clamp(13px, 2.5vw, 15px);
             font-weight: 600;
@@ -451,6 +513,7 @@
             line-height: 1.2;
         }
 
+        /* Descripción corta en la tarjeta: truncada a 2 líneas con ellipsis */
         .card-desc {
             font-size: 12px;
             color: var(--text-light);
@@ -461,30 +524,34 @@
             overflow: hidden;
         }
 
+        /* Botón "Ver detalles" de la tarjeta: transparente con borde, pegado al fondo */
         .card-btn {
             margin-top: auto;
             padding: 8px 12px;
             background: transparent;
             border: 1px solid var(--primary);
             color: var(--secondary);
-            border-radius: var(--radius-sm);
+            border-radius: 50px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
         }
 
+        /* Hover del botón de la tarjeta: fondo dorado sólido con texto blanco */
         .card-btn:hover {
             background: var(--secondary);
             color: #ffffff;
             border-color: var(--secondary);
         }
 
+        /* Página de detalle del producto: sin padding superior, posición relativa */
         #detail {
             padding-top: 0;
             position: relative;
         }
 
+        /* Columna de imagen en detalle: sticky en escritorio, ocupa toda la altura de pantalla */
         .detail-image-col {
             display: flex;
             flex-direction: column;
@@ -493,6 +560,7 @@
             height: 100vh;
         }
 
+        /* En móviles: la columna de imagen deja de ser sticky y toma altura automática */
         @media (max-width: 768px) {
             .detail-image-col {
                 position: relative;
@@ -500,6 +568,8 @@
             }
         }
 
+        /* Botón de regreso en detalle: fijo en la esquina superior izquierda,
+           con fondo dorado para destacarse sobre la imagen */
         #detail .back-btn {
             position: fixed;
             top: 24px;
@@ -510,12 +580,15 @@
             border: none;
         }
 
+
+        /* Hover del botón de regreso en detalle: oscurece el fondo dorado */
         #detail .back-btn:hover {
             background: var(--secondary-dark);
             border-color: transparent;
             color: #ffffff;
         }
 
+        /* En móviles: el botón de regreso se acerca más a las esquinas y reduce su tamaño */
         @media (max-width: 768px) {
             #detail .back-btn {
                 top: 16px;
@@ -525,6 +598,7 @@
             }
         }
 
+        /* Contenedor de detalle: grid de dos columnas (imagen | info) en escritorio */
         .detail-wrap {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -534,6 +608,7 @@
             min-height: calc(100vh - 80px);
         }
 
+        /* En móviles: una sola columna, imagen arriba e info abajo */
         @media (max-width: 768px) {
             .detail-wrap {
                 grid-template-columns: 1fr;
@@ -542,6 +617,7 @@
             }
         }
 
+        /* Carrusel de imágenes en la vista de detalle: ocupa todo el espacio disponible */
         .detail-carousel {
             position: relative;
             background: var(--bg3);
@@ -553,6 +629,7 @@
             animation: slideIn 0.6s ease;
         }
 
+        /* En móviles: la altura mínima del carrusel se basa en el ancho del viewport */
         @media (max-width: 768px) {
             .detail-carousel {
                 min-height: 60vw;
@@ -560,6 +637,7 @@
             }
         }
 
+        /* Animación de entrada del carrusel de detalle: aparece con leve zoom */
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -571,6 +649,7 @@
             }
         }
 
+        /* Pista del carrusel de detalle: fila de slides con transición suave al deslizar */
         .detail-carousel-track {
             display: flex;
             width: 100%;
@@ -578,6 +657,7 @@
             transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
         }
 
+        /* Cada slide del carrusel de detalle: ocupa el 100% del contenedor, centrado */
         .detail-slide {
             flex: 0 0 100%;
             width: 100%;
@@ -588,6 +668,7 @@
             background: var(--bg3);
         }
 
+        /* Imagen dentro del slide de detalle: cubre el contenedor manteniendo proporción */
         .detail-slide img {
             width: 100%;
             height: 100%;
@@ -595,6 +676,7 @@
             display: block;
         }
 
+        /* Indicadores de posición del carrusel (puntos): centrados en la parte inferior */
         .carousel-dots {
             position: absolute;
             bottom: 16px;
@@ -605,6 +687,7 @@
             z-index: 10;
         }
 
+        /* Punto indicador inactivo: círculo pequeño semitransparente */
         .dot {
             width: 8px;
             height: 8px;
@@ -614,6 +697,7 @@
             transition: var(--transition);
         }
 
+        /* Punto indicador activo: se alarga como pastilla y se vuelve blanco sólido */
         .dot.active {
             width: 24px;
             border-radius: 4px;
@@ -621,6 +705,7 @@
         }
 
         /* ── Swipe hint ── */
+        /* Indicador visual de deslizamiento: aparece brevemente y desaparece con animación */
         .swipe-hint {
             position: absolute;
             bottom: 56px;
@@ -635,12 +720,14 @@
             z-index: 20;
         }
 
+        /* Emoji de mano en el hint: se anima de derecha a izquierda simulando un swipe */
         .swipe-hint-hand {
             font-size: 32px;
             animation: handSwipe 1s ease-in-out 0.4s 2 alternate;
             filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
         }
 
+        /* Etiqueta de texto del hint: píldora oscura semitransparente */
         .swipe-hint-label {
             background: rgba(0,0,0,0.55);
             color: #fff;
@@ -668,6 +755,7 @@
         .carousel-arrow { display: none !important; }
 
         /* ── Thumbnail strip ── */
+        /* Tira de miniaturas del carrusel de detalle: fila horizontal con scroll sin barra */
         .detail-thumbs {
             display: flex;
             gap: 8px;
@@ -678,6 +766,7 @@
             margin-bottom: 0;
         }
         .detail-thumbs::-webkit-scrollbar { display: none; }
+        /* Miniatura individual: cuadrado de 58px con borde transparente por defecto */
         .detail-thumb {
             flex: 0 0 58px;
             height: 58px;
@@ -688,13 +777,16 @@
             transition: var(--transition);
             background: var(--bg3);
         }
+        /* Imagen dentro de la miniatura: cubre el cuadrado manteniendo proporción */
         .detail-thumb img {
             width: 100%; height: 100%; object-fit: contain;
         }
+        /* Miniatura activa: borde dorado para indicar la imagen seleccionada */
         .detail-thumb.active {
             border-color: var(--secondary);
         }
 
+        /* Columna de información del producto: columna con scroll vertical en escritorio */
         .detail-info {
             display: flex;
             flex-direction: column;
@@ -706,6 +798,7 @@
             height: 100%;
         }
 
+        /* En móviles: padding reducido y altura automática (no ocupa 100vh) */
         @media (max-width: 768px) {
             .detail-info {
                 padding: 20px 16px 32px;
@@ -713,6 +806,7 @@
             }
         }
 
+        /* Etiqueta de categoría en la vista de detalle: texto dorado en mayúsculas */
         .detail-cat {
             font-size: 11px;
             letter-spacing: 2px;
@@ -721,18 +815,21 @@
             font-weight: 600;
         }
 
+        /* Nombre del producto en detalle: tamaño grande y fluido con clamp() */
         .detail-name {
             font-size: clamp(20px, 5.5vw, 30px);
             font-weight: 700;
             color: var(--text);
         }
 
+        /* Descripción completa del producto en detalle: texto secundario con interlineado cómodo */
         .detail-desc {
             font-size: 14px;
             color: var(--text-light);
             line-height: 1.6;
         }
 
+        /* Título de la tabla de especificaciones técnicas */
         .specs-title {
             font-size: 14px;
             font-weight: 600;
@@ -740,6 +837,7 @@
             margin-top: 8px;
         }
 
+        /* Tabla de especificaciones: ancho completo, sin separación entre celdas */
         .specs-table {
             width: 100%;
             border-collapse: collapse;
@@ -747,6 +845,7 @@
             border: 1px solid var(--primary);
         }
 
+        /* Encabezado de la tabla: fondo primario con texto en negrita */
         .specs-table th {
             background: var(--primary);
             padding: 10px;
@@ -755,44 +854,18 @@
             color: var(--text);
         }
 
+        /* Celdas de datos: padding uniforme con borde inferior separador */
         .specs-table td {
             padding: 10px;
             border-bottom: 1px solid var(--primary);
         }
 
+        /* Fila de la tabla al hacer hover: resalta con fondo más oscuro */
         .specs-table tr:hover {
             background: #e3e3ef;
         }
 
-        .wa-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: var(--secondary);
-            color: #ffffff;
-            padding: 15px 20px;
-            border-radius: var(--radius-sm);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            margin-top: 8px;
-        }
-
-        .wa-btn:hover {
-            background: var(--secondary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(139, 101, 8, 0.3);
-        }
-
-        .wa-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-
+        /* Imagen de marcador de posición cuando no hay foto del producto disponible */
         .placeholder-img {
             width: 100%;
             height: 100%;
@@ -807,6 +880,7 @@
         }
 
         /* ── Botón Ubicación ── */
+        /* Botón de ubicación: pastilla con borde dorado, ícono y texto */
         .location-btn {
             display: flex;
             align-items: center;
@@ -823,18 +897,22 @@
             white-space: nowrap;
             flex-shrink: 0;
         }
+        /* Hover del botón de ubicación: fondo dorado sólido con texto blanco */
         .location-btn:hover {
             background: var(--secondary);
             color: #fff;
         }
+        /* Ícono SVG dentro del botón de ubicación */
         .location-btn svg {
             width: 15px;
             height: 15px;
             flex-shrink: 0;
         }
+        /* Texto del botón de ubicación: visible por defecto */
         .location-btn .loc-text {
             display: inline;
         }
+        /* En móviles: oculta el texto y deja solo el ícono para ahorrar espacio */
         @media (max-width: 640px) {
             .location-btn {
                 padding: 9px 10px;
@@ -845,6 +923,7 @@
         }
 
         /* ── Modal de Mapa ── */
+        /* Overlay del modal de mapa: fondo semitransparente, centrado con flexbox */
         .map-modal-overlay {
             display: none;
             position: fixed;
@@ -855,9 +934,11 @@
             justify-content: center;
             padding: 20px;
         }
+        /* Estado abierto del overlay del mapa: muestra el fondo oscuro */
         .map-modal-overlay.open {
             display: flex;
         }
+        /* Ventana del modal de mapa: fondo secundario, ancho máximo controlado con animación */
         .map-modal {
             background: var(--bg2);
             border-radius: var(--radius);
@@ -867,10 +948,12 @@
             box-shadow: 0 24px 80px rgba(0,0,0,0.25);
             animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
         }
+        /* Animación de aparición del modal: escala desde 88% con fade-in */
         @keyframes modalPop {
             from { opacity:0; transform: scale(0.88); }
             to   { opacity:1; transform: scale(1); }
         }
+        /* Cabecera del modal de mapa: fila entre título y botón de cierre */
         .map-modal-header {
             display: flex;
             align-items: center;
@@ -878,11 +961,13 @@
             padding: 16px 20px;
             border-bottom: 1px solid var(--primary);
         }
+        /* Título dentro de la cabecera del modal */
         .map-modal-header h3 {
             font-size: 16px;
             font-weight: 700;
             color: var(--text);
         }
+        /* Botón de cierre del modal: transparente, texto grande, hover con fondo */
         .map-modal-close {
             background: transparent;
             border: none;
@@ -895,12 +980,14 @@
             transition: var(--transition);
         }
         .map-modal-close:hover { background: var(--bg3); color: var(--text); }
+        /* iFrame del mapa de Google incrustado dentro del modal */
         .map-modal iframe {
             width: 100%;
             height: 340px;
             border: none;
             display: block;
         }
+        /* Pie del modal de mapa: muestra la dirección con ícono */
         .map-modal-footer {
             padding: 14px 20px;
             font-size: 12px;
@@ -912,6 +999,7 @@
         .map-modal-footer svg { width:14px; height:14px; flex-shrink:0; color: var(--secondary); }
 
         /* ── Panel de Gestión de Precios ── */
+        /* Overlay del panel de precios: fondo oscuro, centrado con scroll vertical */
         .price-panel-overlay {
             display: none;
             position: fixed;
@@ -924,6 +1012,7 @@
             overflow-y: auto;
         }
         .price-panel-overlay.open { display: flex; }
+        /* Ventana del panel de precios: ancho máximo de 700px con animación de aparición */
         .price-panel {
             background: var(--bg2);
             border-radius: var(--radius);
@@ -934,6 +1023,7 @@
             animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
             margin: auto;
         }
+        /* Cabecera del panel de precios: fila entre título y botón de cierre */
         .price-panel-header {
             display: flex;
             align-items: center;
@@ -958,6 +1048,7 @@
         }
         .price-panel-close:hover { background: var(--primary); }
 
+        /* Barra de tasa de cambio: fila flexible con input, etiqueta y botón de consulta */
         .rate-bar {
             display: flex;
             align-items: center;
@@ -1070,18 +1161,21 @@
         .btn-cancel-prices:hover { border-color: var(--secondary); color: var(--secondary); }
 
         /* ── Precio visible en tarjetas ── */
+        /* Precio en Bolívares mostrado en la tarjeta del producto */
         .card-price {
             font-size: 13px;
             font-weight: 700;
             color: var(--secondary);
             margin-top: 2px;
         }
+        /* Precio en dólares mostrado debajo del precio en Bs, más pequeño y tenue */
         .card-price-usd {
             font-size: 11px;
             color: var(--text-light);
             font-weight: 500;
         }
         /* ── Precio en detalle ── */
+        /* Bloque de precio en vista detalle: fondo neutro con padding y columna */
         .detail-price-block {
             background: var(--bg3);
             border-radius: var(--radius-sm);
@@ -1090,11 +1184,13 @@
             flex-direction: column;
             gap: 4px;
         }
+        /* Precio en Bs. en la vista de detalle: grande, dorado y en negrita */
         .detail-price-bs {
             font-size: 22px;
             font-weight: 800;
             color: var(--secondary);
         }
+        /* Precio en USD en la vista de detalle: pequeño y tenue bajo el precio en Bs. */
         .detail-price-usd {
             font-size: 13px;
             color: var(--text-light);
@@ -1108,6 +1204,9 @@
         .card-img {
             position: relative;
         }
+        /* ── Botón flotante añadir al carrito en tarjeta ── */
+        /* Botón flotante sobre la imagen: aparece al hacer hover en escritorio,
+           siempre visible en móviles */
         .btn-add-cart {
             position: absolute;
             top: 10px;
@@ -1133,21 +1232,25 @@
             opacity: 0;
             transform: scale(0.7);
         }
+        /* Al hacer hover en la tarjeta, el botón aparece con animación */
         .product-card:hover .btn-add-cart {
             opacity: 1;
             transform: scale(1);
         }
+        /* Hover directo sobre el botón: escala ligeramente */
         .btn-add-cart:hover {
             background: var(--secondary-dark);
             transform: scale(1.08) !important;
             box-shadow: 0 6px 20px rgba(139, 101, 8, 0.5);
         }
+        /* En móviles: el botón siempre está visible (sin necesidad de hover) */
         @media (max-width: 768px) {
             .btn-add-cart {
                 opacity: 1;
                 transform: scale(1);
             }
         }
+        /* Ícono SVG dentro del botón de carrito en tarjeta */
         .btn-add-cart svg {
             width: 16px;
             height: 16px;
@@ -1155,6 +1258,7 @@
         }
 
         /* ── Contador de cantidad en tarjeta ── */
+        /* Fila del contador de cantidad: ícono de etiqueta + control +/- */
         .card-qty-row {
             display: flex;
             align-items: center;
@@ -1201,6 +1305,7 @@
         }
 
         /* ── Botón flotante del carrito (esquina inferior derecha) ── */
+        /* Botón circular fijo en pantalla para abrir/cerrar el panel del carrito */
         #cartFloatBtn {
             position: fixed;
             bottom: 52px;
@@ -1227,6 +1332,7 @@
             width: 26px;
             height: 26px;
         }
+        /* Insignia numérica sobre el botón del carrito: muestra la cantidad de productos */
         #cartBadge {
             position: absolute;
             top: -4px;
@@ -1248,6 +1354,7 @@
         #cartBadge.hidden { display: none; }
 
         /* ── Overlay oscuro del carrito ── */
+        /* Fondo oscuro que aparece detrás del panel del carrito cuando está abierto */
         #cartOverlay {
             display: none;
             position: fixed;
@@ -1260,6 +1367,7 @@
         }
 
         /* ── Panel flotante del carrito ── */
+        /* Panel lateral fijo: aparece sobre el contenido con lista de productos y total */
         #cartPanel {
             position: fixed;
             bottom: 120px;
@@ -1283,6 +1391,7 @@
             from { opacity: 0; transform: scale(0.9) translateY(16px); }
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
+        /* Cabecera del panel del carrito: título con ícono y botón de cierre */
         .cart-panel-header {
             display: flex;
             align-items: center;
@@ -1424,6 +1533,7 @@
         }
 
         /* ── Modo eliminación: banner ── */
+        /* Banner de aviso que aparece al activar el modo de eliminación de productos */
         .cart-delete-bar {
             display: none;
             align-items: center;
@@ -1440,6 +1550,7 @@
         .cart-delete-bar svg { width: 14px; height: 14px; flex-shrink: 0; }
 
         /* ── Footer del carrito ── */
+        /* Pie del panel del carrito: muestra el total y los botones de acción */
         .cart-panel-footer {
             padding: 12px 16px;
             border-top: 1px solid var(--primary);
@@ -1528,6 +1639,7 @@
         }
 
         /* ── Botón añadir al carrito en vista detalle ── */
+        /* Botón de carrito en la vista de detalle: borde dorado, se rellena al hacer hover */
         .btn-add-cart-detail {
             display: flex;
             align-items: center;
@@ -1555,7 +1667,6 @@
             display: flex;
             align-items: stretch;
             gap: 0;
-            border: 1.5px solid var(--secondary);
             border-radius: var(--radius-sm);
             overflow: hidden;
             background: var(--bg3);
@@ -1566,7 +1677,6 @@
             gap: 8px;
             padding: 10px 14px;
             background: var(--bg3);
-            border-right: 1.5px solid var(--secondary);
             flex-shrink: 0;
         }
         .detail-qty-section .qty-ctrl {
@@ -1610,6 +1720,7 @@
         }
 
         /* ── Botón Comprar Ahora ── */
+        /* Botón verde de WhatsApp para comprar directamente desde la vista de detalle */
         .btn-buy-now {
             display: flex;
             align-items: center;
@@ -1635,6 +1746,7 @@
         .btn-buy-now svg { width: 18px; height: 18px; }
 
         /* ── Badge Caseha en tarjeta ── */
+        /* Insignia dorada con gradiente que indica productos de la marca Caseha */
         .card-caseha-badge {
             display: inline-flex;
             align-items: center;
@@ -1659,6 +1771,7 @@
         BLOQUES PUBLICITARIOS
         ══════════════════════════════════════ */
         /* ── Banner: usa el mismo padding horizontal que .products-grid ── */
+        /* Centinela del banner publicitario: sin padding propio, el wrapper lo maneja */
         .ad-sentinel {
             /* grid-column: 1 / -1 se aplica inline; aquí sólo padding */
             padding: 0;   /* el wrapper interno maneja el espaciado */
@@ -1710,13 +1823,15 @@
             .ad-banner img.ad-media { height: 180px; }     /* ← ALTURA TABLET */
         }
         @media (min-width: 1024px) {
-            .ad-banner img.ad-media { height: 150px; }     /* ← ALTURA DESKTOP */
+            .ad-banner img.ad-media { height: 160px; }     /* ← ALTURA DESKTOP */
         }
+        /* Zoom suave de la imagen del banner al pasar el cursor */
         .ad-banner:hover img.ad-media { transform: scale(1.02); }
         /* ── Altura del banner (video) ── */
+        /* Vídeo del banner publicitario: mismas alturas que la versión de imagen */
         .ad-banner video.ad-media {
             width: 100%;
-            height: 140px;          /* ← ALTURA MÓVIL VIDEO */
+            height: 180px;          /* ← ALTURA MÓVIL VIDEO */
             object-fit: cover;
             display: block;
         }
@@ -1724,8 +1839,9 @@
             .ad-banner video.ad-media { height: 180px; }
         }
         @media (min-width: 1024px) {
-            .ad-banner video.ad-media { height: 220px; }
+            .ad-banner video.ad-media { height: 200px; }
         }
+        /* Etiqueta "Publicidad" superpuesta en la esquina del banner */
         .ad-banner-badge {
             position: absolute;
             top: 12px;
@@ -1764,6 +1880,7 @@
         .ad-banner.hidden { display: none; }
 
         /* toast notificación */
+        /* Notificación flotante del carrito: aparece brevemente al añadir un producto */
         #cartToast {
             position: fixed;
             bottom: 130px;
@@ -1781,9 +1898,88 @@
             transform: translateY(10px);
             transition: opacity 0.3s, transform 0.3s;
         }
+        /* Estado visible del toast: opacidad completa y posición final */
         #cartToast.show {
             opacity: 1;
             transform: translateY(0);
+        }
+
+
+        /* ══════════════════════════════════════
+        ADAPTACIÓN PARA TABLETAS (641px – 1023px)
+        Replica el comportamiento móvil en dispositivos
+        de tamaño intermedio como iPads y tablets Android.
+        ══════════════════════════════════════ */
+        @media (min-width: 641px) and (max-width: 1023px) {
+
+            /* El carrusel de portada ocupa más altura, igual que en móvil */
+            .hero-carousel {
+                height: 80vw;
+            }
+
+            /* Oculta los botones de flecha del filtro: el scroll táctil es suficiente */
+            .filter-scroll-btn {
+                display: none;
+            }
+
+            /* El botón de añadir al carrito siempre visible sin necesidad de hover */
+            .btn-add-cart {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            /* El detalle pasa a una sola columna: imagen arriba, info abajo */
+            .detail-wrap {
+                grid-template-columns: 1fr;
+                gap: 0;
+                padding: 0;
+            }
+
+            /* La columna de imagen deja de ser sticky y toma altura automática */
+            .detail-image-col {
+                position: relative;
+                height: auto;
+            }
+
+            /* La altura mínima del carrusel de detalle se ajusta al ancho de la pantalla */
+            .detail-carousel {
+                min-height: 60vw;
+                border-radius: 0;
+            }
+
+            /* La columna de info ocupa altura automática y reduce su padding */
+            .detail-info {
+                padding: 20px 16px 32px;
+                height: auto;
+            }
+
+            /* El botón de regreso en detalle se acerca más a las esquinas */
+            #detail .back-btn {
+                top: 16px;
+                left: 16px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            /* El texto del botón de ubicación se oculta, quedando solo el ícono */
+            .location-btn {
+                padding: 9px 10px;
+            }
+            .location-btn .loc-text {
+                display: none;
+            }
+
+            /* La cuadrícula de productos usa columnas más pequeñas igual que en móvil */
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+                padding: 20px;
+            }
+
+            /* El wrapper del banner publicitario sin padding lateral extra */
+            .ad-banner-wrapper {
+                padding: 0 0px 14px;
+            }
         }
 
 
@@ -2343,7 +2539,7 @@
                     '<h3 class="card-name">' + product.name + '</h3>' +
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
-                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA · Facilidad de Pago</div>' +
+                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
                     '<button class="card-btn">Ver Detalles</button>' +
                     '</div>' +
                     '</div>';
@@ -2713,11 +2909,13 @@
                     '<h3 class="card-name">' + product.name + '</h3>' +
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
-                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA · Facilidad de Pago</div>' +
+                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
                     '<button class="card-btn">Ver Detalles</button>' +
                     '</div>' +
                     '</div>';
             }
+            //<button class="card-btn">Ver Detalles</button>
+
             grid.innerHTML = html;
             syncCardQtyDisplays();
             // Reaplicar filtro activo
