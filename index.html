@@ -1763,66 +1763,8 @@
         }
         .ad-banner.hidden { display: none; }
 
-        /* ── Badge Cashea en página de detalle ── */
-        .detail-cashea-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #8b6508 0%, #b8860b 60%, #d4a017 100%);
-            color: #fff;
-            font-size: 13px;
-            font-weight: 500;
-            padding: 10px 16px;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 3px 12px rgba(139,101,8,0.25);
-        }
-        .detail-cashea-badge svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-            opacity: 0.9;
-        }
-        .detail-cashea-badge strong {
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        /* ══════════════════════════════════════
-           ADAPTACIÓN TABLET (769px – 1024px)
-           Misma presentación que móvil: columna única
-        ══════════════════════════════════════ */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .detail-image-col {
-                position: relative;
-                height: auto;
-            }
-            .detail-wrap {
-                grid-template-columns: 1fr;
-                gap: 0;
-                padding: 0;
-            }
-            .detail-carousel {
-                min-height: 55vw;
-            }
-            .detail-info {
-                padding: 20px 20px 32px;
-                height: auto;
-            }
-            #detail .back-btn {
-                top: 16px;
-                left: 16px;
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-            .hero-carousel {
-                height: 80vw;
-            }
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 16px;
-                padding: 20px;
-            }
-        }
+        /* toast notificación */
+        #cartToast {
             position: fixed;
             bottom: 130px;
             right: 16px;
@@ -2297,6 +2239,7 @@
 
 
 
+
                     // ============================================================
                     // BLOQUES DE CONSTRUCCÍON
                     // ============================================================
@@ -2312,6 +2255,7 @@
 
 
 
+
                     // ============================================================
                     // LIMPIEZA Y ORGANIZACION
                     // ============================================================
@@ -2324,6 +2268,7 @@
                     ["Medida común", "3.66m de largo (12 pies) x 0.80m de ancho."],
                     ["Calibre/Espesor", "Generalmente de 0.17 mm a 0.20 mm."],
                     ["Acabado", "Galvanizado (gris metálico) para prevenir la corrosión básica."]]},
+
 
 
             );
@@ -2611,7 +2556,6 @@
                     '<h1 class="detail-name">' + p.name + '</h1>' +
                     '<p class="detail-desc">' + p.desc + '</p>' +
                     priceDetailHtml +
-                    '<div class="detail-cashea-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg><span>Aceptamos <strong>CASHEA</strong> &mdash; ¡Paga a cuotas sin complicaciones!</span></div>' +
                     '<p class="specs-title">Especificaciones</p>' +
                     '<table class="specs-table"><thead><tr><th>Caracter&#xED;stica</th><th>Valor</th></tr></thead><tbody>' + specsRows + '</tbody></table>' +
                     detailQtyHtml +
