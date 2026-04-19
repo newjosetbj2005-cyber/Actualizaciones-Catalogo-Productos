@@ -6,6 +6,9 @@
     <title>Ferretería Golden Gray - 2026</title>
     <link rel="shortcut icon" href="https://i.ibb.co/zTKNMvgL/Golden-Gray-Logo-Recortado.png" type="image/x-icon">
     
+    <!-- SUPABASE SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
     <!-- GOOGLE FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
@@ -439,7 +442,7 @@
         /* En escritorio (≥1024px): columnas más grandes (260px) y mayor espaciado */
         @media (min-width: 1024px) {
             .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
                 gap: 24px;
                 padding: 32px;
             }
@@ -922,7 +925,312 @@
             }
         }
 
-        /* ── Modal de Mapa ── */
+        /* ── Botón Admin ── */
+        .admin-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border: 1px solid var(--text-light);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .admin-btn:hover {
+            background: var(--text);
+            color: #fff;
+            border-color: var(--text);
+        }
+        .admin-btn svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+        .admin-btn .admin-text {
+            display: inline;
+        }
+        @media (max-width: 640px) {
+            .admin-btn {
+                padding: 9px 10px;
+            }
+            .admin-btn .admin-text {
+                display: none;
+            }
+        }
+
+        /* ── Modal Login Admin ── */
+        .admin-login-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .admin-login-overlay.open { display: flex; }
+        .admin-login-modal {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 380px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+            animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .admin-login-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--primary);
+            background: var(--bg3);
+        }
+        .admin-login-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .admin-login-body {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .admin-login-body label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .admin-login-body input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-size: 14px;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .admin-login-body input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+        .admin-login-error {
+            font-size: 12px;
+            color: #e63946;
+            font-weight: 600;
+            display: none;
+        }
+        .admin-login-btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .admin-login-btn:hover {
+            background: var(--secondary-dark);
+        }
+
+        /* ── Panel Admin Completo ── */
+        .admin-panel-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9500;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .admin-panel-overlay.open { display: flex; }
+        .admin-panel {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 750px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+            animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            margin: auto;
+        }
+        .admin-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--primary);
+            background: var(--bg3);
+        }
+        .admin-panel-header h3 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .admin-panel-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 22px;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .admin-panel-close:hover { background: var(--primary); }
+
+        /* Sección de tasa en admin panel */
+        .admin-rate-section {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .admin-rate-section h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .rate-type-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .rate-type-btn {
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .rate-type-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        .rate-type-btn.active {
+            background: var(--secondary);
+            color: #fff;
+            border-color: var(--secondary);
+        }
+        .admin-custom-rate-row {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-custom-rate-row.visible {
+            display: flex;
+        }
+        .admin-custom-rate-row label {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .admin-custom-rate-row input {
+            flex: 1;
+            min-width: 120px;
+            max-width: 180px;
+            padding: 8px 12px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .admin-custom-rate-row input:focus { outline: none; border-color: var(--secondary); }
+        .admin-rate-current {
+            font-size: 12px;
+            color: var(--text-light);
+            padding: 8px 14px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--primary);
+        }
+        .admin-rate-current strong {
+            color: var(--secondary);
+        }
+
+        /* Tabla de precios en admin */
+        .admin-products-section {
+            padding: 0;
+        }
+        .admin-products-section h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            padding: 16px 22px 8px;
+        }
+        .admin-search-bar {
+            padding: 0 22px 12px;
+        }
+        .admin-search-bar input {
+            width: 100%;
+            padding: 8px 14px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--text);
+        }
+        .admin-search-bar input:focus { outline: none; border-color: var(--secondary); }
+
+        .admin-panel-footer {
+            padding: 16px 22px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            border-top: 1px solid var(--primary);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .admin-save-status {
+            flex: 1;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        .btn-admin-save {
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: none;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-admin-save:hover { background: var(--secondary-dark); transform: translateY(-1px); }
+        .btn-admin-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .btn-admin-logout {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-admin-logout:hover { border-color: #e63946; color: #e63946; }
+
+        /* ── Modal Mapa ── */
         /* Overlay del modal de mapa: fondo semitransparente, centrado con flexbox */
         .map-modal-overlay {
             display: none;
@@ -1968,6 +2276,12 @@
             .location-btn .loc-text {
                 display: none;
             }
+            .admin-btn {
+                padding: 9px 10px;
+            }
+            .admin-btn .admin-text {
+                display: none;
+            }
 
             /* La cuadrícula de productos usa columnas más pequeñas igual que en móvil */
             .products-grid {
@@ -2010,9 +2324,13 @@
         <!-- ══ REDES SOCIALES PORTADA ══
         Reemplaza cada href="#" con la URL real de tu red social    -->
         <div class="social-bar">
-            <a href="https://wa.me/584227285001" id="wa-portada" target="_blank" class="social-link" title="WhatsApp">
+            <a href="https://wa.me/584144713628" id="wa-portada" target="_blank" class="social-link" title="WhatsApp">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-                WhatsApp
+            </a>
+            <a href="https://www.tiktok.com/@mayorgoldengray" id="wa-portada" target="_blank" class="social-link" title="tiktok">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tiktok" viewBox="0 0 16 16">
+                <path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3z"/>
+                </svg>
             </a>
         </div>
     </div>
@@ -2032,6 +2350,10 @@
                 <button class="location-btn" onclick="openMapModal()" title="Ver ubicación del negocio">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                     <span class="loc-text">Ubicación</span>
+                </button>
+                <button class="admin-btn" onclick="openAdminLogin()" title="Panel de administrador">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <span class="admin-text">Admin</span>
                 </button>
             </div>
 
@@ -2110,6 +2432,79 @@
 
     <div id="cartToast"></div>
 
+    <!-- ══ MODAL LOGIN ADMIN ══ -->
+    <div class="admin-login-overlay" id="adminLoginOverlay" onclick="closeAdminLogin(event)">
+        <div class="admin-login-modal">
+            <div class="admin-login-header">
+                <h3>&#x1F512; Acceso Administrador</h3>
+                <button class="map-modal-close" onclick="closeAdminLogin(null)">&#x2715;</button>
+            </div>
+            <div class="admin-login-body">
+                <div>
+                    <label>Contrase&#xF1;a de administrador</label>
+                    <input type="password" id="adminPasswordInput" placeholder="Ingrese la contrase&#xF1;a" onkeydown="if(event.key==='Enter')attemptAdminLogin()"/>
+                </div>
+                <div class="admin-login-error" id="adminLoginError">Contrase&#xF1;a incorrecta</div>
+                <button class="admin-login-btn" onclick="attemptAdminLogin()">Ingresar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PANEL ADMIN COMPLETO ══ -->
+    <div class="admin-panel-overlay" id="adminPanelOverlay" onclick="closeAdminPanel(event)">
+        <div class="admin-panel" onclick="event.stopPropagation()">
+            <div class="admin-panel-header">
+                <h3>&#x2699;&#xFE0F; Panel de Administraci&#xF3;n</h3>
+                <button class="admin-panel-close" onclick="closeAdminPanel(null)">&#x2715;</button>
+            </div>
+
+            <!-- Sección de Tasa -->
+            <div class="admin-rate-section">
+                <h4>&#x1F4B1; Tipo de Tasa de Cambio</h4>
+                <div class="rate-type-selector">
+                    <button class="rate-type-btn active" id="rateTypeDolar" onclick="selectRateType('dolar')">&#x1F1FA;&#x1F1F8; D&#xF3;lar (USD)</button>
+                    <button class="rate-type-btn" id="rateTypeEuro" onclick="selectRateType('euro')">&#x1F1EA;&#x1F1FA; Euro (EUR)</button>
+                    <button class="rate-type-btn" id="rateTypeCustom" onclick="selectRateType('personalizada')">&#x270F;&#xFE0F; Personalizada</button>
+                </div>
+                <div class="admin-custom-rate-row" id="adminCustomRateRow">
+                    <label>Tasa personalizada (Bs./$):</label>
+                    <input type="number" id="adminCustomRateInput" placeholder="Ej: 95.50" step="0.01" min="0"/>
+                </div>
+                <div class="admin-rate-current" id="adminRateDisplay">
+                    Tasa actual: <strong>Cargando...</strong>
+                </div>
+            </div>
+
+            <!-- Sección de Productos -->
+            <div class="admin-products-section">
+                <h4>&#x1F4E6; Precios de Productos (USD base)</h4>
+                <div class="admin-search-bar">
+                    <input type="text" id="adminProductSearch" placeholder="Buscar producto..." oninput="filterAdminProducts()"/>
+                </div>
+                <div class="price-table-wrap">
+                    <table class="price-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio USD</th>
+                                <th>Precio Bs.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="admin-panel-footer">
+                <div class="admin-save-status" id="adminSaveStatus"></div>
+                <button class="btn-admin-logout" onclick="adminLogout()">Cerrar Sesi&#xF3;n</button>
+                <button class="btn-admin-save" id="btnAdminSave" onclick="saveAdminChanges()">&#x1F4BE; Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ══ MODAL MAPA ══ -->
     <div class="map-modal-overlay" id="mapModalOverlay" onclick="closeMapModal(event)">
         <div class="map-modal">
@@ -2121,7 +2516,7 @@
                 INSTRUCCIÓN: Reemplaza el src del iframe con tu propio enlace de Google Maps.
                 Ve a Google Maps → busca tu negocio → Compartir → Insertar mapa → copia el src del iframe.
             -->
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62833.58963988605!2d-68.03542370508987!3d10.172579324977972!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e80678bce61928f%3A0x9f78e9eea8c34272!2sValencia%2C%20Carabobo!5e0!3m2!1ses!2sve!4v1774709351938!5m2!1ses!2sve" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3928.1876474785918!2d-67.78563507!3d10.08370565!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e806d509b7b25df%3A0xdf8eb2c08ebf6d08!2sGolden%20Gray!5e0!3m2!1ses!2sve!4v1776611251952!5m2!1ses!2sve" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             <div class="map-modal-footer">
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                 <span>Visitanos en nuestra cede fisica. <code></code></span>
@@ -2136,8 +2531,8 @@
         const PRODUCTS = [];
         // ── CONFIGURACIÓN MULTI-CLIENTE ──────────────────────────────────────────────
         const listaClientes = {
-            clienteA: "584227285001",
-        clienteB: "584227285001"
+            clienteA: "584144713628",
+        clienteB: "584144713628"
         // Agrega más clientes aquí: id: "numero_internacional_sin_+"
 };
 
@@ -2527,7 +2922,7 @@
                 var priceHtml = '';
                 if (product.price && product.price > 0 && CURRENT_RATE > 0) {
                     var bsStr = formatBs(product.price, CURRENT_RATE);
-                    priceHtml = '<div class="card-price">' + bsStr + '</div><div class="card-price-usd">$ ' + product.price.toFixed(2) + ' USD</div>';
+                    priceHtml = '<div class="card-price">' + bsStr + '</div>';
                 }
                 var pid = product.id;
                 html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
@@ -2703,7 +3098,6 @@
                 var bsDetail = formatBs(p.price, CURRENT_RATE);
                 priceDetailHtml = '<div class="detail-price-block">' +
                     '<div class="detail-price-bs">' + bsDetail + '</div>' +
-                    '<div class="detail-price-usd">$ ' + p.price.toFixed(2) + ' USD &middot; Tasa: Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/$</div>' +
                     '</div>';
             }
 
@@ -2828,34 +3222,41 @@
         var CURRENT_RATE = 0;
         var RATE_DATE = '';
 
-        /* ── PROTECCIÓN DE PRECIOS: Piso de tasa ──────────────────────────────
-        Se guarda la tasa más alta registrada en localStorage.
-        Si la tasa actual de la API es menor a la guardada,
-        se usa la guardada para evitar que los precios bajen.
+        /* ── PROTECCIÓN DE PRECIOS: Piso de tasa POR MONEDA ────────────────
+        Se guarda la tasa más alta registrada para CADA moneda (USD, EUR)
+        en localStorage, de forma independiente. Así al cambiar de dólar
+        a euro (o viceversa), cada una conserva su propio historial
+        y el admin mantiene control total.
         ─────────────────────────────────────────────────────────────────────── */
-        var RATE_FLOOR_KEY = 'catalogRateFloor';
 
-        function getStoredRateFloor() {
+        function getRateFloorKey(currency) {
+            return 'catalogRateFloor_' + (currency || 'USD');
+        }
+
+        function getStoredRateFloor(currency) {
             try {
-                var val = localStorage.getItem(RATE_FLOOR_KEY);
+                var val = localStorage.getItem(getRateFloorKey(currency));
                 return val ? parseFloat(val) : 0;
             } catch(e) { return 0; }
         }
 
-        function updateRateFloor(newRate) {
+        function updateRateFloor(newRate, currency) {
             try {
-                var stored = getStoredRateFloor();
+                var key = getRateFloorKey(currency);
+                var stored = getStoredRateFloor(currency);
                 if (newRate > stored) {
-                    localStorage.setItem(RATE_FLOOR_KEY, newRate.toString());
+                    localStorage.setItem(key, newRate.toString());
                     return newRate;
                 }
                 return stored;
             } catch(e) { return newRate; }
         }
 
-        /* Devuelve la tasa efectiva a usar (nunca por debajo del piso guardado) */
-        function getEffectiveRate(apiRate) {
-            var floor = updateRateFloor(apiRate);
+        /* Devuelve la tasa efectiva a usar para la moneda indicada
+           (nunca por debajo del piso guardado de ESA moneda) */
+        function getEffectiveRate(apiRate, currency) {
+            var cur = currency || (adminRateType === 'euro' ? 'EUR' : 'USD');
+            var floor = updateRateFloor(apiRate, cur);
             return Math.max(apiRate, floor);
         }
 
@@ -2869,7 +3270,7 @@
                 var floorNote = usingFloor
                     ? ' <span title="El dólar bajó; se mantiene el precio más alto registrado para proteger los precios." style="background:var(--secondary);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;cursor:help;">🔒 Piso activo</span>'
                     : '';
-                badge.innerHTML = '💵 Tasa: <strong>Bs. ' + rateLabel + '</strong> / $' + (RATE_DATE ? ' · ' + RATE_DATE : '') + floorNote;
+                badge.innerHTML = '&#x1F4B5; Tasa del d\u00EDa: <strong>Bs. ' + rateLabel + '</strong>' + floorNote;
                 // Posicionar justo DEBAJO del botón del carrito (bottom: 16px = debajo del btn que está en bottom:52px)
                 badge.style.bottom = '16px';
                 // Solo mostrar si estamos en el catálogo
@@ -2896,8 +3297,7 @@
                 var priceHtml = '';
                 if (product.price && product.price > 0 && rate > 0) {
                     var bsStr = formatBs(product.price, rate);
-                    priceHtml = '<div class="card-price">' + bsStr + '</div>' +
-                                '<div class="card-price-usd">$ ' + product.price.toFixed(2) + ' USD</div>';
+                    priceHtml = '<div class="card-price">' + bsStr + '</div>';
                 }
                 var pid = product.id;
                 html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
@@ -2938,7 +3338,7 @@
                         }
                         /* Aplicar piso de tasa: si el dólar bajó, se usa la tasa
                            más alta registrada para no reducir los precios. */
-                        CURRENT_RATE = getEffectiveRate(apiRate);
+                        CURRENT_RATE = getEffectiveRate(apiRate, 'USD');
                         renderProductsWithPrices(CURRENT_RATE);
                         showRateBadge(apiRate);
                     }
@@ -3088,9 +3488,9 @@
             var msg = '🛒 *COMPRA DIRECTA*\n' + sep + '\n\n';
             msg += '📦 *' + p.name + '*\n';
             msg += '🔢 Cantidad: ' + qty + ' unidad' + (qty > 1 ? 'es' : '') + '\n';
-            if (p.price) {
-                msg += '💲 Precio unit.: $' + p.price.toFixed(2) + ' USD\n';
-                msg += '💰 Subtotal: $' + lineUsd.toFixed(2) + ' USD' + (lineBs ? ' · ' + lineBs : '') + '\n';
+            if (p.price && CURRENT_RATE > 0) {
+                msg += '💰 Precio unit.: ' + formatBs(p.price, CURRENT_RATE) + '\n';
+                msg += '💰 Subtotal: ' + (lineBs ? lineBs : '') + '\n';
             }
             msg += '\n' + sep + '\n';
             msg += 'Estoy interesado en comprar este producto.\n\n';
@@ -3171,11 +3571,8 @@
                 var priceStr = '';
                 if (p.price && p.price > 0) {
                     var lineUsd = p.price * qty;
-                    var lineBs = CURRENT_RATE > 0 ? formatBs(lineUsd, 1) : '';
                     if (CURRENT_RATE > 0) {
-                        priceStr = formatBs(lineUsd, CURRENT_RATE) + ' &middot; $' + lineUsd.toFixed(2);
-                    } else {
-                        priceStr = '$' + lineUsd.toFixed(2) + ' USD';
+                        priceStr = formatBs(lineUsd, CURRENT_RATE);
                     }
                 }
                 var markBtn = cartDeleteMode
@@ -3202,7 +3599,7 @@
                     totalBsEl.textContent = 'Tasa no disponible';
                 }
             }
-            if (totalUsdEl) totalUsdEl.textContent = '$ ' + totals.usd.toFixed(2) + ' USD';
+            if (totalUsdEl) totalUsdEl.style.display = 'none';
 
             updateBuyBtn(itemIds.map(function(id){ return getProductById(id); }).filter(Boolean));
         }
@@ -3235,19 +3632,17 @@
                 var lineBs = (p.price && CURRENT_RATE > 0) ? formatBs(lineUsd, CURRENT_RATE) : '';
                 msg += '📦 *' + p.name + '*\n';
                 msg += '   🔢 Cantidad: ' + qty + ' unidad' + (qty > 1 ? 'es' : '') + '\n';
-                if (p.price) {
-                    msg += '   💲 Precio unit.: $' + p.price.toFixed(2) + ' USD\n';
-                    msg += '   💰 Subtotal: $' + lineUsd.toFixed(2) + ' USD' + (lineBs ? ' · ' + lineBs : '') + '\n';
+                if (p.price && CURRENT_RATE > 0) {
+                    msg += '   💰 Precio unit.: ' + formatBs(p.price, CURRENT_RATE) + '\n';
+                    msg += '   💰 Subtotal: ' + lineBs + '\n';
                 }
                 msg += '\n';
             }
             msg += sep + '\n';
             msg += '🧾 *RESUMEN FINAL*\n';
             msg += '   📦 Productos: ' + itemIds.length + '\n';
-            msg += '   💵 *Total USD: $' + totals.usd.toFixed(2) + ' USD*\n';
             if (CURRENT_RATE > 0) {
-                msg += '   🇻🇪 *Total Bs.: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
-                msg += '   📊 Tasa: Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '/$\n';
+                msg += '   🇻🇪 *Total: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
             }
             msg += sep + '\n';
             msg += '\uD83D\uDCCB *DATOS DEL CLIENTE*\n';
@@ -3320,6 +3715,366 @@
             toast.textContent = msg;
             toast.classList.add('show');
             setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+        }
+
+        /* ══════════════════════════════════════
+        SUPABASE INTEGRATION & ADMIN PANEL
+        ══════════════════════════════════════ */
+
+        var SUPABASE_URL = 'https://veqoslxoezvtsqamvpdm.supabase.co';
+        var SUPABASE_ANON_KEY = 'sb_publishable_oPsy5PwNv9XmQoQp0GHM6g_cFIOt5QQ';
+        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        var adminLoggedIn = false;
+        var adminRateType = 'dolar'; // dolar | euro | personalizada
+        var adminTempPrices = {}; // { product_id: newPrice }
+
+        /* ── Load config and prices from Supabase on startup ── */
+        async function loadSupabaseConfig() {
+            try {
+                // Load rate config
+                var { data: configData, error: configErr } = await supabase
+                    .from('config')
+                    .select('*')
+                    .eq('id', 1)
+                    .single();
+
+                if (configData && !configErr) {
+                    adminRateType = configData.rate_type || 'dolar';
+
+                    if (adminRateType === 'personalizada' && configData.custom_rate > 0) {
+                        CURRENT_RATE = parseFloat(configData.custom_rate);
+                        RATE_DATE = 'Personalizada';
+                        renderProductsWithPrices(CURRENT_RATE);
+                        showRateBadge(CURRENT_RATE);
+                    } else if (adminRateType === 'euro') {
+                        fetchEuroRate();
+                    }
+                    // If 'dolar', the existing fetchRateAuto() already handles it
+                }
+
+                // Load product prices from Supabase (overrides hardcoded prices)
+                var { data: prodData, error: prodErr } = await supabase
+                    .from('products')
+                    .select('*');
+
+                if (prodData && !prodErr && prodData.length > 0) {
+                    for (var i = 0; i < prodData.length; i++) {
+                        var sp = prodData[i];
+                        for (var j = 0; j < PRODUCTS.length; j++) {
+                            if (PRODUCTS[j].id === sp.product_id) {
+                                PRODUCTS[j].price = parseFloat(sp.price);
+                                break;
+                            }
+                        }
+                    }
+                    // Re-render with updated prices
+                    if (CURRENT_RATE > 0) {
+                        renderProductsWithPrices(CURRENT_RATE);
+                    }
+                }
+            } catch(e) {
+                console.error('Supabase load error:', e);
+            }
+        }
+
+        /* ── Fetch Euro rate from API ── */
+        function fetchEuroRate() {
+            fetch('https://open.er-api.com/v6/latest/EUR')
+                .then(function(r){ return r.json(); })
+                .then(function(data){
+                    if (data && data.rates && data.rates.VES) {
+                        var euroRate = data.rates.VES;
+                        if (data.time_last_update_utc) {
+                            RATE_DATE = new Date(data.time_last_update_utc).toLocaleDateString('es-VE') + ' (EUR)';
+                        }
+                        CURRENT_RATE = getEffectiveRate(euroRate, 'EUR');
+                        renderProductsWithPrices(CURRENT_RATE);
+                        showRateBadge(euroRate);
+                    }
+                })
+                .catch(function(){ console.error('Error fetching EUR rate'); });
+        }
+
+        /* ── Override fetchRateAuto to respect Supabase config ── */
+        var _origFetchRateAuto = fetchRateAuto;
+        fetchRateAuto = function() {
+            // Only auto-fetch USD rate if rate type is 'dolar'
+            if (adminRateType === 'dolar') {
+                _origFetchRateAuto();
+            }
+            // Load Supabase config after a brief delay to let products render
+            setTimeout(loadSupabaseConfig, 500);
+        };
+
+        /* ── Admin Login ── */
+        function openAdminLogin() {
+            if (adminLoggedIn) {
+                openAdminPanel();
+                return;
+            }
+            document.getElementById('adminLoginOverlay').classList.add('open');
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminLoginError').style.display = 'none';
+            setTimeout(function(){ document.getElementById('adminPasswordInput').focus(); }, 100);
+        }
+
+        function closeAdminLogin(event) {
+            if (event === null || event.target === document.getElementById('adminLoginOverlay')) {
+                document.getElementById('adminLoginOverlay').classList.remove('open');
+            }
+        }
+
+        async function attemptAdminLogin() {
+            var pw = document.getElementById('adminPasswordInput').value.trim();
+            if (!pw) return;
+
+            try {
+                var { data, error } = await supabase
+                    .from('admin_auth')
+                    .select('password_hash')
+                    .eq('id', 1)
+                    .single();
+
+                if (error || !data) {
+                    document.getElementById('adminLoginError').textContent = 'Error de conexi\u00F3n con el servidor';
+                    document.getElementById('adminLoginError').style.display = 'block';
+                    return;
+                }
+
+                if (pw === data.password_hash) {
+                    adminLoggedIn = true;
+                    closeAdminLogin(null);
+                    openAdminPanel();
+                } else {
+                    document.getElementById('adminLoginError').textContent = 'Contrase\u00F1a incorrecta';
+                    document.getElementById('adminLoginError').style.display = 'block';
+                }
+            } catch(e) {
+                document.getElementById('adminLoginError').textContent = 'Error de conexi\u00F3n';
+                document.getElementById('adminLoginError').style.display = 'block';
+            }
+        }
+
+        /* ── Admin Panel ── */
+        function openAdminPanel() {
+            if (!adminLoggedIn) return;
+            document.getElementById('adminPanelOverlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            // Set rate type buttons
+            selectRateType(adminRateType, true);
+
+            // Load custom rate if applicable
+            loadAdminCustomRate();
+
+            // Render products table
+            renderAdminProductsTable();
+
+            // Update rate display
+            updateAdminRateDisplay();
+
+            document.getElementById('adminSaveStatus').textContent = '';
+        }
+
+        function closeAdminPanel(event) {
+            if (event === null || event.target === document.getElementById('adminPanelOverlay')) {
+                document.getElementById('adminPanelOverlay').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function adminLogout() {
+            adminLoggedIn = false;
+            closeAdminPanel(null);
+        }
+
+        async function loadAdminCustomRate() {
+            try {
+                var { data } = await supabase.from('config').select('custom_rate').eq('id', 1).single();
+                if (data && data.custom_rate) {
+                    document.getElementById('adminCustomRateInput').value = parseFloat(data.custom_rate);
+                }
+            } catch(e) {}
+        }
+
+        function selectRateType(type, skipSave) {
+            adminRateType = type;
+
+            // Map rate type values to their button IDs
+            var idMap = { 'dolar': 'rateTypeDolar', 'euro': 'rateTypeEuro', 'personalizada': 'rateTypeCustom' };
+
+            // Toggle active class on all rate buttons
+            for (var key in idMap) {
+                var el = document.getElementById(idMap[key]);
+                if (el) el.classList.toggle('active', key === type);
+            }
+
+            // Show/hide custom rate input
+            var customRow = document.getElementById('adminCustomRateRow');
+            if (type === 'personalizada') {
+                customRow.classList.add('visible');
+            } else {
+                customRow.classList.remove('visible');
+            }
+
+            updateAdminRateDisplay();
+        }
+
+        function updateAdminRateDisplay() {
+            var display = document.getElementById('adminRateDisplay');
+            if (!display) return;
+            var rateLabel = CURRENT_RATE > 0 ? ('Bs. ' + CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2})) : 'No disponible';
+            var typeLabel = adminRateType === 'dolar' ? 'USD (D\u00F3lar)' : (adminRateType === 'euro' ? 'EUR (Euro)' : 'Personalizada');
+            display.innerHTML = 'Tasa actual: <strong>' + rateLabel + '</strong> &middot; Tipo: ' + typeLabel + (RATE_DATE ? ' &middot; ' + RATE_DATE : '');
+        }
+
+        function renderAdminProductsTable() {
+            var tbody = document.getElementById('adminProductsTableBody');
+            if (!tbody) return;
+            var html = '';
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                var p = PRODUCTS[i];
+                var currentPrice = adminTempPrices[p.id] !== undefined ? adminTempPrices[p.id] : (p.price || 0);
+                var bsPreview = CURRENT_RATE > 0 ? formatBs(currentPrice, CURRENT_RATE) : '—';
+                html += '<tr data-admin-product="' + p.id + '">' +
+                    '<td>' + p.name + '<br><small style="color:var(--text-light);">' + p.cat_label + '</small></td>' +
+                    '<td><input class="price-input-usd" type="number" step="0.01" min="0" value="' + currentPrice.toFixed(2) + '" onchange="onAdminPriceChange(\'' + p.id + '\', this.value)" oninput="previewAdminBs(\'' + p.id + '\', this.value)"/></td>' +
+                    '<td><span class="price-bs-display" id="adminBs_' + p.id + '">' + bsPreview + '</span></td>' +
+                    '</tr>';
+            }
+            tbody.innerHTML = html;
+        }
+
+        function onAdminPriceChange(pid, val) {
+            var num = parseFloat(val);
+            if (isNaN(num) || num < 0) num = 0;
+            adminTempPrices[pid] = num;
+        }
+
+        function previewAdminBs(pid, val) {
+            var num = parseFloat(val);
+            if (isNaN(num) || num < 0) num = 0;
+            adminTempPrices[pid] = num;
+            var el = document.getElementById('adminBs_' + pid);
+            if (el && CURRENT_RATE > 0) {
+                el.textContent = formatBs(num, CURRENT_RATE);
+            }
+        }
+
+        function filterAdminProducts() {
+            var search = document.getElementById('adminProductSearch').value.toLowerCase().trim();
+            var rows = document.querySelectorAll('[data-admin-product]');
+            for (var i = 0; i < rows.length; i++) {
+                var name = rows[i].querySelector('td').textContent.toLowerCase();
+                rows[i].style.display = (!search || name.indexOf(search) !== -1) ? '' : 'none';
+            }
+        }
+
+        /* ── Save all changes to Supabase ── */
+        async function saveAdminChanges() {
+            var btn = document.getElementById('btnAdminSave');
+            var status = document.getElementById('adminSaveStatus');
+            btn.disabled = true;
+            status.textContent = 'Guardando...';
+            status.style.color = 'var(--text-light)';
+
+            try {
+                // 1) Save rate config
+                var customRate = 0;
+                if (adminRateType === 'personalizada') {
+                    customRate = parseFloat(document.getElementById('adminCustomRateInput').value) || 0;
+                }
+
+                var { error: configErr } = await supabase
+                    .from('config')
+                    .update({
+                        rate_type: adminRateType,
+                        custom_rate: customRate,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', 1);
+
+                if (configErr) throw configErr;
+
+                // 2) Save product prices
+                var priceUpdates = [];
+                for (var pid in adminTempPrices) {
+                    priceUpdates.push({
+                        product_id: pid,
+                        price: adminTempPrices[pid],
+                        updated_at: new Date().toISOString()
+                    });
+                }
+
+                if (priceUpdates.length > 0) {
+                    var { error: prodErr } = await supabase
+                        .from('products')
+                        .upsert(priceUpdates, { onConflict: 'product_id' });
+
+                    if (prodErr) throw prodErr;
+
+                    // Update local PRODUCTS array
+                    for (var i = 0; i < priceUpdates.length; i++) {
+                        for (var j = 0; j < PRODUCTS.length; j++) {
+                            if (PRODUCTS[j].id === priceUpdates[i].product_id) {
+                                PRODUCTS[j].price = priceUpdates[i].price;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // 3) Apply rate change
+                if (adminRateType === 'personalizada' && customRate > 0) {
+                    CURRENT_RATE = customRate;
+                    RATE_DATE = 'Personalizada';
+                } else if (adminRateType === 'euro') {
+                    await new Promise(function(resolve) {
+                        fetch('https://open.er-api.com/v6/latest/EUR')
+                            .then(function(r){ return r.json(); })
+                            .then(function(data){
+                                if (data && data.rates && data.rates.VES) {
+                                    CURRENT_RATE = getEffectiveRate(data.rates.VES, 'EUR');
+                                    RATE_DATE = new Date(data.time_last_update_utc).toLocaleDateString('es-VE') + ' (EUR)';
+                                }
+                                resolve();
+                            })
+                            .catch(function(){ resolve(); });
+                    });
+                } else if (adminRateType === 'dolar') {
+                    await new Promise(function(resolve) {
+                        fetch('https://open.er-api.com/v6/latest/USD')
+                            .then(function(r){ return r.json(); })
+                            .then(function(data){
+                                if (data && data.rates && data.rates.VES) {
+                                    CURRENT_RATE = getEffectiveRate(data.rates.VES, 'USD');
+                                    if (data.time_last_update_utc) {
+                                        RATE_DATE = new Date(data.time_last_update_utc).toLocaleDateString('es-VE');
+                                    }
+                                }
+                                resolve();
+                            })
+                            .catch(function(){ resolve(); });
+                    });
+                }
+
+                // 4) Re-render everything
+                renderProductsWithPrices(CURRENT_RATE);
+                showRateBadge(CURRENT_RATE);
+                updateAdminRateDisplay();
+                renderAdminProductsTable();
+
+                status.textContent = '\u2705 Cambios guardados correctamente';
+                status.style.color = '#2d8a4e';
+                adminTempPrices = {};
+
+            } catch(e) {
+                console.error('Save error:', e);
+                status.textContent = '\u274C Error al guardar: ' + (e.message || 'Intente de nuevo');
+                status.style.color = '#e63946';
+            }
+
+            btn.disabled = false;
         }
 
     </script>
