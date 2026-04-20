@@ -2918,8 +2918,22 @@
             }
             if (!p) return;
 
-            var BASE_URL = 'https://newjosetbj2005-cyber.github.io/Actualizaciones-Catalogo-Productos/';
-            var shareUrl = BASE_URL + '#producto=' + encodeURIComponent(pid);
+            // ── URL de regreso al catálogo (deep link al producto) ──
+            var CATALOG_URL = 'https://newjosetbj2005-cyber.github.io/Actualizaciones-Catalogo-Productos/';
+            var backUrl = CATALOG_URL + '#producto=' + encodeURIComponent(pid);
+
+            // ── Edge Function de Supabase: genera las meta OG para crawlers ──
+            // 🔧 REEMPLAZA "TU_PROYECTO" con el ID real de tu proyecto en Supabase
+            var EDGE_BASE = 'veqoslxoezvtsqamvpdm';
+            var shortDesc = p.desc ? p.desc.substring(0, 140) : 'Producto de Ferretería Golden Gray';
+            var imgUrl = (p.imgs && p.imgs[0]) ? p.imgs[0] : (p.img || '');
+            var shareUrl = EDGE_BASE
+                + '?id='   + encodeURIComponent(pid)
+                + '&t='    + encodeURIComponent(p.name)
+                + '&d='    + encodeURIComponent(shortDesc)
+                + '&i='    + encodeURIComponent(imgUrl)
+                + '&back=' + encodeURIComponent(backUrl);
+
             var shareTitle = p.name + ' — Ferretería Golden Gray';
             var shareText = '¡Mira este producto en Ferretería Golden Gray! 🛒\n' + p.name;
 
