@@ -16,7 +16,7 @@
     <meta property="og:title" content="Ferretería Golden Gray - 2026">
     <meta property="og:description" content="Descubre nuestra amplia gama de soluciones ferreteras para la construcción de estructuras con materiales de alta calidad.">
     <meta property="og:image" content="https://i.ibb.co/0jfHk4Hg/Golden-Gray-img-portada.jpg">
-    <meta property="og:url" content="https://newjosetbj2005-cyber.github.io/Actualizaciones-Catalogo-Productos/">
+    <meta property="og:url" content="https://newjosetbj2005-cyber.github.io/catalogo-interactivo-2026/">
     <meta property="og:type" content="website">
 
     <!-- Metaetiquetas de Twitter Cards -->
@@ -24,7 +24,7 @@
     <meta name="twitter:title" content="Ferretería Golden Gray - 2026">
     <meta name="twitter:description" content="Descubre nuestra amplia gama de soluciones ferreteras para la construcción de estructuras con materiales de alta calidad.">
     <meta name="twitter:image" content="https://i.ibb.co/0jfHk4Hg/Golden-Gray-img-portada.jpg">
-    <meta name="twitter:url" content="https://newjosetbj2005-cyber.github.io/Actualizaciones-Catalogo-Productos/">
+    <meta name="twitter:url" content="https://newjosetbj2005-cyber.github.io/catalogo-interactivo-2026/">
     
     <style>
         :root {
@@ -2536,6 +2536,79 @@
 
     <div id="cartToast"></div>
 
+    <!-- ══ MODAL LOGIN ADMIN ══ -->
+    <div class="admin-login-overlay" id="adminLoginOverlay" onclick="closeAdminLogin(event)">
+        <div class="admin-login-modal">
+            <div class="admin-login-header">
+                <h3>&#x1F512; Acceso Administrador</h3>
+                <button class="map-modal-close" onclick="closeAdminLogin(null)">&#x2715;</button>
+            </div>
+            <div class="admin-login-body">
+                <div>
+                    <label>Contrase&#xF1;a de administrador</label>
+                    <input type="password" id="adminPasswordInput" placeholder="Ingrese la contrase&#xF1;a" onkeydown="if(event.key==='Enter')attemptAdminLogin()"/>
+                </div>
+                <div class="admin-login-error" id="adminLoginError">Contrase&#xF1;a incorrecta</div>
+                <button class="admin-login-btn" onclick="attemptAdminLogin()">Ingresar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ PANEL ADMIN COMPLETO ══ -->
+    <div class="admin-panel-overlay" id="adminPanelOverlay" onclick="closeAdminPanel(event)">
+        <div class="admin-panel" onclick="event.stopPropagation()">
+            <div class="admin-panel-header">
+                <h3>&#x2699;&#xFE0F; Panel de Administraci&#xF3;n</h3>
+                <button class="admin-panel-close" onclick="closeAdminPanel(null)">&#x2715;</button>
+            </div>
+
+            <!-- Sección de Tasa -->
+            <div class="admin-rate-section">
+                <h4>&#x1F4B1; Tipo de Tasa de Cambio</h4>
+                <div class="rate-type-selector">
+                    <button class="rate-type-btn active" id="rateTypeDolar" onclick="selectRateType('dolar')">&#x1F1FA;&#x1F1F8; D&#xF3;lar (USD)</button>
+                    <button class="rate-type-btn" id="rateTypeEuro" onclick="selectRateType('euro')">&#x1F1EA;&#x1F1FA; Euro (EUR)</button>
+                    <button class="rate-type-btn" id="rateTypeCustom" onclick="selectRateType('personalizada')">&#x270F;&#xFE0F; Personalizada</button>
+                </div>
+                <div class="admin-custom-rate-row" id="adminCustomRateRow">
+                    <label>Tasa personalizada (Bs./$):</label>
+                    <input type="number" id="adminCustomRateInput" placeholder="Ej: 95.50" step="0.01" min="0"/>
+                </div>
+                <div class="admin-rate-current" id="adminRateDisplay">
+                    Tasa actual: <strong>Cargando...</strong>
+                </div>
+            </div>
+
+            <!-- Sección de Productos -->
+            <div class="admin-products-section">
+                <h4>&#x1F4E6; Precios de Productos (USD base)</h4>
+                <div class="admin-search-bar">
+                    <input type="text" id="adminProductSearch" placeholder="Buscar producto..." oninput="filterAdminProducts()"/>
+                </div>
+                <div class="price-table-wrap">
+                    <table class="price-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio USD</th>
+                                <th>Precio Bs.</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminProductsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="admin-panel-footer">
+                <div class="admin-save-status" id="adminSaveStatus"></div>
+                <button class="btn-admin-logout" onclick="adminLogout()">Cerrar Sesi&#xF3;n</button>
+                <button class="btn-admin-save" id="btnAdminSave" onclick="saveAdminChanges()">&#x1F4BE; Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ══ MODAL MAPA ══ -->
     <div class="map-modal-overlay" id="mapModalOverlay" onclick="closeMapModal(event)">
         <div class="map-modal">
@@ -2585,6 +2658,8 @@
 
         window.addEventListener('DOMContentLoaded', function() {
             initializeApp();
+            // ── Deep link: abrir producto directo si hay hash en la URL ──
+            checkDeepLink();
         });
 
 
@@ -2886,6 +2961,44 @@
             if (!toast) return;
             toast.classList.add('visible');
             setTimeout(function() { toast.classList.remove('visible'); }, 2800);
+        }
+
+        /* ══════════════════════════════════════
+        DEEP LINK — abrir producto desde URL
+        ══════════════════════════════════════
+        Detecta ?producto=ID o #producto=ID en la URL y navega
+        directamente a la vista de detalle del producto. */
+        function checkDeepLink() {
+            var pid = null;
+
+            // Intentar leer del hash: #producto=ID
+            var hash = window.location.hash;
+            if (hash && hash.indexOf('producto=') !== -1) {
+                pid = decodeURIComponent(hash.split('producto=')[1].split('&')[0]);
+            }
+
+            // También soportar query string: ?producto=ID
+            if (!pid) {
+                var search = window.location.search;
+                if (search && search.indexOf('producto=') !== -1) {
+                    var match = search.match(/[?&]producto=([^&]+)/);
+                    if (match) pid = decodeURIComponent(match[1]);
+                }
+            }
+
+            if (!pid) return;
+
+            // Verificar que el producto existe
+            var found = false;
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                if (PRODUCTS[i].id === pid) { found = true; break; }
+            }
+            if (!found) return;
+
+            // Pequeño delay para que la animación de página esté lista
+            setTimeout(function() {
+                showProduct(pid);
+            }, 120);
         }
 
         function initializeApp() {
