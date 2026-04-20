@@ -1127,6 +1127,457 @@
         }
 
         /* ── Panel Admin Completo ── */
+        /* ═══════════════════════════════════════════
+           MODAL SELECTOR DE VARIANTES
+           ═══════════════════════════════════════════ */
+        .variant-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 4000;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+            animation: variantFadeIn 0.2s ease;
+        }
+        .variant-modal-overlay.open { display: flex; }
+        @keyframes variantFadeIn { from { opacity:0 } to { opacity:1 } }
+        .variant-modal {
+            background: #fff;
+            width: 100%;
+            max-width: 480px;
+            max-height: 80vh;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+            animation: variantSlideUp 0.28s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @keyframes variantSlideUp { from { transform: translateY(100%) } to { transform: translateY(0) } }
+        @media (min-width: 600px) {
+            .variant-modal-overlay { align-items: center; padding: 20px; }
+            .variant-modal { border-radius: 20px; max-height: 85vh; }
+            @keyframes variantSlideUp { from { transform: translateY(20px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+        }
+        .variant-modal-header {
+            padding: 18px 22px 12px;
+            border-bottom: 1px solid var(--bg2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .variant-modal-header img {
+            width: 50px; height: 50px; object-fit: cover; border-radius: 10px; background: var(--bg2);
+        }
+        .variant-modal-header-txt { flex: 1; min-width: 0; }
+        .variant-modal-title {
+            font-size: 15px; font-weight: 700; color: var(--text);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .variant-modal-sub {
+            font-size: 11.5px; color: var(--text-light); margin-top: 2px;
+        }
+        .variant-modal-close {
+            width: 32px; height: 32px; border-radius: 50%; border: none;
+            background: var(--bg2); color: var(--text); font-size: 15px;
+            cursor: pointer; display:flex; align-items:center; justify-content:center;
+        }
+        .variant-modal-close:hover { background: var(--primary); }
+        .variant-modal-body {
+            overflow-y: auto;
+            padding: 14px 18px 6px;
+            flex: 1;
+        }
+        .variant-modal-body::-webkit-scrollbar { width: 4px; }
+        .variant-modal-body::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        .variant-type-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin: 2px 2px 10px;
+        }
+        .variant-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 2px solid var(--bg2);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            background: #fff;
+        }
+        .variant-option:hover {
+            border-color: var(--secondary-light);
+            background: #fffaee;
+        }
+        .variant-option.selected {
+            border-color: var(--secondary);
+            background: #fff6e0;
+            box-shadow: 0 2px 10px rgba(184,134,11,0.18);
+        }
+        .variant-option-left {
+            display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;
+        }
+        .variant-radio {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid var(--primary); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .variant-option.selected .variant-radio {
+            border-color: var(--secondary);
+        }
+        .variant-option.selected .variant-radio::after {
+            content: ''; width: 10px; height: 10px; border-radius: 50%;
+            background: var(--secondary);
+        }
+        .variant-option-label {
+            font-size: 14px; font-weight: 600; color: var(--text);
+            overflow: hidden; text-overflow: ellipsis;
+        }
+        .variant-option-price {
+            text-align: right; flex-shrink: 0;
+        }
+        .variant-price-bs {
+            font-size: 14px; font-weight: 700; color: var(--secondary-dark); line-height: 1.1;
+        }
+        .variant-price-usd {
+            font-size: 10.5px; color: var(--text-light); margin-top: 1px;
+        }
+        .variant-modal-footer {
+            padding: 14px 18px 18px;
+            border-top: 1px solid var(--bg2);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .variant-qty-wrap {
+            display: flex; align-items: center;
+        }
+        .variant-confirm-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 50px;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: var(--transition);
+        }
+        .variant-confirm-btn:hover:not(:disabled) {
+            background: var(--secondary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(139,101,8,0.3);
+        }
+        .variant-confirm-btn:disabled {
+            opacity: 0.45; cursor: not-allowed;
+        }
+        .variant-confirm-btn svg { width: 16px; height: 16px; }
+
+        /* Botón "Elegir opción" en tarjeta (reemplaza btn-add-cart cuando hay variantes) */
+        .btn-choose-variant {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            height: 34px;
+            padding: 0 12px;
+            border-radius: 50px;
+            background: #fff;
+            color: var(--secondary-dark);
+            border: 2px solid var(--secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            box-shadow: 0 4px 14px rgba(139, 101, 8, 0.2);
+            transition: var(--transition);
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.7);
+        }
+        .product-card:hover .btn-choose-variant {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .btn-choose-variant:hover {
+            background: var(--secondary);
+            color: #fff;
+            transform: scale(1.06) !important;
+        }
+        @media (max-width: 768px) {
+            .btn-choose-variant { opacity: 1; transform: scale(1); }
+        }
+        .btn-choose-variant svg { width: 14px; height: 14px; }
+
+        /* Badge de variantes disponibles en tarjeta */
+        .card-variants-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--secondary-dark);
+            font-weight: 600;
+            background: #fff6e0;
+            padding: 3px 9px;
+            border-radius: 50px;
+            margin-top: 6px;
+            border: 1px solid #f0e0b8;
+        }
+        .card-variants-badge svg { width: 11px; height: 11px; }
+
+        /* Indicador de variante en detalle */
+        .detail-variant-chooser {
+            background: #fff6e0;
+            border: 2px solid var(--secondary-light);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin: 14px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .detail-variant-chooser:hover {
+            background: #fff0cc;
+            transform: translateY(-1px);
+        }
+        .detail-variant-chooser-left { flex: 1; min-width: 0; }
+        .detail-variant-chooser-title {
+            font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px;
+        }
+        .detail-variant-chooser-sub {
+            font-size: 12px; color: var(--text-light);
+        }
+        .detail-variant-chooser-sub.selected {
+            color: var(--secondary-dark); font-weight: 600;
+        }
+        .detail-variant-chooser svg {
+            width: 18px; height: 18px; color: var(--secondary-dark); flex-shrink: 0;
+        }
+
+        /* ═══════════════════════════════════════════
+           ADMIN: PRODUCTOS DESPLEGABLES CON VARIANTES
+           ═══════════════════════════════════════════ */
+        .admin-product-row {
+            border-bottom: 1px solid var(--bg2);
+        }
+        .admin-product-header {
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .admin-product-header:hover { background: var(--bg); }
+        .admin-product-header .caret {
+            width: 22px; height: 22px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-light);
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+        .admin-product-row.expanded .admin-product-header .caret {
+            transform: rotate(90deg);
+            color: var(--secondary);
+        }
+        .admin-product-header .name-block {
+            flex: 1; min-width: 0;
+        }
+        .admin-product-header .pname {
+            font-size: 13px; font-weight: 600; color: var(--text);
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .admin-product-header .pcat {
+            font-size: 10.5px; color: var(--text-light); margin-top: 2px;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .admin-product-header .quick-price {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+            white-space: nowrap;
+            margin-left: 8px;
+        }
+        .admin-product-header .quick-price.range {
+            color: var(--secondary-dark);
+        }
+        .admin-product-body {
+            display: none;
+            padding: 8px 16px 18px 48px;
+            background: var(--bg);
+        }
+        .admin-product-row.expanded .admin-product-body { display: block; }
+        .admin-base-price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            flex-wrap: wrap;
+        }
+        .admin-base-price-row label {
+            font-size: 11.5px; font-weight: 600; color: var(--text-light);
+            min-width: 90px;
+        }
+        .admin-base-price-row input {
+            width: 110px;
+            padding: 7px 12px;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .admin-base-price-row input:focus {
+            outline: none; border-color: var(--secondary);
+        }
+        .admin-base-price-row .bs-preview {
+            font-size: 11.5px; color: var(--text-light);
+        }
+        .admin-variants-section {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--primary);
+        }
+        .admin-variants-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; flex-wrap: wrap; gap: 8px;
+        }
+        .admin-variants-title {
+            font-size: 12px; font-weight: 700; color: var(--text);
+            text-transform: uppercase; letter-spacing: 0.4px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .admin-variants-title .count-pill {
+            background: var(--secondary); color: #fff;
+            border-radius: 50px; padding: 1px 7px;
+            font-size: 10px; font-weight: 700;
+            text-transform: none; letter-spacing: 0;
+        }
+        .admin-add-variant-menu {
+            position: relative;
+        }
+        .admin-add-variant-btn {
+            padding: 6px 12px;
+            border-radius: 50px;
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .admin-add-variant-btn:hover { background: var(--secondary-dark); }
+        .admin-add-variant-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 4px);
+            background: #fff;
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            min-width: 180px;
+            z-index: 50;
+            display: none;
+            overflow: hidden;
+        }
+        .admin-add-variant-dropdown.open { display: block; }
+        .admin-add-variant-dropdown button {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 14px;
+            background: none;
+            border: none;
+            font-size: 12.5px;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .admin-add-variant-dropdown button:hover {
+            background: var(--bg);
+            color: var(--secondary-dark);
+        }
+        .admin-add-variant-dropdown button + button {
+            border-top: 1px solid var(--bg2);
+        }
+        .admin-variant-item {
+            display: grid;
+            grid-template-columns: auto 1fr 120px auto;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 10px;
+            background: #fff;
+            border: 1px solid var(--bg2);
+            border-radius: 10px;
+            margin-bottom: 6px;
+        }
+        .admin-variant-item .drag-hint {
+            color: var(--text-light); font-size: 14px;
+        }
+        .admin-variant-item input[type="text"],
+        .admin-variant-item input[type="number"] {
+            padding: 6px 10px;
+            border: 1px solid var(--bg2);
+            border-radius: 7px;
+            font-size: 12.5px;
+            width: 100%;
+        }
+        .admin-variant-item input:focus {
+            outline: none; border-color: var(--secondary);
+        }
+        .admin-variant-item .del-btn {
+            width: 26px; height: 26px;
+            border: none; background: transparent;
+            color: #b8860b; cursor: pointer;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        .admin-variant-item .del-btn:hover {
+            background: #fde8e8; color: #b8860b;
+        }
+        .admin-variant-item .del-btn svg { width: 14px; height: 14px; }
+        .admin-variants-type-input {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+        }
+        .admin-variants-type-input label {
+            font-size: 11.5px; color: var(--text-light); font-weight: 600;
+            min-width: 90px;
+        }
+        .admin-variants-type-input input {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1px solid var(--primary);
+            border-radius: 7px;
+            font-size: 12.5px;
+        }
+        .admin-variants-empty {
+            padding: 14px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 12px;
+            font-style: italic;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px dashed var(--primary);
+        }
+
         .admin-panel-overlay {
             display: none;
             position: fixed;
@@ -2537,6 +2988,36 @@
     <div id="cartToast"></div>
 
     <!-- ══ MODAL LOGIN ADMIN ══ -->
+    <!-- ══ MODAL SELECTOR DE VARIANTES ══ -->
+    <div class="variant-modal-overlay" id="variantModalOverlay" onclick="closeVariantModal(event)">
+        <div class="variant-modal" onclick="event.stopPropagation()">
+            <div class="variant-modal-header">
+                <img id="variantModalImg" src="" alt=""/>
+                <div class="variant-modal-header-txt">
+                    <div class="variant-modal-title" id="variantModalTitle">Producto</div>
+                    <div class="variant-modal-sub" id="variantModalSub">Selecciona una opción</div>
+                </div>
+                <button class="variant-modal-close" onclick="closeVariantModal(null)">&#x2715;</button>
+            </div>
+            <div class="variant-modal-body" id="variantModalBody">
+                <!-- Opciones se insertan dinámicamente -->
+            </div>
+            <div class="variant-modal-footer">
+                <div class="variant-qty-wrap">
+                    <div class="qty-ctrl">
+                        <button class="qty-btn" onclick="changeVariantModalQty(-1)">&#8722;</button>
+                        <span class="qty-val" id="variantModalQty">1</span>
+                        <button class="qty-btn" onclick="changeVariantModalQty(1)">&#43;</button>
+                    </div>
+                </div>
+                <button class="variant-confirm-btn" id="variantConfirmBtn" onclick="confirmVariantSelection()" disabled>
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                    Añadir al carrito
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="admin-login-overlay" id="adminLoginOverlay" onclick="closeAdminLogin(event)">
         <div class="admin-login-modal">
             <div class="admin-login-header">
@@ -2581,22 +3062,12 @@
 
             <!-- Sección de Productos -->
             <div class="admin-products-section">
-                <h4>&#x1F4E6; Precios de Productos (USD base)</h4>
+                <h4>&#x1F4E6; Productos y Variantes</h4>
                 <div class="admin-search-bar">
                     <input type="text" id="adminProductSearch" placeholder="Buscar producto..." oninput="filterAdminProducts()"/>
                 </div>
-                <div class="price-table-wrap">
-                    <table class="price-table">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Precio USD</th>
-                                <th>Precio Bs.</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminProductsTableBody">
-                        </tbody>
-                    </table>
+                <div class="admin-products-list" id="adminProductsList" style="padding: 0 8px 8px;">
+                    <!-- Productos desplegables se insertan dinámicamente -->
                 </div>
             </div>
 
@@ -3185,27 +3656,73 @@
             track.innerHTML = items + items;
         }
 
+        // Helpers para render de tarjetas con variantes
+
+        // Devuelve el HTML del botón de "añadir al carrito" o "elegir opción" según tenga variantes
+        function getCardActionBtnHtml(pid) {
+            if (hasVariants(pid)) {
+                return '<button class="btn-choose-variant" onclick="event.stopPropagation();openVariantModal(\'' + pid + '\')" title="Elegir opci&#xF3;n">' +
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>' +
+                    'Elegir opci\u00F3n</button>';
+            }
+            return '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span style="font-size:14px;font-weight:900;line-height:1;">+</span> A&#xF1;adir</button>';
+        }
+
+        // Devuelve el HTML de precio para la tarjeta (rango si hay variantes, precio fijo si no)
+        function getCardPriceHtml(product, rate) {
+            var pid = product.id;
+            if (hasVariants(pid)) {
+                var range = getVariantPriceRange(pid);
+                if (!range || rate <= 0) return '';
+                var minBs = formatBs(range.min, rate);
+                if (range.min === range.max) {
+                    return '<div class="card-price">Desde ' + minBs + '</div>';
+                }
+                var maxBs = formatBs(range.max, rate);
+                return '<div class="card-price" style="display:flex;flex-direction:column;line-height:1.15;">' +
+                    '<span style="font-size:10px;color:var(--text-light);font-weight:500;">Rango de precios</span>' +
+                    '<span>' + minBs + ' – ' + maxBs + '</span>' +
+                    '</div>';
+            }
+            if (product.price && product.price > 0 && rate > 0) {
+                return '<div class="card-price">' + formatBs(product.price, rate) + '</div>';
+            }
+            return '';
+        }
+
+        // Badge "N opciones disponibles" para tarjetas con variantes
+        function getCardVariantsBadgeHtml(pid) {
+            if (!hasVariants(pid)) return '';
+            var n = (PRODUCT_VARIANTS[pid] || []).length;
+            var typeLabel = '';
+            if (PRODUCT_VARIANTS[pid][0]) {
+                typeLabel = PRODUCT_VARIANTS[pid][0].type_label || translateVariantType(PRODUCT_VARIANTS[pid][0].variant_type);
+            }
+            return '<div class="card-variants-badge">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>' +
+                n + ' ' + (typeLabel || 'opciones').toLowerCase() + ' disponibles' +
+                '</div>';
+        }
+
         function renderProducts() {
             var grid = document.getElementById('productsGrid');
             var html = '';
             for (var i = 0; i < PRODUCTS.length; i++) {
                 var product = PRODUCTS[i];
                 var imgHtml = product.img ? '<img src="' + product.img + '" alt="' + product.name + '"/>' : '<div class="placeholder-img">Sin imagen<br><small>' + product.id + '</small></div>';
-                var priceHtml = '';
-                if (product.price && product.price > 0 && CURRENT_RATE > 0) {
-                    var bsStr = formatBs(product.price, CURRENT_RATE);
-                    priceHtml = '<div class="card-price">' + bsStr + '</div>';
-                }
+                var priceHtml = getCardPriceHtml(product, CURRENT_RATE);
                 var pid = product.id;
+                var variantsBadge = getCardVariantsBadgeHtml(pid);
                 html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
                     '<div class="card-img">' + imgHtml +
-                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span style="font-size:14px;font-weight:900;line-height:1;">+</span> A&#xF1;adir</button>' +
+                    getCardActionBtnHtml(pid) +
                     '</div>' +
                     '<div class="card-body">' +
                     '<span class="card-cat">' + product.cat_label + '</span>' +
                     '<h3 class="card-name">' + product.name + '</h3>' +
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
+                    variantsBadge +
                     '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
                     '<div class="card-actions">' +
                     '<button class="card-btn" style="flex:1;">Ver Detalles</button>' +
@@ -3371,22 +3888,58 @@
             var nextArrow = images.length > 1 ? '<button class="carousel-arrow next" id="carArrowNext" onclick="slideArrow(1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>' : '';
 
             var priceDetailHtml = '';
-            if (p.price && p.price > 0 && CURRENT_RATE > 0) {
+            if (hasVariants(p.id)) {
+                var range = getVariantPriceRange(p.id);
+                if (range && CURRENT_RATE > 0) {
+                    if (range.min === range.max) {
+                        priceDetailHtml = '<div class="detail-price-block">' +
+                            '<div class="detail-price-bs">Desde ' + formatBs(range.min, CURRENT_RATE) + '</div>' +
+                            '</div>';
+                    } else {
+                        priceDetailHtml = '<div class="detail-price-block">' +
+                            '<div style="font-size:11px;color:var(--text-light);font-weight:500;margin-bottom:2px;">Precio según opción</div>' +
+                            '<div class="detail-price-bs">' + formatBs(range.min, CURRENT_RATE) + ' – ' + formatBs(range.max, CURRENT_RATE) + '</div>' +
+                            '</div>';
+                    }
+                }
+            } else if (p.price && p.price > 0 && CURRENT_RATE > 0) {
                 var bsDetail = formatBs(p.price, CURRENT_RATE);
                 priceDetailHtml = '<div class="detail-price-block">' +
                     '<div class="detail-price-bs">' + bsDetail + '</div>' +
                     '</div>';
             }
 
+            // Indicador de selector de variantes en vista detalle
+            var variantChooserHtml = '';
+            if (hasVariants(p.id)) {
+                var vars = PRODUCT_VARIANTS[p.id];
+                var typeLab = vars[0].type_label || translateVariantType(vars[0].variant_type);
+                variantChooserHtml = '<div class="detail-variant-chooser" onclick="openVariantModal(\'' + p.id + '\')">' +
+                    '<div class="detail-variant-chooser-left">' +
+                    '<div class="detail-variant-chooser-title">Elegir ' + typeLab.toLowerCase() + '</div>' +
+                    '<div class="detail-variant-chooser-sub">' + vars.length + ' opciones disponibles · toca para seleccionar</div>' +
+                    '</div>' +
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 18l6-6-6-6"/></svg>' +
+                    '</div>';
+            }
+
             // Elemento combinado: contador izquierda + botón carrito derecha
-            var detailQtyHtml = '<div class="detail-qty-cart-combined">' +
-                '<div class="detail-qty-section">' +
-                '<div class="qty-ctrl"><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',-1)">&#8722;</button><span class="qty-val" id="detailQty_' + p.id + '">1</span><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',1)">&#43;</button></div>' +
-                '</div>' +
-                '<button class="btn-add-cart-detail" onclick="addToCartFromDetail(\'' + p.id + '\')">' +
-                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg>' +
-                'A&#xF1;adir al carrito</button>' +
-                '</div>';
+            // Si el producto tiene variantes, el contador no aplica (se pide en el modal)
+            var detailQtyHtml;
+            if (hasVariants(p.id)) {
+                detailQtyHtml = '<button class="btn-add-cart-detail" style="width:100%;" onclick="openVariantModal(\'' + p.id + '\')">' +
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>' +
+                    'Elegir opci\u00F3n y a\u00F1adir</button>';
+            } else {
+                detailQtyHtml = '<div class="detail-qty-cart-combined">' +
+                    '<div class="detail-qty-section">' +
+                    '<div class="qty-ctrl"><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',-1)">&#8722;</button><span class="qty-val" id="detailQty_' + p.id + '">1</span><button class="qty-btn" onclick="changeDetailQty(\'' + p.id + '\',1)">&#43;</button></div>' +
+                    '</div>' +
+                    '<button class="btn-add-cart-detail" onclick="addToCartFromDetail(\'' + p.id + '\')">' +
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-8.9-5h7.45c.75 0 1.41-.41 1.75-1.03l3.24-5.88A1 1 0 0019.56 5H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.83c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63z"/></svg>' +
+                    'A&#xF1;adir al carrito</button>' +
+                    '</div>';
+            }
 
             // Botón "Comprar Ahora" con mensaje WhatsApp
             var buyNowQty = 1; // se leerá dinámicamente en el onclick
@@ -3427,6 +3980,7 @@
                     '<h1 class="detail-name">' + p.name + '</h1>' +
                     '<p class="detail-desc">' + p.desc + '</p>' +
                     priceDetailHtml +
+                    variantChooserHtml +
                     '<p class="specs-title">Especificaciones</p>' +
                     '<table class="specs-table"><thead><tr><th>Caracter&#xED;stica</th><th>Valor</th></tr></thead><tbody>' + specsRows + '</tbody></table>' +
                     detailQtyHtml +
@@ -3575,21 +4129,19 @@
                 var imgHtml = product.img
                     ? '<img src="' + product.img + '" alt="' + product.name + '"/>'
                     : '<div class="placeholder-img">Sin imagen<br><small>' + product.id + '</small></div>';
-                var priceHtml = '';
-                if (product.price && product.price > 0 && rate > 0) {
-                    var bsStr = formatBs(product.price, rate);
-                    priceHtml = '<div class="card-price">' + bsStr + '</div>';
-                }
+                var priceHtml = getCardPriceHtml(product, rate);
                 var pid = product.id;
+                var variantsBadge = getCardVariantsBadgeHtml(pid);
                 html += '<div class="product-card" data-category="' + product.category + '" onclick="showProduct(\'' + pid + '\')">' +
                     '<div class="card-img">' + imgHtml +
-                    '<button class="btn-add-cart" onclick="event.stopPropagation();addToCartById(\'' + pid + '\')" title="A&#xF1;adir al carrito"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg><span style="font-size:14px;font-weight:900;line-height:1;">+</span> A&#xF1;adir</button>' +
+                    getCardActionBtnHtml(pid) +
                     '</div>' +
                     '<div class="card-body">' +
                     '<span class="card-cat">' + product.cat_label + '</span>' +
                     '<h3 class="card-name">' + product.name + '</h3>' +
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
+                    variantsBadge +
                     '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
                     '<div class="card-actions">' +
                     '<button class="card-btn" style="flex:1;">Ver Detalles</button>' +
@@ -3635,10 +4187,27 @@
         SISTEMA DE CARRITO
         ══════════════════════════════════════ */
 
-        var cart = {}; // { productId: qty }
+        // Carrito — cada línea es única por (producto + variante)
+        // cartKey = productId o productId + '::' + variantId
+        // value  = { pid, qty, variantId, variantLabel, variantTypeLabel, price }
+        var cart = {};
         var cartDeleteMode = false;
-        var cartMarked = {}; // { productId: true }
+        var cartMarked = {}; // { cartKey: true }
         var cartPanelOpen = false;
+
+        // Variantes por producto — cargadas desde Supabase:
+        // PRODUCT_VARIANTS[pid] = [{ id, variant_type, type_label, label, price, sort_order }, ...]
+        var PRODUCT_VARIANTS = {};
+
+        // Estado del modal selector de variantes
+        var variantModalState = {
+            pid: null,
+            selectedId: null,
+            selectedLabel: null,
+            selectedPrice: 0,
+            selectedTypeLabel: null,
+            qty: 1
+        };
 
         // Mostrar/ocultar botón flotante del carrito según página
         function updateCartBtnVisibility() {
@@ -3667,7 +4236,7 @@
 
         function getCartItemCount() {
             var total = 0;
-            for (var id in cart) { if (cart[id] > 0) total += cart[id]; }
+            for (var key in cart) { if (cart[key] && cart[key].qty > 0) total += cart[key].qty; }
             return total;
         }
 
@@ -3682,10 +4251,12 @@
 
         function getCartTotals() {
             var totalUsd = 0;
-            for (var id in cart) {
-                if (cart[id] > 0) {
-                    var p = getProductById(id);
-                    if (p && p.price) totalUsd += p.price * cart[id];
+            for (var key in cart) {
+                var item = cart[key];
+                if (item && item.qty > 0) {
+                    // El precio del ítem ya está definido (variante elegida o precio base del producto)
+                    var unitPrice = item.price || 0;
+                    totalUsd += unitPrice * item.qty;
                 }
             }
             var totalBs = CURRENT_RATE > 0 ? totalUsd * CURRENT_RATE : 0;
@@ -3699,15 +4270,57 @@
             return null;
         }
 
+        // Helpers de variantes
+        function hasVariants(pid) {
+            return PRODUCT_VARIANTS[pid] && PRODUCT_VARIANTS[pid].length > 0;
+        }
+
+        function getVariantsSorted(pid) {
+            var arr = PRODUCT_VARIANTS[pid] || [];
+            return arr.slice().sort(function(a,b){
+                return (a.sort_order || 0) - (b.sort_order || 0);
+            });
+        }
+
+        // Devuelve el rango de precios USD para un producto con variantes: { min, max }
+        function getVariantPriceRange(pid) {
+            var vars = PRODUCT_VARIANTS[pid] || [];
+            if (vars.length === 0) return null;
+            var min = Infinity, max = 0;
+            for (var i = 0; i < vars.length; i++) {
+                var pr = parseFloat(vars[i].price) || 0;
+                if (pr > 0) {
+                    if (pr < min) min = pr;
+                    if (pr > max) max = pr;
+                }
+            }
+            if (min === Infinity) return null;
+            return { min: min, max: max };
+        }
+
+        // Genera la clave única de carrito (producto + variante o solo producto)
+        function makeCartKey(pid, variantId) {
+            return variantId ? (pid + '::' + variantId) : pid;
+        }
+
         function addToCartById(pid) {
             var p = getProductById(pid);
             if (!p) return;
-            var qty = cart[pid] || 0;
-            // Si la cantidad en tarjeta es > 0, usa esa, sino añade 1
+            // Si el producto tiene variantes → abrir modal selector
+            if (hasVariants(pid)) {
+                openVariantModal(pid);
+                return;
+            }
+            // Producto sin variantes: flujo clásico
             var cardQtyEl = document.getElementById('cardQty_' + pid);
             var cardQty = cardQtyEl ? parseInt(cardQtyEl.textContent) || 0 : 0;
             var addQty = cardQty > 0 ? cardQty : 1;
-            cart[pid] = qty + addQty;
+            var key = makeCartKey(pid, null);
+            if (!cart[key]) {
+                cart[key] = { pid: pid, qty: 0, variantId: null, variantLabel: null, variantTypeLabel: null, price: p.price || 0 };
+            }
+            cart[key].qty += addQty;
+            cart[key].price = p.price || 0; // refrescar por si cambió
             syncCardQtyDisplays();
             updateCartBadge();
             renderCartItems();
@@ -3717,13 +4330,135 @@
         function addToCartFromDetail(pid) {
             var p = getProductById(pid);
             if (!p) return;
+            // Si el producto tiene variantes → abrir modal selector
+            if (hasVariants(pid)) {
+                openVariantModal(pid);
+                return;
+            }
             var detailQtyEl = document.getElementById('detailQty_' + pid);
             var qty = detailQtyEl ? parseInt(detailQtyEl.textContent) || 0 : 0;
             var addQty = qty > 0 ? qty : 1;
-            cart[pid] = (cart[pid] || 0) + addQty;
+            var key = makeCartKey(pid, null);
+            if (!cart[key]) {
+                cart[key] = { pid: pid, qty: 0, variantId: null, variantLabel: null, variantTypeLabel: null, price: p.price || 0 };
+            }
+            cart[key].qty += addQty;
+            cart[key].price = p.price || 0;
             updateCartBadge();
             renderCartItems();
             showCartToast('\u2705 ' + p.name.substring(0,30) + ' a\xF1adido al carrito');
+        }
+
+        /* ══════════════════════════════════════
+           MODAL SELECTOR DE VARIANTES
+           ══════════════════════════════════════ */
+        function openVariantModal(pid) {
+            var p = getProductById(pid);
+            if (!p) return;
+            var vars = getVariantsSorted(pid);
+            if (vars.length === 0) return;
+
+            variantModalState.pid = pid;
+            variantModalState.selectedId = null;
+            variantModalState.selectedLabel = null;
+            variantModalState.selectedPrice = 0;
+            variantModalState.selectedTypeLabel = null;
+            variantModalState.qty = 1;
+
+            // Header
+            document.getElementById('variantModalImg').src = p.img || '';
+            document.getElementById('variantModalTitle').textContent = p.name;
+
+            // Tipo (usa type_label del primer variant; todas deberían compartirlo dentro del mismo producto)
+            var typeLabel = vars[0].type_label || translateVariantType(vars[0].variant_type);
+            document.getElementById('variantModalSub').textContent = 'Selecciona ' + typeLabel.toLowerCase();
+
+            // Opciones
+            var html = '<div class="variant-type-label">' + typeLabel + '</div>';
+            for (var i = 0; i < vars.length; i++) {
+                var v = vars[i];
+                var price = parseFloat(v.price) || 0;
+                var bsStr = (price > 0 && CURRENT_RATE > 0) ? formatBs(price, CURRENT_RATE) : '—';
+                var usdStr = price > 0 ? ('$' + price.toFixed(2)) : '';
+                html += '<div class="variant-option" data-vid="' + v.id + '" data-price="' + price + '" data-label="' + escapeAttr(v.label) + '" data-typelabel="' + escapeAttr(typeLabel) + '" onclick="selectVariantInModal(this)">' +
+                    '<div class="variant-option-left">' +
+                    '<div class="variant-radio"></div>' +
+                    '<div class="variant-option-label">' + v.label + '</div>' +
+                    '</div>' +
+                    '<div class="variant-option-price">' +
+                    '<div class="variant-price-bs">' + bsStr + '</div>' +
+                    (usdStr ? '<div class="variant-price-usd">' + usdStr + '</div>' : '') +
+                    '</div>' +
+                    '</div>';
+            }
+            document.getElementById('variantModalBody').innerHTML = html;
+            document.getElementById('variantModalQty').textContent = '1';
+            document.getElementById('variantConfirmBtn').disabled = true;
+            document.getElementById('variantModalOverlay').classList.add('open');
+        }
+
+        function closeVariantModal(event) {
+            if (event === null || event.target === document.getElementById('variantModalOverlay')) {
+                document.getElementById('variantModalOverlay').classList.remove('open');
+            }
+        }
+
+        function selectVariantInModal(el) {
+            var all = document.querySelectorAll('#variantModalBody .variant-option');
+            for (var i = 0; i < all.length; i++) all[i].classList.remove('selected');
+            el.classList.add('selected');
+            variantModalState.selectedId = el.dataset.vid;
+            variantModalState.selectedLabel = el.dataset.label;
+            variantModalState.selectedTypeLabel = el.dataset.typelabel;
+            variantModalState.selectedPrice = parseFloat(el.dataset.price) || 0;
+            document.getElementById('variantConfirmBtn').disabled = false;
+        }
+
+        function changeVariantModalQty(delta) {
+            var el = document.getElementById('variantModalQty');
+            var v = parseInt(el.textContent) || 1;
+            v = Math.max(1, v + delta);
+            el.textContent = v;
+            variantModalState.qty = v;
+        }
+
+        function confirmVariantSelection() {
+            var s = variantModalState;
+            if (!s.pid || !s.selectedId) return;
+            var p = getProductById(s.pid);
+            if (!p) return;
+            var key = makeCartKey(s.pid, s.selectedId);
+            if (!cart[key]) {
+                cart[key] = {
+                    pid: s.pid, qty: 0,
+                    variantId: s.selectedId,
+                    variantLabel: s.selectedLabel,
+                    variantTypeLabel: s.selectedTypeLabel,
+                    price: s.selectedPrice
+                };
+            }
+            cart[key].qty += (s.qty || 1);
+            cart[key].price = s.selectedPrice; // refresca precio por si cambió
+            updateCartBadge();
+            renderCartItems();
+            closeVariantModal(null);
+            showCartToast('\u2705 ' + p.name.substring(0,24) + ' (' + s.selectedLabel + ') a\xF1adido');
+        }
+
+        function translateVariantType(t) {
+            if (!t) return 'Opción';
+            var map = {
+                'medidas': 'Medida',
+                'colores': 'Color',
+                'tamaños': 'Tamaño',
+                'tamanos': 'Tamaño',
+                'custom': 'Opción'
+            };
+            return map[t] || (t.charAt(0).toUpperCase() + t.slice(1));
+        }
+
+        function escapeAttr(s) {
+            return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         }
 
         function changeCardQty(pid, delta) {
@@ -3732,10 +4467,12 @@
             var val = parseInt(el.textContent) || 0;
             val = Math.max(0, val + delta);
             el.textContent = val;
-            // Si ya está en carrito, actualizar también el carrito
-            if (cart[pid] !== undefined && cart[pid] > 0) {
-                cart[pid] = Math.max(0, (cart[pid] || 0) + delta);
-                if (cart[pid] === 0) delete cart[pid];
+            // Contador de tarjeta solo aplica a productos SIN variantes
+            if (hasVariants(pid)) return;
+            var key = makeCartKey(pid, null);
+            if (cart[key]) {
+                cart[key].qty = Math.max(0, cart[key].qty + delta);
+                if (cart[key].qty === 0) delete cart[key];
                 updateCartBadge();
                 renderCartItems();
             }
@@ -3747,10 +4484,12 @@
             var val = parseInt(el.textContent) || 1;
             val = Math.max(1, val + delta);
             el.textContent = val;
-            // Si está en carrito, sincronizar
-            if (cart[pid] !== undefined && cart[pid] > 0) {
-                cart[pid] = val;
-                if (cart[pid] <= 0) delete cart[pid];
+            // No sincroniza con carrito si tiene variantes (el qty se decide en el modal)
+            if (hasVariants(pid)) return;
+            var key = makeCartKey(pid, null);
+            if (cart[key]) {
+                cart[key].qty = val;
+                if (cart[key].qty <= 0) delete cart[key];
                 updateCartBadge();
                 renderCartItems();
             }
@@ -3758,13 +4497,49 @@
 
         function syncDetailQtyDisplay(pid) {
             var el = document.getElementById('detailQty_' + pid);
-            if (el) el.textContent = cart[pid] || 1;
+            if (!el) return;
+            // Si no tiene variantes, usa la cantidad del carrito del producto base
+            if (!hasVariants(pid)) {
+                var key = makeCartKey(pid, null);
+                el.textContent = (cart[key] && cart[key].qty > 0) ? cart[key].qty : 1;
+            } else {
+                el.textContent = 1;
+            }
+        }
+
+        function syncCardQtyDisplays() {
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                var pid = PRODUCTS[i].id;
+                var el = document.getElementById('cardQty_' + pid);
+                if (!el) continue;
+                if (hasVariants(pid)) {
+                    el.textContent = 0;
+                } else {
+                    var key = makeCartKey(pid, null);
+                    el.textContent = (cart[key] && cart[key].qty > 0) ? cart[key].qty : 0;
+                }
+            }
+        }
+
+        function changeCartItemQty(cartKey, delta) {
+            if (!cart[cartKey]) return;
+            cart[cartKey].qty = Math.max(0, cart[cartKey].qty + delta);
+            if (cart[cartKey].qty === 0) delete cart[cartKey];
+            syncCardQtyDisplays();
+            updateCartBadge();
+            renderCartItems();
         }
 
         // Actualiza el link del botón "Comprar Ahora" con la cantidad actual del contador
         function updateBuyNowLink(pid, event) {
             var p = getProductById(pid);
             if (!p) return;
+            // Si el producto tiene variantes, interceptar y abrir el modal en vez de ir a WhatsApp
+            if (hasVariants(pid)) {
+                if (event) { event.preventDefault(); event.stopPropagation(); }
+                openVariantModal(pid);
+                return;
+            }
             var qtyEl = document.getElementById('detailQty_' + pid);
             var qty = qtyEl ? (parseInt(qtyEl.textContent) || 1) : 1;
             var sep = '━━━━━━━━━━━━━━━━━━━━━━';
@@ -3786,27 +4561,6 @@
             msg += sep;
             var btn = document.getElementById('detailBuyNowBtn_' + pid);
             if (btn) btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
-        }
-
-        function syncCardQtyDisplays() {
-            for (var i = 0; i < PRODUCTS.length; i++) {
-                var pid = PRODUCTS[i].id;
-                var el = document.getElementById('cardQty_' + pid);
-                if (el) el.textContent = cart[pid] || 0;
-            }
-        }
-
-        function changeCartItemQty(pid, delta) {
-            var current = cart[pid] || 0;
-            var newVal = Math.max(0, current + delta);
-            if (newVal === 0) {
-                delete cart[pid];
-            } else {
-                cart[pid] = newVal;
-            }
-            syncCardQtyDisplays();
-            updateCartBadge();
-            renderCartItems();
         }
 
         function toggleCartPanel() {
@@ -3831,9 +4585,9 @@
             var totalUsdEl = document.getElementById('cartTotalUsd');
             if (!list) return;
 
-            var itemIds = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
+            var itemKeys = Object.keys(cart).filter(function(k){ return cart[k] && cart[k].qty > 0; });
 
-            if (itemIds.length === 0) {
+            if (itemKeys.length === 0) {
                 list.innerHTML = '<div class="cart-empty-msg">' +
                     '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96C5 16.1 6.1 17 7.5 17H19v-2H7.92c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63H17c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1 1 0 0021.46 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>' +
                     '<span>Tu carrito est&#xE1; vac&#xED;o</span></div>';
@@ -3844,32 +4598,43 @@
             }
 
             var html = '';
-            for (var i = 0; i < itemIds.length; i++) {
-                var pid = itemIds[i];
-                var p = getProductById(pid);
+            for (var i = 0; i < itemKeys.length; i++) {
+                var key = itemKeys[i];
+                var item = cart[key];
+                var p = getProductById(item.pid);
                 if (!p) continue;
-                var qty = cart[pid];
-                var isMarked = cartMarked[pid] ? ' marked-delete' : '';
-                var markIcon = cartMarked[pid] ? '&#x2714;' : '&#x2715;';
-                var markTitle = cartMarked[pid] ? 'Desmarcar' : 'Marcar para eliminar';
+                var qty = item.qty;
+                var isMarked = cartMarked[key] ? ' marked-delete' : '';
+                var markIcon = cartMarked[key] ? '&#x2714;' : '&#x2715;';
+                var markTitle = cartMarked[key] ? 'Desmarcar' : 'Marcar para eliminar';
                 var imgTag = p.img ? '<img class="cart-item-img" src="' + p.img + '" alt="' + p.name + '"/>' : '<div class="cart-item-img" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-light);">Sin img</div>';
+
+                var unitPrice = item.price || 0;
                 var priceStr = '';
-                if (p.price && p.price > 0) {
-                    var lineUsd = p.price * qty;
-                    if (CURRENT_RATE > 0) {
-                        priceStr = formatBs(lineUsd, CURRENT_RATE);
-                    }
+                if (unitPrice > 0 && CURRENT_RATE > 0) {
+                    priceStr = formatBs(unitPrice * qty, CURRENT_RATE);
                 }
+
+                // Línea de variante
+                var variantLine = '';
+                if (item.variantLabel) {
+                    variantLine = '<div class="cart-item-variant" style="font-size:11px;color:var(--secondary-dark);font-weight:600;margin-top:2px;">' +
+                        (item.variantTypeLabel || 'Opción') + ': ' + item.variantLabel +
+                        '</div>';
+                }
+
+                var descShort = p.desc ? p.desc.substring(0,60) + '...' : '';
                 var markBtn = cartDeleteMode
-                    ? '<button class="cart-item-mark-del" onclick="toggleMarkItem(\'' + pid + '\')" title="' + markTitle + '">' + markIcon + '</button>'
+                    ? '<button class="cart-item-mark-del" onclick="toggleMarkItem(\'' + key + '\')" title="' + markTitle + '">' + markIcon + '</button>'
                     : '';
-                html += '<div class="cart-item' + isMarked + '" id="cartItem_' + pid + '">' +
+                html += '<div class="cart-item' + isMarked + '" id="cartItem_' + key.replace(/[^a-zA-Z0-9_-]/g,'_') + '">' +
                     imgTag +
                     '<div class="cart-item-info">' +
                     '<div class="cart-item-name">' + p.name + '</div>' +
-                    '<div class="cart-item-desc">' + p.desc.substring(0,60) + '...</div>' +
+                    variantLine +
+                    '<div class="cart-item-desc">' + descShort + '</div>' +
                     '<div class="cart-item-price">' + priceStr + '</div>' +
-                    '<div class="cart-item-qty"><div class="qty-ctrl"><button class="qty-btn" onclick="changeCartItemQty(\'' + pid + '\',-1)">&#8722;</button><span class="qty-val">' + qty + '</span><button class="qty-btn" onclick="changeCartItemQty(\'' + pid + '\',1)">&#43;</button></div></div>' +
+                    '<div class="cart-item-qty"><div class="qty-ctrl"><button class="qty-btn" onclick="changeCartItemQty(\'' + key + '\',-1)">&#8722;</button><span class="qty-val">' + qty + '</span><button class="qty-btn" onclick="changeCartItemQty(\'' + key + '\',1)">&#43;</button></div></div>' +
                     '</div>' +
                     markBtn +
                     '</div>';
@@ -3886,16 +4651,16 @@
             }
             if (totalUsdEl) totalUsdEl.style.display = 'none';
 
-            updateBuyBtn(itemIds.map(function(id){ return getProductById(id); }).filter(Boolean));
+            updateBuyBtn(itemKeys);
         }
 
 
 
-        // ESTRUCTURA DE FACTURA DE PEDIDOS
-        function updateBuyBtn(products) {
+        // ESTRUCTURA DE FACTURA DE PEDIDOS (WhatsApp)
+        function updateBuyBtn(itemKeys) {
             var btn = document.getElementById('btnCartBuy');
             if (!btn) return;
-            if (products.length === 0) {
+            if (!itemKeys || itemKeys.length === 0) {
                 btn.style.opacity = '0.4';
                 btn.style.pointerEvents = 'none';
                 btn.href = '#';
@@ -3905,27 +4670,34 @@
             btn.style.pointerEvents = '';
 
             var totals = getCartTotals();
-            var itemIds = Object.keys(cart).filter(function(id){ return cart[id] > 0; });
             var sep = '━━━━━━━━━━━━━━━━━━━━━━';
             var msg = '🛒 *PEDIDO DE COMPRA*\n';
             msg += sep + '\n\n';
-            for (var i = 0; i < itemIds.length; i++) {
-                var p = getProductById(itemIds[i]);
+            for (var i = 0; i < itemKeys.length; i++) {
+                var key = itemKeys[i];
+                var item = cart[key];
+                if (!item || item.qty <= 0) continue;
+                var p = getProductById(item.pid);
                 if (!p) continue;
-                var qty = cart[itemIds[i]];
-                var lineUsd = p.price ? p.price * qty : 0;
-                var lineBs = (p.price && CURRENT_RATE > 0) ? formatBs(lineUsd, CURRENT_RATE) : '';
+                var qty = item.qty;
+                var unit = item.price || 0;
+                var lineUsd = unit * qty;
+                var lineBs = (unit > 0 && CURRENT_RATE > 0) ? formatBs(lineUsd, CURRENT_RATE) : '';
+
                 msg += '📦 *' + p.name + '*\n';
+                if (item.variantLabel) {
+                    msg += '   🏷️ ' + (item.variantTypeLabel || 'Opción') + ': *' + item.variantLabel + '*\n';
+                }
                 msg += '   🔢 Cantidad: ' + qty + ' unidad' + (qty > 1 ? 'es' : '') + '\n';
-                if (p.price && CURRENT_RATE > 0) {
-                    msg += '   💰 Precio unit.: ' + formatBs(p.price, CURRENT_RATE) + '\n';
+                if (unit > 0 && CURRENT_RATE > 0) {
+                    msg += '   💰 Precio unit.: ' + formatBs(unit, CURRENT_RATE) + '\n';
                     msg += '   💰 Subtotal: ' + lineBs + '\n';
                 }
                 msg += '\n';
             }
             msg += sep + '\n';
             msg += '🧾 *RESUMEN FINAL*\n';
-            msg += '   📦 Productos: ' + itemIds.length + '\n';
+            msg += '   📦 Productos: ' + itemKeys.length + '\n';
             if (CURRENT_RATE > 0) {
                 msg += '   🇻🇪 *Total: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
             }
@@ -3971,11 +4743,11 @@
             if (btnConf) btnConf.style.display = 'none';
         }
 
-        function toggleMarkItem(pid) {
-            if (cartMarked[pid]) {
-                delete cartMarked[pid];
+        function toggleMarkItem(cartKey) {
+            if (cartMarked[cartKey]) {
+                delete cartMarked[cartKey];
             } else {
-                cartMarked[pid] = true;
+                cartMarked[cartKey] = true;
             }
             renderCartItems();
         }
@@ -3983,8 +4755,8 @@
         function confirmDeleteMarked() {
             var count = Object.keys(cartMarked).length;
             if (count === 0) { exitDeleteMode(); renderCartItems(); return; }
-            for (var id in cartMarked) {
-                delete cart[id];
+            for (var key in cartMarked) {
+                delete cart[key];
             }
             cartMarked = {};
             exitDeleteMode();
@@ -4052,10 +4824,14 @@
                             }
                         }
                     }
-                    // Re-render with updated prices
-                    if (CURRENT_RATE > 0) {
-                        renderProductsWithPrices(CURRENT_RATE);
-                    }
+                }
+
+                // Load variants
+                await loadSupabaseVariants();
+
+                // Re-render with updated prices + variants
+                if (CURRENT_RATE > 0) {
+                    renderProductsWithPrices(CURRENT_RATE);
                 }
             } catch(e) {
                 console.error('Supabase load error:', e);
@@ -4213,27 +4989,337 @@
             display.innerHTML = 'Tasa actual: <strong>' + rateLabel + '</strong> &middot; Tipo: ' + typeLabel + (RATE_DATE ? ' &middot; ' + RATE_DATE : '');
         }
 
+        // Estado temporal de edición admin: acumula cambios antes de guardar
+        // adminTempPrices[pid] = nuevoPrecio USD base
+        // adminTempVariants[pid] = [{ id, variant_type, type_label, label, price, sort_order, _new?, _deleted? }]
+        // adminDeletedVariantIds = [uuid, ...] variantes existentes marcadas para borrar
+        var adminTempVariants = {};
+        var adminDeletedVariantIds = [];
+        var adminExpandedPid = null; // id del producto actualmente abierto
+
         function renderAdminProductsTable() {
-            var tbody = document.getElementById('adminProductsTableBody');
-            if (!tbody) return;
+            var wrap = document.getElementById('adminProductsList');
+            if (!wrap) return;
             var html = '';
             for (var i = 0; i < PRODUCTS.length; i++) {
                 var p = PRODUCTS[i];
-                var currentPrice = adminTempPrices[p.id] !== undefined ? adminTempPrices[p.id] : (p.price || 0);
-                var bsPreview = CURRENT_RATE > 0 ? formatBs(currentPrice, CURRENT_RATE) : '—';
-                html += '<tr data-admin-product="' + p.id + '">' +
-                    '<td>' + p.name + '<br><small style="color:var(--text-light);">' + p.cat_label + '</small></td>' +
-                    '<td><input class="price-input-usd" type="number" step="0.01" min="0" value="' + currentPrice.toFixed(2) + '" onchange="onAdminPriceChange(\'' + p.id + '\', this.value)" oninput="previewAdminBs(\'' + p.id + '\', this.value)"/></td>' +
-                    '<td><span class="price-bs-display" id="adminBs_' + p.id + '">' + bsPreview + '</span></td>' +
-                    '</tr>';
+                html += renderAdminProductRow(p);
             }
-            tbody.innerHTML = html;
+            wrap.innerHTML = html;
+
+            // Re-abrir el producto que estaba expandido (si el usuario reabre el panel)
+            if (adminExpandedPid) {
+                var row = wrap.querySelector('[data-admin-product="' + adminExpandedPid + '"]');
+                if (row) row.classList.add('expanded');
+            }
+        }
+
+        function renderAdminProductRow(p) {
+            var pid = p.id;
+            var currentPrice = adminTempPrices[pid] !== undefined ? adminTempPrices[pid] : (p.price || 0);
+
+            // Estado de variantes: si adminTempVariants[pid] existe, usarlo; si no, tomar de PRODUCT_VARIANTS
+            var variants = adminTempVariants[pid];
+            if (!variants) {
+                variants = (PRODUCT_VARIANTS[pid] || []).map(function(v){
+                    return {
+                        id: v.id,
+                        variant_type: v.variant_type,
+                        type_label: v.type_label,
+                        label: v.label,
+                        price: parseFloat(v.price) || 0,
+                        sort_order: v.sort_order || 0
+                    };
+                });
+            }
+            var visibleVariants = variants.filter(function(v){ return !v._deleted; });
+
+            // Header
+            var quickPriceHtml = '';
+            if (visibleVariants.length > 0) {
+                var prices = visibleVariants.map(function(v){ return v.price || 0; }).filter(function(x){ return x > 0; });
+                if (prices.length > 0) {
+                    var minP = Math.min.apply(null, prices), maxP = Math.max.apply(null, prices);
+                    var quickTxt = (minP === maxP) ? ('$' + minP.toFixed(2)) : ('$' + minP.toFixed(2) + ' – $' + maxP.toFixed(2));
+                    quickPriceHtml = '<span class="quick-price range">' + quickTxt + '</span>';
+                } else {
+                    quickPriceHtml = '<span class="quick-price">Sin precio</span>';
+                }
+            } else {
+                quickPriceHtml = '<span class="quick-price">$' + currentPrice.toFixed(2) + '</span>';
+            }
+
+            var html = '<div class="admin-product-row" data-admin-product="' + pid + '">';
+            html += '<div class="admin-product-header" onclick="toggleAdminProductRow(\'' + pid + '\')">' +
+                '<div class="caret"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path d="M9 18l6-6-6-6"/></svg></div>' +
+                '<div class="name-block">' +
+                '<div class="pname">' + escapeAttr(p.name) + '</div>' +
+                '<div class="pcat">' + escapeAttr(p.cat_label) + '</div>' +
+                '</div>' +
+                quickPriceHtml +
+                '</div>';
+
+            // Body (se renderiza pero oculto hasta expandir)
+            html += '<div class="admin-product-body">';
+
+            // Precio base (solo relevante si no hay variantes, pero siempre visible)
+            var bsPreview = CURRENT_RATE > 0 ? formatBs(currentPrice, CURRENT_RATE) : '—';
+            html += '<div class="admin-base-price-row">' +
+                '<label>Precio base USD:</label>' +
+                '<input type="number" step="0.01" min="0" value="' + currentPrice.toFixed(2) + '" onchange="onAdminPriceChange(\'' + pid + '\', this.value)" oninput="previewAdminBs(\'' + pid + '\', this.value)"/>' +
+                '<span class="bs-preview" id="adminBs_' + pid + '">≈ ' + bsPreview + '</span>' +
+                '<span class="bs-preview" style="font-style:italic;margin-left:auto;">' +
+                (visibleVariants.length > 0 ? '(ignorado: hay variantes)' : '') +
+                '</span>' +
+                '</div>';
+
+            // Sección variantes
+            html += '<div class="admin-variants-section">';
+            html += '<div class="admin-variants-header">' +
+                '<div class="admin-variants-title">🏷️ Variantes <span class="count-pill">' + visibleVariants.length + '</span></div>' +
+                '<div class="admin-add-variant-menu">' +
+                '<button class="admin-add-variant-btn" onclick="toggleAddVariantMenu(\'' + pid + '\', event)">+ Agregar</button>' +
+                '<div class="admin-add-variant-dropdown" id="addVarDrop_' + pid + '">' +
+                '<button onclick="addVariantTemplate(\'' + pid + '\', \'medidas\')">📏 Medidas</button>' +
+                '<button onclick="addVariantTemplate(\'' + pid + '\', \'colores\')">🎨 Colores</button>' +
+                '<button onclick="addVariantTemplate(\'' + pid + '\', \'tamaños\')">📐 Tamaños</button>' +
+                '<button onclick="addVariantTemplate(\'' + pid + '\', \'custom\')">✏️ Personalizado</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+
+            // Type label input (solo si hay variantes)
+            if (visibleVariants.length > 0) {
+                var typeLab = visibleVariants[0].type_label || translateVariantType(visibleVariants[0].variant_type);
+                html += '<div class="admin-variants-type-input">' +
+                    '<label>Etiqueta del tipo:</label>' +
+                    '<input type="text" value="' + escapeAttr(typeLab) + '" placeholder="Ej: Medida, Color, Tamaño" onchange="onAdminVariantTypeLabelChange(\'' + pid + '\', this.value)"/>' +
+                    '</div>';
+            }
+
+            // Lista de variantes
+            if (visibleVariants.length === 0) {
+                html += '<div class="admin-variants-empty">Sin variantes. Agrega una usando el botón "+ Agregar".</div>';
+            } else {
+                // Renderizar en el orden actual
+                for (var i = 0; i < variants.length; i++) {
+                    if (variants[i]._deleted) continue;
+                    var v = variants[i];
+                    html += renderAdminVariantItem(pid, i, v);
+                }
+            }
+
+            html += '</div>'; // variants-section
+            html += '</div>'; // body
+            html += '</div>'; // row
+            return html;
+        }
+
+        function renderAdminVariantItem(pid, idx, v) {
+            var priceVal = (v.price || 0).toFixed(2);
+            return '<div class="admin-variant-item" data-vidx="' + idx + '">' +
+                '<span class="drag-hint">⋮⋮</span>' +
+                '<input type="text" placeholder="Ej: 1/2&quot;, Rojo, Grande" value="' + escapeAttr(v.label || '') + '" oninput="onAdminVariantFieldChange(\'' + pid + '\', ' + idx + ', \'label\', this.value)"/>' +
+                '<input type="number" step="0.01" min="0" placeholder="Precio USD" value="' + priceVal + '" oninput="onAdminVariantFieldChange(\'' + pid + '\', ' + idx + ', \'price\', this.value)"/>' +
+                '<button class="del-btn" onclick="deleteAdminVariant(\'' + pid + '\', ' + idx + ')" title="Eliminar variante">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>' +
+                '</button>' +
+                '</div>';
+        }
+
+        function toggleAdminProductRow(pid) {
+            var row = document.querySelector('[data-admin-product="' + pid + '"]');
+            if (!row) return;
+            // Cerrar cualquier otro dropdown de variantes abierto
+            var openDrops = document.querySelectorAll('.admin-add-variant-dropdown.open');
+            for (var i = 0; i < openDrops.length; i++) openDrops[i].classList.remove('open');
+
+            var nowExpanded = !row.classList.contains('expanded');
+            // Permitir múltiples abiertos es útil; pero por UX limpio, cerramos los otros
+            var allRows = document.querySelectorAll('.admin-product-row.expanded');
+            for (var j = 0; j < allRows.length; j++) allRows[j].classList.remove('expanded');
+
+            if (nowExpanded) {
+                row.classList.add('expanded');
+                adminExpandedPid = pid;
+            } else {
+                adminExpandedPid = null;
+            }
+        }
+
+        function toggleAddVariantMenu(pid, event) {
+            if (event) { event.stopPropagation(); event.preventDefault(); }
+            var drop = document.getElementById('addVarDrop_' + pid);
+            if (!drop) return;
+            // Cerrar otros abiertos
+            var others = document.querySelectorAll('.admin-add-variant-dropdown.open');
+            for (var i = 0; i < others.length; i++) {
+                if (others[i].id !== drop.id) others[i].classList.remove('open');
+            }
+            drop.classList.toggle('open');
+        }
+
+        // Cierra dropdowns al hacer click fuera
+        document.addEventListener('click', function(e){
+            if (!e.target.closest || e.target.closest('.admin-add-variant-menu')) return;
+            var open = document.querySelectorAll('.admin-add-variant-dropdown.open');
+            for (var i = 0; i < open.length; i++) open[i].classList.remove('open');
+        });
+
+        function addVariantTemplate(pid, type) {
+            // Cerrar menú
+            var drop = document.getElementById('addVarDrop_' + pid);
+            if (drop) drop.classList.remove('open');
+
+            // Asegurar que adminTempVariants[pid] exista y sea una copia
+            if (!adminTempVariants[pid]) {
+                adminTempVariants[pid] = (PRODUCT_VARIANTS[pid] || []).map(function(v){
+                    return {
+                        id: v.id,
+                        variant_type: v.variant_type,
+                        type_label: v.type_label,
+                        label: v.label,
+                        price: parseFloat(v.price) || 0,
+                        sort_order: v.sort_order || 0
+                    };
+                });
+            }
+
+            var typeLabels = {
+                'medidas': 'Medida',
+                'colores': 'Color',
+                'tamaños': 'Tamaño',
+                'custom': 'Opción'
+            };
+            var typeLabel = typeLabels[type] || 'Opción';
+
+            // Si ya hay variantes, respetar el type_label existente
+            var existingActive = adminTempVariants[pid].filter(function(v){ return !v._deleted; });
+            if (existingActive.length > 0) {
+                typeLabel = existingActive[0].type_label || typeLabel;
+                type = existingActive[0].variant_type || type;
+            }
+
+            // Plantillas iniciales
+            var templates = {
+                'medidas': [
+                    { label: '1/2"', price: 0 },
+                    { label: '3/4"', price: 0 },
+                    { label: '1"', price: 0 }
+                ],
+                'colores': [
+                    { label: 'Blanco', price: 0 },
+                    { label: 'Negro', price: 0 }
+                ],
+                'tamaños': [
+                    { label: 'Pequeño', price: 0 },
+                    { label: 'Mediano', price: 0 },
+                    { label: 'Grande', price: 0 }
+                ],
+                'custom': [
+                    { label: '', price: 0 }
+                ]
+            };
+            var items = existingActive.length === 0 ? templates[type] : [{ label: '', price: 0 }];
+            var startSort = adminTempVariants[pid].length;
+            for (var i = 0; i < items.length; i++) {
+                adminTempVariants[pid].push({
+                    id: null, // nuevo
+                    variant_type: type,
+                    type_label: typeLabel,
+                    label: items[i].label,
+                    price: items[i].price,
+                    sort_order: startSort + i,
+                    _new: true
+                });
+            }
+            // Re-render solo este producto
+            refreshAdminProductRow(pid);
+        }
+
+        function refreshAdminProductRow(pid) {
+            var row = document.querySelector('[data-admin-product="' + pid + '"]');
+            if (!row) return;
+            var wasExpanded = row.classList.contains('expanded');
+            var p = getProductById(pid);
+            if (!p) return;
+            var temp = document.createElement('div');
+            temp.innerHTML = renderAdminProductRow(p);
+            var newRow = temp.firstChild;
+            if (wasExpanded) newRow.classList.add('expanded');
+            row.parentNode.replaceChild(newRow, row);
+        }
+
+        function onAdminVariantFieldChange(pid, idx, field, value) {
+            if (!adminTempVariants[pid] || !adminTempVariants[pid][idx]) return;
+            if (field === 'price') {
+                var num = parseFloat(value);
+                if (isNaN(num) || num < 0) num = 0;
+                adminTempVariants[pid][idx].price = num;
+            } else {
+                adminTempVariants[pid][idx][field] = value;
+            }
+            // No re-render completo; el input ya refleja el cambio. Solo actualizar el quick-price del header.
+            updateAdminHeaderQuickPrice(pid);
+        }
+
+        function onAdminVariantTypeLabelChange(pid, newLabel) {
+            if (!adminTempVariants[pid]) return;
+            for (var i = 0; i < adminTempVariants[pid].length; i++) {
+                adminTempVariants[pid][i].type_label = newLabel;
+            }
+        }
+
+        function deleteAdminVariant(pid, idx) {
+            if (!adminTempVariants[pid] || !adminTempVariants[pid][idx]) return;
+            var v = adminTempVariants[pid][idx];
+            if (v._new) {
+                // Eliminación directa si era nueva
+                adminTempVariants[pid].splice(idx, 1);
+            } else {
+                // Marcar como borrada (se elimina al guardar)
+                v._deleted = true;
+                if (v.id) adminDeletedVariantIds.push(v.id);
+            }
+            refreshAdminProductRow(pid);
+        }
+
+        function updateAdminHeaderQuickPrice(pid) {
+            var row = document.querySelector('[data-admin-product="' + pid + '"]');
+            if (!row) return;
+            var header = row.querySelector('.admin-product-header');
+            if (!header) return;
+            var span = header.querySelector('.quick-price');
+            if (!span) return;
+
+            var variants = adminTempVariants[pid];
+            var currentPrice = adminTempPrices[pid] !== undefined ? adminTempPrices[pid] : ((getProductById(pid) || {}).price || 0);
+
+            if (variants) {
+                var active = variants.filter(function(v){ return !v._deleted; });
+                if (active.length > 0) {
+                    var prices = active.map(function(v){ return v.price || 0; }).filter(function(x){ return x > 0; });
+                    if (prices.length > 0) {
+                        var minP = Math.min.apply(null, prices), maxP = Math.max.apply(null, prices);
+                        span.className = 'quick-price range';
+                        span.textContent = (minP === maxP) ? ('$' + minP.toFixed(2)) : ('$' + minP.toFixed(2) + ' – $' + maxP.toFixed(2));
+                        return;
+                    } else {
+                        span.className = 'quick-price';
+                        span.textContent = 'Sin precio';
+                        return;
+                    }
+                }
+            }
+            span.className = 'quick-price';
+            span.textContent = '$' + currentPrice.toFixed(2);
         }
 
         function onAdminPriceChange(pid, val) {
             var num = parseFloat(val);
             if (isNaN(num) || num < 0) num = 0;
             adminTempPrices[pid] = num;
+            updateAdminHeaderQuickPrice(pid);
         }
 
         function previewAdminBs(pid, val) {
@@ -4242,16 +5328,20 @@
             adminTempPrices[pid] = num;
             var el = document.getElementById('adminBs_' + pid);
             if (el && CURRENT_RATE > 0) {
-                el.textContent = formatBs(num, CURRENT_RATE);
+                el.textContent = '≈ ' + formatBs(num, CURRENT_RATE);
             }
+            updateAdminHeaderQuickPrice(pid);
         }
 
         function filterAdminProducts() {
             var search = document.getElementById('adminProductSearch').value.toLowerCase().trim();
             var rows = document.querySelectorAll('[data-admin-product]');
             for (var i = 0; i < rows.length; i++) {
-                var name = rows[i].querySelector('td').textContent.toLowerCase();
-                rows[i].style.display = (!search || name.indexOf(search) !== -1) ? '' : 'none';
+                var pid = rows[i].dataset.adminProduct;
+                var p = getProductById(pid);
+                if (!p) continue;
+                var txt = (p.name + ' ' + p.cat_label).toLowerCase();
+                rows[i].style.display = (!search || txt.indexOf(search) !== -1) ? '' : 'none';
             }
         }
 
@@ -4309,6 +5399,59 @@
                     }
                 }
 
+                // 2.5) VARIANTES
+                // 2.5.a) Eliminar variantes marcadas para borrar
+                if (adminDeletedVariantIds.length > 0) {
+                    var { error: delErr } = await supabase
+                        .from('product_variants')
+                        .delete()
+                        .in('id', adminDeletedVariantIds);
+                    if (delErr) throw delErr;
+                }
+
+                // 2.5.b) Upsert de variantes nuevas y editadas
+                var variantRows = [];
+                for (var vpid in adminTempVariants) {
+                    var list = adminTempVariants[vpid];
+                    for (var vi = 0; vi < list.length; vi++) {
+                        var v = list[vi];
+                        if (v._deleted) continue;
+                        // Saltar variantes sin label (vacías)
+                        if (!v.label || !String(v.label).trim()) continue;
+
+                        var row = {
+                            product_id: vpid,
+                            variant_type: v.variant_type || 'custom',
+                            type_label: v.type_label || null,
+                            label: String(v.label).trim(),
+                            price: parseFloat(v.price) || 0,
+                            sort_order: vi, // reordena según posición actual
+                            updated_at: new Date().toISOString()
+                        };
+                        if (v.id) row.id = v.id;
+                        variantRows.push(row);
+                    }
+                }
+
+                if (variantRows.length > 0) {
+                    // upsert por id cuando existe; los nuevos usan insert (id auto)
+                    var newRows = variantRows.filter(function(r){ return !r.id; });
+                    var existingRows = variantRows.filter(function(r){ return r.id; });
+
+                    if (newRows.length > 0) {
+                        var { error: insErr } = await supabase
+                            .from('product_variants')
+                            .insert(newRows);
+                        if (insErr) throw insErr;
+                    }
+                    if (existingRows.length > 0) {
+                        var { error: upsErr } = await supabase
+                            .from('product_variants')
+                            .upsert(existingRows, { onConflict: 'id' });
+                        if (upsErr) throw upsErr;
+                    }
+                }
+
                 // 3) Apply rate change
                 if (adminRateType === 'personalizada' && customRate > 0) {
                     CURRENT_RATE = customRate;
@@ -4343,7 +5486,10 @@
                     });
                 }
 
-                // 4) Re-render everything
+                // 4) Recargar variantes desde Supabase (para obtener ids reales de las nuevas)
+                await loadSupabaseVariants();
+
+                // 5) Re-render everything
                 renderProductsWithPrices(CURRENT_RATE);
                 showRateBadge(CURRENT_RATE);
                 updateAdminRateDisplay();
@@ -4352,6 +5498,8 @@
                 status.textContent = '\u2705 Cambios guardados correctamente';
                 status.style.color = '#2d8a4e';
                 adminTempPrices = {};
+                adminTempVariants = {};
+                adminDeletedVariantIds = [];
 
             } catch(e) {
                 console.error('Save error:', e);
@@ -4360,6 +5508,27 @@
             }
 
             btn.disabled = false;
+        }
+
+        /* ── Cargar variantes desde Supabase ── */
+        async function loadSupabaseVariants() {
+            try {
+                var { data, error } = await supabase
+                    .from('product_variants')
+                    .select('*')
+                    .order('sort_order', { ascending: true });
+                if (error) throw error;
+                PRODUCT_VARIANTS = {};
+                if (data && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var v = data[i];
+                        if (!PRODUCT_VARIANTS[v.product_id]) PRODUCT_VARIANTS[v.product_id] = [];
+                        PRODUCT_VARIANTS[v.product_id].push(v);
+                    }
+                }
+            } catch(e) {
+                console.error('Error cargando variantes:', e);
+            }
         }
 
     </script>
