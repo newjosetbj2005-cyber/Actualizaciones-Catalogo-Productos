@@ -548,6 +548,177 @@
             border-color: var(--secondary);
         }
 
+        /* Fila de acciones inferior de la tarjeta: Ver Detalles + botón compartir */
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        /* Botón de compartir en la tarjeta: ícono circular */
+        .btn-share-card {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            padding: 0;
+        }
+        .btn-share-card svg {
+            width: 16px;
+            height: 16px;
+        }
+        .btn-share-card:hover {
+            background: var(--secondary);
+            color: #ffffff;
+            border-color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        /* Botón de compartir en la vista de detalle */
+        .btn-share-detail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: 1.5px solid var(--primary);
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            width: 100%;
+        }
+        .btn-share-detail svg {
+            width: 18px;
+            height: 18px;
+            color: var(--secondary);
+        }
+        .btn-share-detail:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139,101,8,0.15);
+        }
+
+        /* Toast de confirmación al compartir */
+        .share-toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(16px);
+            background: #2d8a4e;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 9999;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+        }
+        .share-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Menú de compartir (fallback escritorio) */
+        .share-menu-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 8000;
+            background: rgba(0,0,0,0.35);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .share-menu-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .share-menu {
+            background: var(--bg2);
+            border-radius: var(--radius) var(--radius) 0 0;
+            padding: 20px 20px 32px;
+            width: 100%;
+            max-width: 480px;
+            transform: translateY(40px);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
+        }
+        .share-menu-overlay.open .share-menu {
+            transform: translateY(0);
+        }
+        .share-menu-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .share-menu-options {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .share-option-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--primary);
+            background: var(--bg);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            transition: var(--transition);
+            min-width: 90px;
+        }
+        .share-option-btn svg { width: 28px; height: 28px; }
+        .share-option-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            transform: translateY(-3px);
+        }
+        .share-menu-cancel {
+            margin-top: 14px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+        .share-menu-cancel:hover { color: var(--text); border-color: var(--text-light); }
+
         /* Página de detalle del producto: sin padding superior, posición relativa */
         #detail {
             padding-top: 0;
@@ -3025,7 +3196,10 @@
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
                     '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
-                    '<button class="card-btn">Ver Detalles</button>' +
+                    '<div class="card-actions">' +
+                    '<button class="card-btn" style="flex:1;">Ver Detalles</button>' +
+                    '<button class="btn-share-card" onclick="event.stopPropagation();shareProduct(\'' + pid + '\',event)" title="Compartir producto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
+                    '</div>' +
                     '</div>' +
                     '</div>';
             }
@@ -3240,6 +3414,10 @@
                     '<table class="specs-table"><thead><tr><th>Caracter&#xED;stica</th><th>Valor</th></tr></thead><tbody>' + specsRows + '</tbody></table>' +
                     detailQtyHtml +
                     addCartDetailHtml +
+                    '<button class="btn-share-detail" onclick="shareProduct(\'' + p.id + '\',event)">' +
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+                    'Compartir Producto' +
+                    '</button>' +
                   '</div>' +
                 '</div>';
 
@@ -3400,11 +3578,13 @@
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
                     '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
-                    '<button class="card-btn">Ver Detalles</button>' +
+                    '<div class="card-actions">' +
+                    '<button class="card-btn" style="flex:1;">Ver Detalles</button>' +
+                    '<button class="btn-share-card" onclick="event.stopPropagation();shareProduct(\'' + pid + '\',event)" title="Compartir producto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>' +
+                    '</div>' +
                     '</div>' +
                     '</div>';
             }
-            //<button class="card-btn">Ver Detalles</button>
 
             grid.innerHTML = html;
             syncCardQtyDisplays();
@@ -4167,6 +4347,212 @@
             btn.disabled = false;
         }
 
+        /* ══════════════════════════════════════
+        SISTEMA DE COMPARTIR PRODUCTOS — OG DINÁMICO
+        ══════════════════════════════════════
+
+        Arquitectura de 2 capas:
+        1. updateMetaTags()  → actualiza <meta> OG en el DOM en tiempo real
+           (funciona para Telegram Desktop, Discord, Slack, iMessage, LinkedIn)
+        2. buildShareUrl()   → genera la URL del Cloudflare Worker que sirve
+           las OG tags al bot de WhatsApp (requiere desplegar worker.js)
+
+        ══════════════════════════════════════ */
+
+        // ── Configura aquí tu Worker de Cloudflare después de desplegarlo ──
+        // Guía en: worker.js
+        // Mientras no lo configures, se comparte la URL del catálogo directamente.
+        var SHARE_WORKER_URL = 'https://golden-gray-og.newjose-tbj2005.workers.dev/'; // ← reemplaza con tu URL de worker
+
+        var CATALOG_URL = 'https://newjosetbj2005-cyber.github.io/Actualizaciones-Catalogo-Productos/';
+
+        /* ── 1. Actualiza las <meta> OG del DOM con los datos del producto ──
+           Esto afecta el título de la pestaña y las previsualizaciones en
+           plataformas que leen el DOM en tiempo real (Telegram, Discord, etc.) */
+        function updateMetaTags(p) {
+            var title   = p.name + ' \u2014 Ferret\u00EDa Golden Gray';
+            var desc    = p.desc.length > 200 ? p.desc.substring(0, 197) + '...' : p.desc;
+            var imgUrl  = p.img || 'https://i.ibb.co/0jfHk4Hg/Golden-Gray-img-portada.jpg';
+            var pageUrl = buildShareUrl(p);
+
+            // Mapa de selector → nuevo valor
+            var updates = [
+                ['meta[property="og:title"]',       'content', title],
+                ['meta[property="og:description"]', 'content', desc],
+                ['meta[property="og:image"]',       'content', imgUrl],
+                ['meta[property="og:url"]',         'content', pageUrl],
+                ['meta[name="twitter:title"]',      'content', title],
+                ['meta[name="twitter:description"]','content', desc],
+                ['meta[name="twitter:image"]',      'content', imgUrl],
+                ['meta[name="twitter:url"]',        'content', pageUrl],
+            ];
+
+            for (var i = 0; i < updates.length; i++) {
+                var el = document.querySelector(updates[i][0]);
+                if (el) el.setAttribute(updates[i][1], updates[i][2]);
+            }
+
+            // Actualizar título de la pestaña del navegador
+            document.title = title;
+        }
+
+        /* ── 2. Genera la URL que se compartirá ──
+           Si el worker está configurado, devuelve la URL del worker con los
+           datos del producto como query params. El worker devuelve HTML con
+           las OG tags correctas cuando WhatsApp lo scrapeé, y redirige al
+           catálogo cuando un humano hace clic.
+           Si no está configurado, devuelve la URL del catálogo. */
+        function buildShareUrl(p) {
+            if (!p || SHARE_WORKER_URL === 'PENDIENTE') return CATALOG_URL;
+            var params = new URLSearchParams({
+                name: p.name,
+                img:  p.img  || '',
+                desc: p.desc.length > 250 ? p.desc.substring(0, 247) + '...' : p.desc,
+                cat:  p.cat_label,
+                id:   p.id
+            });
+            return SHARE_WORKER_URL + '?' + params.toString();
+        }
+
+        /* ── Función principal de compartir ── */
+        function shareProduct(pid, event) {
+            if (event) event.stopPropagation();
+
+            var p = null;
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                if (PRODUCTS[i].id === pid) { p = PRODUCTS[i]; break; }
+            }
+            if (!p) return;
+
+            // Paso 1: actualizar meta tags en el DOM inmediatamente
+            updateMetaTags(p);
+
+            var shareUrl   = buildShareUrl(p);
+            var shareTitle = p.name + ' \u2014 Ferret\u00EDa Golden Gray';
+            // Texto breve — la "magia" del preview viene del OG de la URL, no del texto
+            var shareText  = '\uD83D\uDD29 *' + p.name + '*\n' + p.cat_label;
+
+            // Paso 2: abrir share nativo en móvil o menú en escritorio
+            if (navigator.share) {
+                navigator.share({
+                    title: shareTitle,
+                    text:  shareText,
+                    url:   shareUrl
+                }).catch(function(err) {
+                    if (err.name !== 'AbortError') openShareMenu(p, shareUrl);
+                });
+            } else {
+                openShareMenu(p, shareUrl);
+            }
+        }
+
+        /* ── Menú de compartir (escritorio / fallback) ── */
+        function openShareMenu(p, shareUrl) {
+            var overlay = document.getElementById('shareMenuOverlay');
+            if (!overlay) return;
+
+            // Para WhatsApp: solo enviamos la URL — el worker devuelve el OG correcto
+            // y WhatsApp genera automáticamente el preview card con imagen + título + desc
+            var waUrl       = 'https://wa.me/?text=' + encodeURIComponent(shareUrl);
+            var telegramUrl = 'https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(p.name);
+            var fbUrl       = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+            var twitterUrl  = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent('\uD83D\uDD29 ' + p.name + ' \u2014 Ferret\u00EDa Golden Gray') + '&url=' + encodeURIComponent(shareUrl);
+            // Texto para copiar: URL limpia (genera preview al pegarla en WhatsApp)
+            var copyText    = p.name + ' \u2014 Ferret\u00EDa Golden Gray\n' + shareUrl;
+
+            // Mostrar mini-preview en el menú
+            document.getElementById('shareMenuProductName').textContent = p.name;
+            document.getElementById('shareMenuProductCat').textContent  = p.cat_label;
+            document.getElementById('shareMenuProductImg').src          = p.img || '';
+            document.getElementById('shareMenuProductImg').style.display = p.img ? '' : 'none';
+            document.getElementById('shareMenuProductDesc').textContent = p.desc.length > 80 ? p.desc.substring(0, 77) + '...' : p.desc;
+
+            document.getElementById('shareOptionWA').onclick       = function() { window.open(waUrl,       '_blank'); closeShareMenu(); };
+            document.getElementById('shareOptionTelegram').onclick = function() { window.open(telegramUrl, '_blank'); closeShareMenu(); };
+            document.getElementById('shareOptionFB').onclick       = function() { window.open(fbUrl,       '_blank'); closeShareMenu(); };
+            document.getElementById('shareOptionTwitter').onclick  = function() { window.open(twitterUrl,  '_blank'); closeShareMenu(); };
+            document.getElementById('shareOptionCopy').onclick     = function() { copyShareText(copyText); closeShareMenu(); };
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeShareMenu() {
+            var overlay = document.getElementById('shareMenuOverlay');
+            if (overlay) overlay.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function copyShareText(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showShareToast('\u2705 \u00A1Enlace copiado!');
+                }).catch(function() { fallbackCopy(text); });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+            document.body.appendChild(ta);
+            ta.focus(); ta.select();
+            try { document.execCommand('copy'); showShareToast('\u2705 \u00A1Enlace copiado!'); }
+            catch(e) { showShareToast('\u274C Error al copiar'); }
+            document.body.removeChild(ta);
+        }
+
+        function showShareToast(msg) {
+            var toast = document.getElementById('shareToast');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, 2800);
+        }
+
     </script>
+
+    <!-- Toast de compartir -->
+    <div class="share-toast" id="shareToast"></div>
+
+    <!-- Menú de compartir (fallback escritorio / opciones adicionales) -->
+    <div class="share-menu-overlay" id="shareMenuOverlay" onclick="if(event.target===this)closeShareMenu()">
+        <div class="share-menu">
+            <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;padding:12px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--primary);">
+                <img id="shareMenuProductImg" src="" alt="" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--primary);">
+                <div style="flex:1;min-width:0;">
+                    <div id="shareMenuProductCat" style="font-size:10px;color:var(--secondary);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;"></div>
+                    <div id="shareMenuProductName" style="font-size:13px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px;"></div>
+                    <div id="shareMenuProductDesc" style="font-size:11px;color:var(--text-light);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;"></div>
+                </div>
+            </div>
+            <div class="share-menu-options">
+                <button class="share-option-btn" id="shareOptionWA">
+                    <svg viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+                    WhatsApp
+                </button>
+                <button class="share-option-btn" id="shareOptionTelegram">
+                    <svg viewBox="0 0 24 24" fill="#229ED9"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    Telegram
+                </button>
+                <button class="share-option-btn" id="shareOptionFB">
+                    <svg viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                </button>
+                <button class="share-option-btn" id="shareOptionTwitter">
+                    <svg viewBox="0 0 24 24" fill="#000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    X (Twitter)
+                </button>
+                <button class="share-option-btn" id="shareOptionCopy">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--secondary)"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copiar texto
+                </button>
+            </div>
+            <button class="share-menu-cancel" onclick="closeShareMenu()">Cancelar</button>
+        </div>
+    </div>
+
 </body>
 </html>
