@@ -2835,53 +2835,122 @@
             PRODUCTS.length = 0;
             PRODUCTS.push(
 
-                    // ============================================================
-                    // CEMENTO
-                    // ============================================================
-                    {id: "cemento_gris-tp-I", name: "Cemento (Gris / Portland Tipo I)", category: "cementos", cat_label: "CEMENTOS",
-                    price: 17,
-                    imgs: ["https://i.ibb.co/FknNMdky/cemento.png"],
-                    img: "https://i.ibb.co/FknNMdky/cemento.png",
-                    desc: "Es el aglomerante hidráulico fundamental para cualquier mezcla de concreto o pego.",
-                    specs: [["Presentación", "Saco de 42.5 kg."],
-                    ["Especificación", "Norma ASTM C-150 Tipo I (Uso general)."],
-                    ["Uso", "Ideal para vigas, columnas, losas y fundaciones."],
-                    ["Fraguado", "El tiempo de fraguado inicial es de unos 45 a 140 minutos."]]},
+                    // -------------------------------------------------------------
+// LÁMINAS PARA TECHO
+// -------------------------------------------------------------
+
+{
+    id: "lamina_galvanizada_techo",
+    name: "Lámina Galvanizada para Techo",
+    category: "laminas",
+    cat_label: "LÁMINAS PARA TECHO",
+    price: 1.00, // ⚠ Precio no especificado en el catálogo
+    imgs: ["https://i.ibb.co/wFPpV4sw/Lamina-Galvanizada-para-Techo.png"],
+    img: "https://i.ibb.co/wFPpV4sw/Lamina-Galvanizada-para-Techo.png",
+    desc: "Lámina corrugada galvanizada de primera calidad para techo. No se oxida gracias a su recubrimiento galvanizado de alta durabilidad. Ideal para construcciones residenciales e industriales. Disponible en dos medidas de largo para adaptarse a cualquier proyecto.",
+    specs: [
+        ["Material", "Acero galvanizado de primera"],
+        ["Calibre", "0,18"],
+        ["Ancho", "0,80 mt"],
+        ["Largo (Opción 1)", "3,66 mts"],
+        ["Largo (Opción 2)", "3,05 mts"],
+        ["Acabado", "Corrugado (ondulado)"],
+        ["Característica", "Resistente al óxido"]
+    ]
+},
 
 
+// -------------------------------------------------------------
+// FIJACIONES Y ABRAZADERAS
+// -------------------------------------------------------------
+
+{
+    id: "abrazadera_galvanizada_ajustable",
+    name: "Abrazadera Galvanizada Ajustable",
+    category: "abrazaderas",
+    cat_label: "FIJACIONES Y ABRAZADERAS",
+    price: 1.00, // ⚠ Precio no especificado en el catálogo
+    imgs: ["https://i.ibb.co/jk4cDG9h/Abrazadera-Galvanizada-Ajustable.png"],
+    img: "https://i.ibb.co/jk4cDG9h/Abrazadera-Galvanizada-Ajustable.png",
+    desc: "Abrazadera galvanizada ajustable de alta resistencia, diseñada para sujetar y asegurar mangueras con el ajuste perfecto. Fabricada con materiales de primera calidad que garantizan resistencia al óxido y larga vida útil. Disponible en diferentes medidas para adaptarse a cualquier diámetro de manguera.",
+    specs: [
+        ["Material", "Acero galvanizado"],
+        ["Tipo", "Ajustable"],
+        ["Medidas", "Diferentes medidas disponibles"],
+        ["Aplicación", "Mangueras de cualquier diámetro"],
+        ["Características", "Resistencia máxima, ajuste perfecto"],
+        ["Resistencia", "Alta resistencia al óxido"]
+    ]
+},
 
 
+// -------------------------------------------------------------
+// SELLADORES Y ADHESIVOS
+// -------------------------------------------------------------
 
-                    // ============================================================
-                    // BLOQUES DE CONSTRUCCÍON
-                    // ============================================================
-                    {id: "bloque_hormigon", name: "Bloques de Hormigón (Concreto)", category: "bloques", cat_label: "BLOQUES DE CONSTRUCCÍON",
-                    price: 1.10,
-                    imgs: ["https://i.ibb.co/MxbWz6B1/bloque-de-hormigon.png"],
-                    img: "https://i.ibb.co/MxbWz6B1/bloque-de-hormigon.png",
-                    desc: "Son elementos prefabricados, generalmente con dos huecos verticales, utilizados para muros estructurales o divisorios.",
-                    specs: [["Dimensiones estándar", "15cm x 20cm x 40cm "],
-                    ["Peso aproximado", "12 kg a 13 kg por unidad.\""],
-                    ["Resistencia", "Varía entre $120\text{ kg/cm}^2$ y $133\text{ kg/cm}^2$ según la mezcla."],
-                    ["Rendimiento", "Se requieren aproximadamente 12.5 piezas por metro cuadrado de pared."]]},
+{
+    id: "sellador_acrilico_covo_blanco",
+    name: "Sellador Acrílico COVO - Blanco",
+    category: "selladores",
+    cat_label: "SELLADORES Y ADHESIVOS",
+    price: 1.00, // ⚠ Precio no especificado en el catálogo
+    imgs: ["https://i.ibb.co/G32HNWKs/Sellador-Acrilico-COVO-Blanco.png"],
+    img: "https://i.ibb.co/G32HNWKs/Sellador-Acrilico-COVO-Blanco.png",
+    desc: "Sellador acrílico de uso general marca COVO para aplicaciones interiores y exteriores. A prueba de intemperie, resistente a filtraciones y humedad. 100% pintable con base de agua. Ofrece alto rendimiento, gran adhesión y flexibilidad para un acabado profesional en cualquier superficie.",
+    specs: [
+        ["Marca", "COVO"],
+        ["Tipo", "Sellador Acrílico (Acrylic Sealant)"],
+        ["Color", "Blanco / White"],
+        ["Contenido neto", "300 ml"],
+        ["Aplicación", "Uso general - Interior y Exterior"],
+        ["Pintable", "Sí - 100% pintable con base de agua"],
+        ["Resistencia", "Filtraciones, humedad e intemperie"],
+        ["Propiedades", "Alta adhesión y flexibilidad"]
+    ]
+},
 
+{
+    id: "mega_grey_versachem",
+    name: "Mega Grey - High Vibration Gasket Maker (Versachem)",
+    category: "selladores",
+    cat_label: "SELLADORES Y ADHESIVOS",
+    price: 1.00, // ⚠ Precio no especificado en el catálogo
+    imgs: ["https://i.ibb.co/nsb28nLN/Mega-Grey-High-Vibration-Gasket-Maker-Versachem.png"],
+    img: "https://i.ibb.co/nsb28nLN/Mega-Grey-High-Vibration-Gasket-Maker-Versachem.png",
+    desc: "Sellador para juntas de alta vibración Mega Grey de Versachem, en color gris industrial. Diseñado para motores de importación y uso doméstico. Resiste aceites, gasolina de bajo octanaje y mezclas anticongelantes. Sella perfectamente en superficies metálicas para reparaciones duraderas.",
+    specs: [
+        ["Marca", "Versachem - Mega Grey"],
+        ["Part No.", "89939"],
+        ["Peso neto", "85 g / 3 oz"],
+        ["Color", "Gris industrial"],
+        ["Rango de temperatura", "-54°C a 343°C (-83°F a 650°F)"],
+        ["Tecnología", "Alta vibración (High Vibration)"],
+        ["Aplicación", "Motores importados y domésticos"],
+        ["Resistencia química", "Aceites, gasolina, anticongelante"]
+    ]
+},
 
-
-
-                    // ============================================================
-                    // LIMPIEZA Y ORGANIZACION
-                    // ============================================================
-                    {id: "lamina_zinc_estandar", name: "Lámina de Zinc (Estándar)", category: "techado", cat_label: "TECHADO",
-                    price: 10,
-                    imgs: ["https://i.ibb.co/gZShx61h/lamina-de-zinc-reforsadas.png"],
-                    img: "https://i.ibb.co/gZShx61h/lamina-de-zinc-reforsadas.png",
-                    desc: "Lámina corrugada de acero galvanizado para techos de bajo costo.",
-                    specs: [
-                    ["Medida común", "3.66m de largo (12 pies) x 0.80m de ancho."],
-                    ["Calibre/Espesor", "Generalmente de 0.17 mm a 0.20 mm."],
-                    ["Acabado", "Galvanizado (gris metálico) para prevenir la corrosión básica."]]},
-
-
+{
+    id: "cinta_butilo_fluorocarbono_allison",
+    name: "Cinta de Butilo de Película Fluorocarbono Allison",
+    category: "selladores",
+    cat_label: "SELLADORES Y ADHESIVOS",
+    price: 1.00, // ⚠ Precio no especificado en el catálogo
+    imgs: ["https://i.ibb.co/G4pxqd1D/Cinta-de-Butilo-de-Pelicula-Fluorocarbono-Allison.png"],
+    img: "https://i.ibb.co/G4pxqd1D/Cinta-de-Butilo-de-Pelicula-Fluorocarbono-Allison.png",
+    desc: "Banda impermeable autoadhesiva de alta resistencia marca Allison. Fabricada con membrana de fluorocarbono PVDF para máxima durabilidad. Ideal para reparación de techos de acero, sellado de fugas y goteras. Resistente a temperaturas extremas tanto de calor como de frío.",
+    specs: [
+        ["Marca", "Allison"],
+        ["Tipo", "Cinta de Butilo - Película Fluorocarbono"],
+        ["Dimensiones", "5M x 5CM"],
+        ["Membrana", "PVDF (Fluorocarbono)"],
+        ["Resistencia al calor", "Hasta 100°C"],
+        ["Resistencia al frío", "Hasta -35°C"],
+        ["Impermeabilidad", "100% sellado contra fugas"],
+        ["Aplicación", "Techos de acero, fugas, membranas PVDF"],
+        ["Uso", "Interior y Exterior - A prueba de intemperie"]
+    ]
+},
 
             );
         }
@@ -2976,7 +3045,7 @@
             }
             
             // Orden personalizado de categorías
-            var order = ['techado', 'bloques','cementos'];
+            var order = ['laminas', 'abrazaderas','selladores'];
             
             for (var j = 0; j < order.length; j++) {
                 var catId = order[j];
