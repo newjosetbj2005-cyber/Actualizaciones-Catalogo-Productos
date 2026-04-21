@@ -35,7 +35,7 @@
             --bg3: #d4d7e5;
             --primary: #bcc0d4;
             --primary-light: #dddef7;
-            --secondary: #d8a117;
+            --secondary: #b8860b;
             --secondary-dark: #8b6508;
             --secondary-light: #d4a017;
             --text: #2b2b2b;
@@ -1438,105 +1438,170 @@
         }
 
         /* ═══════════════════════════════════════════
-           ADMIN: PRODUCTOS DESPLEGABLES CON VARIANTES
+           ADMIN: FILA DE PRODUCTO PLANA (sin acordeón)
            ═══════════════════════════════════════════ */
         .admin-product-row {
             border-bottom: 1px solid var(--bg2);
+            transition: background 0.15s;
         }
-        .admin-product-header {
-            padding: 12px 14px;
+        .admin-product-row:hover { background: var(--bg); }
+        .apr-main {
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: background 0.18s;
+            gap: 12px;
         }
-        .admin-product-header:hover { background: var(--bg); }
-        .admin-product-header .admin-pthumb {
-            width: 44px;
-            height: 44px;
+        .apr-thumb {
+            width: 48px; height: 48px;
             object-fit: cover;
             border-radius: 8px;
             flex-shrink: 0;
             background: var(--bg2);
             border: 1px solid var(--bg2);
         }
-        .admin-product-header .admin-pthumb-fallback {
-            width: 44px;
-            height: 44px;
+        .apr-thumb-fallback {
+            width: 48px; height: 48px;
             background: var(--bg2);
             border-radius: 8px;
             flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 10px;
-            border: 1px dashed var(--primary);
-        }
-        .admin-product-header .caret {
-            width: 22px; height: 22px;
             display: flex; align-items: center; justify-content: center;
             color: var(--text-light);
-            transition: transform 0.25s ease;
-            flex-shrink: 0;
+            font-size: 18px;
+            border: 1px dashed var(--primary);
         }
-        .admin-product-row.expanded .admin-product-header .caret {
-            transform: rotate(90deg);
-            color: var(--secondary);
-        }
-        .admin-product-header .name-block {
+        .apr-name-block {
             flex: 1; min-width: 0;
         }
-        .admin-product-header .pname {
-            font-size: 13px; font-weight: 600; color: var(--text);
+        .apr-name {
+            font-size: 13.5px; font-weight: 600; color: var(--text);
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .admin-product-header .pcat {
-            font-size: 10.5px; color: var(--text-light); margin-top: 2px;
+        .apr-cat {
+            font-size: 11px; color: var(--text-light); margin-top: 2px;
             overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .admin-product-header .quick-price {
-            font-size: 12px;
-            color: var(--text-light);
-            font-weight: 600;
-            white-space: nowrap;
-            margin-left: 8px;
-        }
-        .admin-product-header .quick-price.range {
-            color: var(--secondary-dark);
-        }
-        .admin-product-body {
-            display: none;
-            padding: 8px 16px 18px 48px;
-            background: var(--bg);
-        }
-        .admin-product-row.expanded .admin-product-body { display: block; }
-        .admin-base-price-row {
+        .apr-price-block {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 0;
-            flex-wrap: wrap;
+            gap: 6px;
+            flex-shrink: 0;
         }
-        .admin-base-price-row label {
-            font-size: 11.5px; font-weight: 600; color: var(--text-light);
-            min-width: 90px;
-        }
-        .admin-base-price-row input {
-            width: 110px;
-            padding: 7px 12px;
-            border: 1px solid var(--primary);
-            border-radius: 8px;
+        .apr-price-range {
             font-size: 13px;
+            font-weight: 700;
+            color: var(--secondary-dark);
+            white-space: nowrap;
+        }
+        .apr-price-muted {
+            font-size: 12px; color: var(--text-light); font-style: italic;
+        }
+        .apr-pill {
+            font-size: 10.5px;
+            padding: 2px 7px;
+            border-radius: 50px;
+            background: var(--bg2);
+            color: var(--secondary-dark);
             font-weight: 600;
         }
-        .admin-base-price-row input:focus {
-            outline: none; border-color: var(--secondary);
+        /* Input de precio inline (cuando no hay variantes) */
+        .apr-price-inline {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--bg2);
+            border: 1px solid var(--bg2);
+            border-radius: 8px;
+            padding: 4px 8px;
         }
-        .admin-base-price-row .bs-preview {
-            font-size: 11.5px; color: var(--text-light);
+        .apr-price-inline:focus-within {
+            border-color: var(--secondary);
+            background: #fff;
         }
+        .apr-currency {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--secondary-dark);
+        }
+        .apr-price-inline input {
+            width: 72px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: right;
+            color: var(--text);
+            outline: none;
+            font-family: inherit;
+        }
+        .apr-bs {
+            font-size: 10px;
+            color: var(--text-light);
+            white-space: nowrap;
+            margin-left: 2px;
+        }
+        .apr-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        /* Bloque de variantes dentro del editor de producto */
+        .pe-variants-block {
+            padding-top: 12px;
+            border-top: 1px dashed var(--bg3);
+            margin-top: 12px;
+        }
+        .pe-variants-block .admin-variants-section {
+            margin-top: 4px;
+        }
+        .pe-variants-block-placeholder {
+            padding-top: 12px;
+            border-top: 1px dashed var(--bg3);
+            margin-top: 12px;
+        }
+        .pe-hint-info {
+            color: var(--secondary-dark);
+            font-weight: 600;
+            background: var(--bg2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: block;
+            margin-top: 6px;
+        }
+        /* Botones de tipo button no deben someter el form del editor */
+        .pe-variants-block button[type="button"] { font-family: inherit; }
+
+        .apr-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 12px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            background: #fff;
+            color: var(--secondary-dark);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .apr-btn:hover {
+            background: var(--secondary);
+            color: #fff;
+            border-color: var(--secondary);
+        }
+        .apr-btn svg { width: 13px; height: 13px; }
+        /* Responsive: en pantallas estrechas apilar verticalmente */
+        @media (max-width: 520px) {
+            .apr-main { flex-wrap: wrap; }
+            .apr-name-block { width: calc(100% - 60px); }
+            .apr-price-block, .apr-actions {
+                margin-left: 60px;
+                margin-top: 4px;
+            }
+            .apr-btn span { display: none; } /* solo ícono en mobile */
+        }
+
         .admin-variants-section {
             margin-top: 8px;
             padding-top: 12px;
@@ -2036,26 +2101,6 @@
         }
         .plan-usage-widget .pu-bar-fill.warn { background: #e6a52b; }
         .plan-usage-widget .pu-bar-fill.full { background: #d63031; }
-
-        /* Botón "Editar datos" dentro del acordeón */
-        .admin-edit-data-btn {
-            margin-top: 12px;
-            padding: 7px 14px;
-            border-radius: 50px;
-            background: #fff;
-            color: var(--text);
-            border: 1.5px dashed var(--primary);
-            font-size: 11.5px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex; align-items: center; gap: 5px;
-            transition: all 0.15s;
-        }
-        .admin-edit-data-btn:hover {
-            border-color: var(--secondary);
-            color: var(--secondary-dark);
-            border-style: solid;
-        }
 
         /* Modal pequeño de categorías */
         .cats-manager {
@@ -3666,17 +3711,6 @@
                 <button class="admin-panel-close" onclick="closeAdminPanel(null)">&#x2715;</button>
             </div>
 
-                        <!-- Widget de uso del plan -->
-            <div class="plan-usage-widget" id="planUsageWidget">
-                <div class="pu-header">
-                    <span class="pu-title">📊 Uso de tu plan</span>
-                    <span class="pu-plan" id="puPlanName">—</span>
-                </div>
-                <div class="pu-grid" id="puGrid">
-                    <!-- items se insertan dinámicamente -->
-                </div>
-            </div>
-
             <!-- Sección de Tasa -->
             <div class="admin-rate-section">
                 <h4>&#x1F4B1; Tipo de Tasa de Cambio</h4>
@@ -3691,6 +3725,17 @@
                 </div>
                 <div class="admin-rate-current" id="adminRateDisplay">
                     Tasa actual: <strong>Cargando...</strong>
+                </div>
+            </div>
+
+            <!-- Widget de uso del plan -->
+            <div class="plan-usage-widget" id="planUsageWidget">
+                <div class="pu-header">
+                    <span class="pu-title">📊 Uso de tu plan</span>
+                    <span class="pu-plan" id="puPlanName">—</span>
+                </div>
+                <div class="pu-grid" id="puGrid">
+                    <!-- items se insertan dinámicamente -->
                 </div>
             </div>
 
@@ -6316,7 +6361,6 @@
         // adminDeletedVariantIds = [uuid, ...] variantes existentes marcadas para borrar
         var adminTempVariants = {};
         var adminDeletedVariantIds = [];
-        var adminExpandedPid = null; // id del producto actualmente abierto
 
         function renderAdminProductsTable() {
             var wrap = document.getElementById('adminProductsList');
@@ -6327,19 +6371,14 @@
                 html += renderAdminProductRow(p);
             }
             wrap.innerHTML = html;
-
-            // Re-abrir el producto que estaba expandido (si el usuario reabre el panel)
-            if (adminExpandedPid) {
-                var row = wrap.querySelector('[data-admin-product="' + adminExpandedPid + '"]');
-                if (row) row.classList.add('expanded');
-            }
         }
 
         function renderAdminProductRow(p) {
             var pid = p.id;
             var currentPrice = adminTempPrices[pid] !== undefined ? adminTempPrices[pid] : (p.price || 0);
 
-            // Estado de variantes: si adminTempVariants[pid] existe, usarlo; si no, tomar de PRODUCT_VARIANTS
+            // Las variantes viven en el producto mismo (se ven en openProductEditor).
+            // Aquí solo queremos saber si hay variantes para saber qué precio mostrar.
             var variants = adminTempVariants[pid];
             if (!variants) {
                 variants = (PRODUCT_VARIANTS[pid] || []).map(function(v){
@@ -6349,112 +6388,62 @@
                         type_label: v.type_label,
                         label: v.label,
                         price: parseFloat(v.price) || 0,
+                        color_hex: v.color_hex || null,
                         sort_order: v.sort_order || 0
                     };
                 });
             }
             var visibleVariants = variants.filter(function(v){ return !v._deleted; });
 
-            // Header
-            var quickPriceHtml = '';
+            // Etiqueta de precio (rango si hay variantes con precios)
+            var priceLabelHtml;
             if (visibleVariants.length > 0) {
                 var prices = visibleVariants.map(function(v){ return v.price || 0; }).filter(function(x){ return x > 0; });
                 if (prices.length > 0) {
                     var minP = Math.min.apply(null, prices), maxP = Math.max.apply(null, prices);
-                    var quickTxt = (minP === maxP) ? ('$' + minP.toFixed(2)) : ('$' + minP.toFixed(2) + ' – $' + maxP.toFixed(2));
-                    quickPriceHtml = '<span class="quick-price range">' + quickTxt + '</span>';
+                    var rangeTxt = (minP === maxP) ? ('$' + minP.toFixed(2)) : ('$' + minP.toFixed(2) + ' – $' + maxP.toFixed(2));
+                    priceLabelHtml = '<span class="apr-price-range">' + rangeTxt + '</span>' +
+                                     '<span class="apr-pill" title="' + visibleVariants.length + ' variantes">' +
+                                        '🏷️ ' + visibleVariants.length +
+                                     '</span>';
                 } else {
-                    quickPriceHtml = '<span class="quick-price">Sin precio</span>';
+                    priceLabelHtml = '<span class="apr-price-muted">Sin precio</span>';
                 }
             } else {
-                quickPriceHtml = '<span class="quick-price">$' + currentPrice.toFixed(2) + '</span>';
+                // Sin variantes: mostrar input editable inline para el precio base
+                priceLabelHtml = '<div class="apr-price-inline">' +
+                    '<span class="apr-currency">$</span>' +
+                    '<input type="number" step="0.01" min="0" value="' + currentPrice.toFixed(2) + '" ' +
+                        'onchange="onAdminPriceChange(\'' + pid + '\', this.value)" ' +
+                        'oninput="previewAdminBs(\'' + pid + '\', this.value)" ' +
+                        'onclick="event.stopPropagation()"/>' +
+                    '<span class="apr-bs" id="adminBs_' + pid + '">' +
+                        (CURRENT_RATE > 0 ? '≈ ' + formatBs(currentPrice, CURRENT_RATE) : '') +
+                    '</span>' +
+                    '</div>';
             }
 
             var thumbHtml = p.img
-                ? '<img class="admin-pthumb" src="' + escapeAttr(p.img) + '" alt="" onerror="this.outerHTML=\'<div class=&quot;admin-pthumb-fallback&quot;>Sin img</div>\';"/>'
-                : '<div class="admin-pthumb-fallback">Sin img</div>';
+                ? '<img class="apr-thumb" src="' + escapeAttr(p.img) + '" alt="" onerror="this.outerHTML=\'<div class=&quot;apr-thumb-fallback&quot;>—</div>\';"/>'
+                : '<div class="apr-thumb-fallback">—</div>';
 
-            var html = '<div class="admin-product-row" data-admin-product="' + pid + '">';
-            html += '<div class="admin-product-header" onclick="toggleAdminProductRow(\'' + pid + '\')">' +
-                '<div class="caret"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path d="M9 18l6-6-6-6"/></svg></div>' +
-                thumbHtml +
-                '<div class="name-block">' +
-                '<div class="pname">' + escapeAttr(p.name) + '</div>' +
-                '<div class="pcat">' + escapeAttr(p.cat_label) + '</div>' +
-                '</div>' +
-                quickPriceHtml +
-                '</div>';
-
-            // Body (se renderiza pero oculto hasta expandir)
-            html += '<div class="admin-product-body">';
-
-            // Botón para editar todos los datos del producto
-            html += '<button class="admin-edit-data-btn" onclick="openProductEditor(\'' + pid + '\')">' +
-                '<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' +
-                'Editar datos del producto' +
-                '</button>';
-
-            // Precio base (solo relevante si no hay variantes, pero siempre visible)
-            var bsPreview = CURRENT_RATE > 0 ? formatBs(currentPrice, CURRENT_RATE) : '—';
-            html += '<div class="admin-base-price-row" style="margin-top:12px;">' +
-                '<label>Precio base USD:</label>' +
-                '<input type="number" step="0.01" min="0" value="' + currentPrice.toFixed(2) + '" onchange="onAdminPriceChange(\'' + pid + '\', this.value)" oninput="previewAdminBs(\'' + pid + '\', this.value)"/>' +
-                '<span class="bs-preview" id="adminBs_' + pid + '">≈ ' + bsPreview + '</span>' +
-                '<span class="bs-preview" style="font-style:italic;margin-left:auto;">' +
-                (visibleVariants.length > 0 ? '(ignorado: hay variantes)' : '') +
-                '</span>' +
-                '</div>';
-
-            // Sección variantes
-            html += '<div class="admin-variants-section">';
-
-            // Botón de "+ Agregar" inteligente:
-            //  - Si no hay variantes: abre menú con plantillas
-            //  - Si ya hay variantes: agrega directamente una fila vacía del mismo tipo
-            var addBtnHtml;
-            if (visibleVariants.length === 0) {
-                addBtnHtml = '<div class="admin-add-variant-menu">' +
-                    '<button class="admin-add-variant-btn" onclick="toggleAddVariantMenu(\'' + pid + '\', event)">+ Agregar</button>' +
-                    '<div class="admin-add-variant-dropdown" id="addVarDrop_' + pid + '">' +
-                    '<button onclick="addVariantTemplate(\'' + pid + '\', \'medidas\')">📏 Medidas</button>' +
-                    '<button onclick="addVariantTemplate(\'' + pid + '\', \'colores\')">🎨 Colores</button>' +
-                    '<button onclick="addVariantTemplate(\'' + pid + '\', \'custom\')">✏️ Personalizado</button>' +
+            // Fila plana con acciones directas (ya no hay body colapsable)
+            var html = '<div class="admin-product-row" data-admin-product="' + pid + '">' +
+                '<div class="apr-main">' +
+                    thumbHtml +
+                    '<div class="apr-name-block">' +
+                        '<div class="apr-name">' + escapeAttr(p.name) + '</div>' +
+                        '<div class="apr-cat">' + escapeAttr(p.cat_label) + '</div>' +
                     '</div>' +
-                    '</div>';
-            } else {
-                // Ya hay variantes: botón directo "+ Otra"
-                addBtnHtml = '<button class="admin-add-variant-btn" onclick="addAnotherVariantRow(\'' + pid + '\')">+ Otra variante</button>';
-            }
-
-            html += '<div class="admin-variants-header">' +
-                '<div class="admin-variants-title">🏷️ Variantes <span class="count-pill">' + visibleVariants.length + '</span></div>' +
-                addBtnHtml +
-                '</div>';
-
-            // Type label input (solo si hay variantes)
-            if (visibleVariants.length > 0) {
-                var typeLab = visibleVariants[0].type_label || translateVariantType(visibleVariants[0].variant_type);
-                html += '<div class="admin-variants-type-input">' +
-                    '<label>Etiqueta del tipo:</label>' +
-                    '<input type="text" value="' + escapeAttr(typeLab) + '" placeholder="Ej: Medida, Color" onchange="onAdminVariantTypeLabelChange(\'' + pid + '\', this.value)"/>' +
-                    '</div>';
-            }
-
-            // Lista de variantes
-            if (visibleVariants.length === 0) {
-                html += '<div class="admin-variants-empty">Sin variantes. Agrega una usando el botón "+ Agregar".</div>';
-            } else {
-                // Renderizar en el orden actual
-                for (var i = 0; i < variants.length; i++) {
-                    if (variants[i]._deleted) continue;
-                    var v = variants[i];
-                    html += renderAdminVariantItem(pid, i, v);
-                }
-            }
-
-            html += '</div>'; // variants-section
-            html += '</div>'; // body
-            html += '</div>'; // row
+                    '<div class="apr-price-block">' + priceLabelHtml + '</div>' +
+                    '<div class="apr-actions">' +
+                        '<button class="apr-btn apr-btn-edit" onclick="openProductEditor(\'' + pid + '\')" title="Editar producto">' +
+                            '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>' +
+                            '<span>Editar</span>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
             return html;
         }
 
@@ -6521,25 +6510,9 @@
             refreshAdminProductRow(pid);
         }
 
-        function toggleAdminProductRow(pid) {
-            var row = document.querySelector('[data-admin-product="' + pid + '"]');
-            if (!row) return;
-            // Cerrar cualquier otro dropdown de variantes abierto
-            var openDrops = document.querySelectorAll('.admin-add-variant-dropdown.open');
-            for (var i = 0; i < openDrops.length; i++) openDrops[i].classList.remove('open');
-
-            var nowExpanded = !row.classList.contains('expanded');
-            // Permitir múltiples abiertos es útil; pero por UX limpio, cerramos los otros
-            var allRows = document.querySelectorAll('.admin-product-row.expanded');
-            for (var j = 0; j < allRows.length; j++) allRows[j].classList.remove('expanded');
-
-            if (nowExpanded) {
-                row.classList.add('expanded');
-                adminExpandedPid = pid;
-            } else {
-                adminExpandedPid = null;
-            }
-        }
+        // La función toggleAdminProductRow ya no se usa (las filas son planas, sin acordeón).
+        // Se mantiene como no-op para compatibilidad si algún código legacy la invoca.
+        function toggleAdminProductRow(pid) { /* deprecated */ }
 
         function toggleAddVariantMenu(pid, event) {
             if (event) { event.stopPropagation(); event.preventDefault(); }
@@ -6631,13 +6604,11 @@
         function refreshAdminProductRow(pid) {
             var row = document.querySelector('[data-admin-product="' + pid + '"]');
             if (!row) return;
-            var wasExpanded = row.classList.contains('expanded');
             var p = getProductById(pid);
             if (!p) return;
             var temp = document.createElement('div');
             temp.innerHTML = renderAdminProductRow(p);
             var newRow = temp.firstChild;
-            if (wasExpanded) newRow.classList.add('expanded');
             row.parentNode.replaceChild(newRow, row);
         }
 
@@ -6698,34 +6669,20 @@
         }
 
         function updateAdminHeaderQuickPrice(pid) {
+            // Con el nuevo layout plano, la forma más confiable de actualizar el
+            // precio mostrado (rango si hay variantes, inline si no) es re-renderizar
+            // la fila completa. Es barato porque es una sola fila.
+            // Pero si el cambio viene del input inline de precio, NO queremos
+            // destruir el input que el usuario tiene enfocado, así que solo
+            // actualizamos cuando se trata de precios de variantes (si no hay input activo).
             var row = document.querySelector('[data-admin-product="' + pid + '"]');
             if (!row) return;
-            var header = row.querySelector('.admin-product-header');
-            if (!header) return;
-            var span = header.querySelector('.quick-price');
-            if (!span) return;
-
-            var variants = adminTempVariants[pid];
-            var currentPrice = adminTempPrices[pid] !== undefined ? adminTempPrices[pid] : ((getProductById(pid) || {}).price || 0);
-
-            if (variants) {
-                var active = variants.filter(function(v){ return !v._deleted; });
-                if (active.length > 0) {
-                    var prices = active.map(function(v){ return v.price || 0; }).filter(function(x){ return x > 0; });
-                    if (prices.length > 0) {
-                        var minP = Math.min.apply(null, prices), maxP = Math.max.apply(null, prices);
-                        span.className = 'quick-price range';
-                        span.textContent = (minP === maxP) ? ('$' + minP.toFixed(2)) : ('$' + minP.toFixed(2) + ' – $' + maxP.toFixed(2));
-                        return;
-                    } else {
-                        span.className = 'quick-price';
-                        span.textContent = 'Sin precio';
-                        return;
-                    }
-                }
+            var active = document.activeElement;
+            // Si el foco está dentro de la fila y es un input inline, no tocamos el DOM.
+            if (active && row.contains(active) && active.tagName === 'INPUT' && active.type === 'number') {
+                return;
             }
-            span.className = 'quick-price';
-            span.textContent = '$' + currentPrice.toFixed(2);
+            refreshAdminProductRow(pid);
         }
 
         function onAdminPriceChange(pid, val) {
@@ -7152,11 +7109,122 @@
                 '</div>' +
                 '</div>';
 
+            // Variantes (dentro del editor, solo si el producto ya existe)
+            // Para productos nuevos se muestra un aviso: "guarda primero para agregar variantes"
+            if (!isNew) {
+                html += '<div class="pe-field pe-variants-block" id="peVariantsBlock">' +
+                    '<label>Variantes del producto</label>' +
+                    '<span class="pe-hint">Si tu producto se vende en varias medidas, colores o presentaciones, agrégalas aquí. Cada variante puede tener su propio precio.</span>' +
+                    '<div id="peVariantsContainer"></div>' +
+                    '</div>';
+            } else {
+                html += '<div class="pe-field pe-variants-block-placeholder">' +
+                    '<label>Variantes del producto</label>' +
+                    '<span class="pe-hint pe-hint-info">ℹ️ Primero guarda el producto; luego podrás editar y agregar sus variantes desde este mismo panel.</span>' +
+                    '</div>';
+            }
+
             body.innerHTML = html;
 
-            // Renderizar imágenes y specs
+            // Renderizar imágenes, specs y variantes
             renderPeImgsList();
             renderPeSpecsList();
+            if (!isNew) renderPeVariants(pid);
+        }
+
+        /* ══════════════════════════════════════════════════════════════════
+           VARIANTES DENTRO DEL EDITOR DE PRODUCTO
+           Se renderizan en el div #peVariantsContainer.
+           Usa las mismas funciones ya existentes (addVariantTemplate,
+           onAdminVariantFieldChange, deleteAdminVariant) que leen y escriben
+           en adminTempVariants. Al guardar el producto, se guardan también
+           las variantes porque saveAdminChanges() las procesa.
+           ══════════════════════════════════════════════════════════════════ */
+        function renderPeVariants(pid) {
+            var container = document.getElementById('peVariantsContainer');
+            if (!container) return;
+
+            // Asegurar que exista copia editable
+            ensureAdminVariantsInitialized(pid);
+            var variants = adminTempVariants[pid] || [];
+            var visibleVariants = variants.filter(function(v){ return !v._deleted; });
+
+            // Botón: si no hay variantes, menú con tipos; si hay, solo "+ Otra variante"
+            var addBtnHtml;
+            if (visibleVariants.length === 0) {
+                addBtnHtml = '<div class="admin-add-variant-menu">' +
+                    '<button type="button" class="admin-add-variant-btn" onclick="toggleAddVariantMenu(\'' + pid + '\', event); event.stopPropagation();">+ Agregar variante</button>' +
+                    '<div class="admin-add-variant-dropdown" id="addVarDrop_' + pid + '">' +
+                    '<button type="button" onclick="addVariantTemplate(\'' + pid + '\', \'medidas\'); refreshPeVariants(\'' + pid + '\');">📏 Medidas</button>' +
+                    '<button type="button" onclick="addVariantTemplate(\'' + pid + '\', \'colores\'); refreshPeVariants(\'' + pid + '\');">🎨 Colores</button>' +
+                    '<button type="button" onclick="addVariantTemplate(\'' + pid + '\', \'custom\'); refreshPeVariants(\'' + pid + '\');">✏️ Personalizado</button>' +
+                    '</div>' +
+                    '</div>';
+            } else {
+                addBtnHtml = '<button type="button" class="admin-add-variant-btn" onclick="addAnotherVariantRow(\'' + pid + '\'); refreshPeVariants(\'' + pid + '\');">+ Otra variante</button>';
+            }
+
+            var html = '<div class="admin-variants-section">' +
+                '<div class="admin-variants-header">' +
+                '<div class="admin-variants-title">🏷️ Variantes <span class="count-pill">' + visibleVariants.length + '</span></div>' +
+                addBtnHtml +
+                '</div>';
+
+            // Etiqueta del tipo
+            if (visibleVariants.length > 0) {
+                var typeLab = visibleVariants[0].type_label || translateVariantType(visibleVariants[0].variant_type);
+                html += '<div class="admin-variants-type-input">' +
+                    '<label>Etiqueta del tipo:</label>' +
+                    '<input type="text" value="' + escapeAttr(typeLab) + '" placeholder="Ej: Medida, Color" onchange="onAdminVariantTypeLabelChange(\'' + pid + '\', this.value)"/>' +
+                    '</div>';
+            }
+
+            // Lista
+            if (visibleVariants.length === 0) {
+                html += '<div class="admin-variants-empty">Este producto no tiene variantes aún. Usa el botón "+ Agregar variante" si lo vendes en varias presentaciones.</div>';
+            } else {
+                for (var i = 0; i < variants.length; i++) {
+                    if (variants[i]._deleted) continue;
+                    html += renderPeVariantItem(pid, i, variants[i]);
+                }
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Un item de variante dentro del editor (wrapper sobre renderAdminVariantItem
+        // pero reemplaza los callbacks para re-renderizar peVariantsContainer)
+        function renderPeVariantItem(pid, idx, v) {
+            var priceVal = (v.price || 0).toFixed(2);
+            var isColor = v.variant_type === 'colores';
+
+            var labelCell;
+            if (isColor) {
+                var colorHex = v.color_hex || '#CCCCCC';
+                labelCell = '<div class="admin-variant-color-cell">' +
+                    '<input type="color" class="admin-variant-color-picker" value="' + escapeAttr(colorHex) + '" ' +
+                    'oninput="onAdminVariantFieldChange(\'' + pid + '\', ' + idx + ', \'color_hex\', this.value)" ' +
+                    'title="Selecciona el color"/>' +
+                    '<input type="text" placeholder="Ej: Rojo, Negro" value="' + escapeAttr(v.label || '') + '" oninput="onAdminVariantFieldChange(\'' + pid + '\', ' + idx + ', \'label\', this.value)"/>' +
+                    '</div>';
+            } else {
+                labelCell = '<input type="text" placeholder="Ej: 1/2&quot;, Grande" value="' + escapeAttr(v.label || '') + '" oninput="onAdminVariantFieldChange(\'' + pid + '\', ' + idx + ', \'label\', this.value)"/>';
+            }
+
+            return '<div class="admin-variant-item" data-vidx="' + idx + '">' +
+                '<span class="drag-hint">⋮⋮</span>' +
+                labelCell +
+                '<input type="number" step="0.01" min="0" placeholder="Precio USD" value="' + priceVal + '" oninput="onAdminVariantFieldChange(\'' + pid + '\', ' + idx + ', \'price\', this.value)"/>' +
+                '<button type="button" class="del-btn" onclick="deleteAdminVariant(\'' + pid + '\', ' + idx + '); refreshPeVariants(\'' + pid + '\');" title="Eliminar variante">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>' +
+                '</button>' +
+                '</div>';
+        }
+
+        // Re-renderiza solo la sección de variantes en el editor (sin recargar el form entero)
+        function refreshPeVariants(pid) {
+            renderPeVariants(pid);
         }
 
         function renderPeImgsList() {
