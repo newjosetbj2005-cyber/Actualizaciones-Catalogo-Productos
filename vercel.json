@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/catalogo/:identificador",
+      "destination": "/index.html?t=:identificador"
+    }
+  ]
+}
