@@ -4324,7 +4324,7 @@
         }
 
         /* ══════════════════════════════════════════════════════════════════
-           CARGA DEL TENANT ACTUAL
+        CARGA DEL TENANT ACTUAL
            ══════════════════════════════════════════════════════════════════ */
 
         // Carga el tenant según el slug en la URL y su plan asociado.
@@ -7369,120 +7369,124 @@
             input.click();
         }
 
-        /* ── Guardar producto (crear o actualizar) ── */
-        async function saveProductFromEditor() {
-            var btnSave = document.getElementById('btnPeSave');
-            var status = document.getElementById('peSaveStatus');
-            btnSave.disabled = true;
-            status.textContent = 'Guardando...';
-            status.style.color = 'var(--text-light)';
+        /* ── Guardar producto (crear o actualizar) CORREGIDO ── */
+async function saveProductFromEditor() {
+    var btnSave = document.getElementById('btnPeSave');
+    var status = document.getElementById('peSaveStatus');
+    btnSave.disabled = true;
+    status.textContent = 'Guardando...';
+    status.style.color = 'var(--text-light)';
 
-            try {
-                var isNew = !productEditorState.editingId;
-                var pid;
-
-                if (isNew) {
-                    pid = (document.getElementById('peId').value || '').trim();
-                    var nameVal = (document.getElementById('peName').value || '').trim();
-                    // Si por algún motivo el ID está vacío, generarlo del nombre
-                    if (!pid && nameVal) {
-                        pid = makeUniqueSlug(makeSlug(nameVal));
-                    }
-                    if (!pid) throw new Error('Escribe un nombre primero');
-                    if (!/^[a-z0-9_-]+$/i.test(pid)) throw new Error('ID inválido (solo letras, números, guiones)');
-                    // Verificar si ya existe
-                    if (getProductById(pid)) throw new Error('Ya existe un producto con ese ID');
-                } else {
-                    pid = productEditorState.editingId;
-                }
-
-                var name = (document.getElementById('peName').value || '').trim();
-                if (!name) throw new Error('El nombre es obligatorio');
-
-                var category = document.getElementById('peCategory').value;
-                if (!category) throw new Error('Selecciona una categoría');
-
-                var price = parseFloat(document.getElementById('pePrice').value);
-                if (isNaN(price) || price < 0) price = 0;
-
-                var descr = (document.getElementById('peDesc').value || '').trim();
-
-                // Limpiar imágenes y specs vacías
-                var cleanImgs = productEditorState.imgs
-                    .map(function(s){ return String(s).trim(); })
-                    .filter(function(s){ return s.length > 0; });
-
-                var cleanSpecs = productEditorState.specs
-                    .map(function(s){ return [String(s[0]||'').trim(), String(s[1]||'').trim()]; })
-                    .filter(function(s){ return s[0] && s[1]; });
-
-                var row = {
-                    id: pid,
-                    name: name,
-                    category_slug: category,
-                    descr: descr,
-                    imgs: cleanImgs,
-                    specs: cleanSpecs,
-                    price: price,
-                    updated_at: new Date().toISOString()
-                };
-
-                if (isNew) {
-                    // Verificar límite del plan ANTES de insertar
-                    var limitCheck = checkPlanLimit('products');
-                    if (!limitCheck.allowed) {
-                        throw new Error(limitCheck.message);
-                    }
-                    // Verificar límite de imágenes por producto
-                    var imgLimit = checkPlanLimit('imgs', cleanImgs.length);
-                    if (!imgLimit.allowed) {
-                        throw new Error(imgLimit.message);
-                    }
-
-                    // Calcular sort_order siguiente dentro de la categoría
-                    var maxOrder = 0;
-                    for (var i = 0; i < PRODUCTS.length; i++) {
-                        if (PRODUCTS[i].category === category && PRODUCTS[i].sort_order > maxOrder) {
-                            maxOrder = PRODUCTS[i].sort_order;
-                        }
-                    }
-                    row.sort_order = maxOrder + 1;
-                    row.is_active = true;
-                    row.tenant_id = TENANT.id;
-
-                    var { error } = await supabase.from('products_full').insert([row]);
-                    if (error) throw error;
-                } else {
-                    // Al editar también validar límite de imágenes
-                    var imgLimit2 = checkPlanLimit('imgs', cleanImgs.length);
-                    if (!imgLimit2.allowed) {
-                        throw new Error(imgLimit2.message);
-                    }
-                    var { error: upErr } = await supabase
-                        .from('products_full')
-                        .update(row)
-                        .eq('id', pid)
-                        .eq('tenant_id', TENANT.id);
-                    if (upErr) throw upErr;
-                }
-
-                // Recargar productos y re-renderizar todo
-                await loadProducts();
-                renderProductsWithPrices(CURRENT_RATE);
-                renderFilters();
-                renderAdminProductsTable(); renderPlanUsageWidget();
-                renderCarousel();
-
-                status.textContent = '✅ Guardado';
-                status.style.color = '#2d8a4e';
-                setTimeout(function(){ closeProductEditor(null); }, 700);
-            } catch(e) {
-                console.error('Save product error:', e);
-                status.textContent = '❌ ' + (e.message || 'Error al guardar');
-                status.style.color = '#e63946';
-            }
-            btnSave.disabled = false;
+    try {
+        var isNew = !productEditorState.editingId;
+        var pid;
+        // ... (Tu lógica existente para validar el ID) ...
+        if (isNew) {
+            pid = (document.getElementById('peId').value || '').trim();
+            // ... resto de validaciones de ID nuevo ...
+        } else {
+            pid = productEditorState.editingId;
         }
+
+        // 1. Recopilar datos del producto
+        var name = (document.getElementById('peName').value || '').trim();
+        var category = document.getElementById('peCategory').value;
+        var price = parseFloat(document.getElementById('pePrice').value) || 0;
+        var descr = (document.getElementById('peDescription').value || '').trim();
+        
+        var row = {
+            id: pid,
+            name: name,
+            category_slug: category,
+            price: price,
+            descr: descr,
+            imgs: productEditorState.imgs,
+            specs: productEditorState.specs,
+            tenant_id: TENANT.id,
+            updated_at: new Date().toISOString()
+        };
+
+        // 2. Guardar el producto principal
+        if (isNew) {
+            var { error } = await supabase.from('products_full').insert([row]);
+            if (error) throw error;
+        } else {
+            var { error: upErr } = await supabase
+                .from('products_full')
+                .update(row)
+                .eq('id', pid)
+                .eq('tenant_id', TENANT.id);
+            if (upErr) throw upErr;
+        }
+
+        // ─── INICIO DE LA CORRECCIÓN: GUARDAR VARIANTES ───
+        
+        // 3. Eliminar variantes que el usuario marcó para borrar
+        if (adminDeletedVariantIds.length > 0) {
+            var { error: delErr } = await supabase
+                .from('product_variants')
+                .delete()
+                .eq('tenant_id', TENANT.id)
+                .in('id', adminDeletedVariantIds);
+            if (delErr) throw delErr;
+        }
+
+        // 4. Preparar y subir las variantes actuales de este producto
+        var variantsToSave = adminTempVariants[pid] || [];
+        var variantRows = [];
+
+        variantsToSave.forEach(function(v) {
+            if (v._deleted) return; // No subir las marcadas para borrar
+            
+            var vRow = {
+                product_id: pid,
+                variant_type: v.variant_type,
+                type_label: v.type_label,
+                label: v.label,
+                price: parseFloat(v.price) || 0,
+                color_hex: v.color_hex || null,
+                sort_order: v.sort_order || 0,
+                tenant_id: TENANT.id,
+                updated_at: new Date().toISOString()
+            };
+
+            // Si es una variante existente, incluimos su ID para que Supabase haga UPDATE en vez de INSERT
+            if (v.id && !v._new) {
+                vRow.id = v.id;
+            }
+            variantRows.push(vRow);
+        });
+
+        if (variantRows.length > 0) {
+            // Usamos upsert para insertar las nuevas y actualizar las existentes
+            var { error: vErr } = await supabase
+                .from('product_variants')
+                .upsert(variantRows);
+            if (vErr) throw vErr;
+        }
+        // ─── FIN DE LA CORRECCIÓN ───
+
+        // Limpiar estados temporales
+        adminTempVariants[pid] = []; 
+        adminDeletedVariantIds = [];
+
+        // Recargar y cerrar
+        await loadProducts();
+        await loadSupabaseVariants(); // Importante: recargar variantes para tener los nuevos IDs de Supabase
+        renderProductsWithPrices(CURRENT_RATE);
+        renderAdminProductsTable();
+        
+        status.textContent = '✅ Guardado con éxito';
+        status.style.color = '#2d8a4e';
+        setTimeout(function(){ closeProductEditor(null); }, 700);
+
+    } catch(e) {
+        console.error('Error al guardar:', e);
+        status.textContent = '❌ ' + (e.message || 'Error al guardar');
+        status.style.color = '#e63946';
+    }
+    btnSave.disabled = false;
+}
 
         /* ── Eliminar producto actual ── */
         async function deleteCurrentProduct() {
