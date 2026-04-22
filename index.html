@@ -7383,16 +7383,17 @@ async function saveProductFromEditor() {
         var isNew = !productEditorState.editingId;
         var pid;
         
-        // Captura de elementos con seguridad (si no existen, no crashea)
+        // CAPTURA DE ELEMENTOS
         var elId = document.getElementById('peId');
         var elName = document.getElementById('peName');
         var elCat = document.getElementById('peCategory');
         var elPrice = document.getElementById('pePrice');
-        var elDesc = document.getElementById('peDescription');
+        
+        // CORRECCIÓN AQUÍ: Intentamos capturar el ID correcto (peDesc) o el genérico (peDescription)
+        var elDesc = document.getElementById('peDesc') || document.getElementById('peDescription');
 
         // 1. Determinar el ID del producto (pid)
         if (isNew) {
-            // Si es nuevo, el campo peId DEBE existir
             if (!elId) throw new Error("No se encontró el campo 'ID del producto' en el formulario.");
             pid = (elId.value || '').trim();
             var nameVal = (elName ? elName.value : '').trim();
@@ -7411,6 +7412,8 @@ async function saveProductFromEditor() {
         var name = elName.value.trim();
         var category = elCat ? elCat.value : '';
         var price = elPrice ? (parseFloat(elPrice.value) || 0) : 0;
+        
+        // CAPTURA DE LA DESCRIPCIÓN CORREGIDA
         var descr = elDesc ? elDesc.value.trim() : '';
 
         // Limpiar URLs de imágenes (quitar vacías)
@@ -7420,7 +7423,7 @@ async function saveProductFromEditor() {
             name: name,
             category_slug: category,
             price: price,
-            descr: descr,
+            descr: descr, // <--- Esto ahora sí llevará el texto a la columna 'descr'
             imgs: cleanImgs,
             specs: productEditorState.specs,
             updated_at: new Date().toISOString(),
@@ -7442,9 +7445,8 @@ async function saveProductFromEditor() {
             if (upErr) throw upErr;
         }
 
-        // ─── 4. GUARDAR VARIANTES (CORRECCIÓN PARA ERROR 23502) ───
+        // ─── 4. GUARDAR VARIANTES (CON CORRECCIÓN 23502) ───
         
-        // A. Eliminar variantes marcadas para borrar
         if (typeof adminDeletedVariantIds !== 'undefined' && adminDeletedVariantIds.length > 0) {
             var { error: delErr } = await supabase
                 .from('product_variants')
@@ -7456,9 +7458,8 @@ async function saveProductFromEditor() {
 
         var variantsToSave = (typeof adminTempVariants !== 'undefined' && adminTempVariants[pid]) ? adminTempVariants[pid] : [];
         
-        // SEPARAMOS PARA EVITAR EL ERROR DE ID: NULL
-        var toUpdate = []; // Las que ya tienen ID en Supabase
-        var toInsert = []; // Las nuevas que no tienen ID aún
+        var toUpdate = []; 
+        var toInsert = []; 
 
         variantsToSave.forEach(function(v) {
             if (v._deleted) return; 
@@ -7475,17 +7476,14 @@ async function saveProductFromEditor() {
                 updated_at: new Date().toISOString()
             };
 
-            // Si tiene un ID real (UUID), va a la lista de actualización
             if (v.id && !v._new) {
                 vRow.id = v.id;
                 toUpdate.push(vRow);
             } else {
-                // Si es nueva, NO incluimos la propiedad "id" para que la DB la genere
                 toInsert.push(vRow);
             }
         });
 
-        // Ejecutamos las operaciones por separado
         if (toUpdate.length > 0) {
             var { error: upvErr } = await supabase.from('product_variants').upsert(toUpdate);
             if (upvErr) throw upvErr;
@@ -7496,8 +7494,6 @@ async function saveProductFromEditor() {
             if (invErr) throw invErr;
         }
 
-        // ─── FIN DE LA CORRECCIÓN ───
-
         // 5. Limpieza y refresco de interfaz
         if (typeof adminTempVariants !== 'undefined') adminTempVariants[pid] = [];
         if (typeof adminDeletedVariantIds !== 'undefined') adminDeletedVariantIds = [];
@@ -7505,7 +7501,6 @@ async function saveProductFromEditor() {
         await loadProducts();
         if (typeof loadSupabaseVariants === 'function') await loadSupabaseVariants();
         
-        // Refrescar todas las tablas y carruseles
         if (typeof renderProductsWithPrices === 'function') renderProductsWithPrices(CURRENT_RATE);
         if (typeof renderAdminProductsTable === 'function') renderAdminProductsTable();
         if (typeof renderCarousel === 'function') renderCarousel();
