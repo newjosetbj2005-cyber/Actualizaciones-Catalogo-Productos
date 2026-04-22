@@ -7369,10 +7369,12 @@
             input.click();
         }
 
-        /* ── Guardar producto (crear o actualizar) CORREGIDO ── */
+/* ── Guardar producto (crear o actualizar) con soporte para variantes ── */
 async function saveProductFromEditor() {
     var btnSave = document.getElementById('btnPeSave');
     var status = document.getElementById('peSaveStatus');
+    if (!btnSave || !status) return;
+
     btnSave.disabled = true;
     status.textContent = 'Guardando...';
     status.style.color = 'var(--text-light)';
@@ -7380,36 +7382,57 @@ async function saveProductFromEditor() {
     try {
         var isNew = !productEditorState.editingId;
         var pid;
-        // ... (Tu lógica existente para validar el ID) ...
+        
+        // Captura de elementos con seguridad (si no existen, no crashea)
+        var elId = document.getElementById('peId');
+        var elName = document.getElementById('peName');
+        var elCat = document.getElementById('peCategory');
+        var elPrice = document.getElementById('pePrice');
+        var elDesc = document.getElementById('peDescription');
+
+        // 1. Determinar el ID del producto (pid)
         if (isNew) {
-            pid = (document.getElementById('peId').value || '').trim();
-            // ... resto de validaciones de ID nuevo ...
+            // Si es nuevo, el campo peId DEBE existir
+            if (!elId) throw new Error("No se encontró el campo 'ID del producto' en el formulario.");
+            pid = (elId.value || '').trim();
+            var nameVal = (elName ? elName.value : '').trim();
+            
+            if (!pid && nameVal) { pid = makeUniqueSlug(makeSlug(nameVal)); }
+            if (!pid) throw new Error('Por favor, escribe un nombre para generar el ID.');
+            if (!/^[a-z0-9_-]+$/i.test(pid)) throw new Error('ID inválido (usa solo letras, números y guiones)');
+            if (getProductById(pid)) throw new Error('Ya existe un producto con ese ID (slug).');
         } else {
             pid = productEditorState.editingId;
         }
 
-        // 1. Recopilar datos del producto
-        var name = (document.getElementById('peName').value || '').trim();
-        var category = document.getElementById('peCategory').value;
-        var price = parseFloat(document.getElementById('pePrice').value) || 0;
-        var descr = (document.getElementById('peDescription').value || '').trim();
+        // 2. Validar campos básicos
+        if (!elName || !elName.value.trim()) throw new Error('El nombre del producto es obligatorio.');
         
+        var name = elName.value.trim();
+        var category = elCat ? elCat.value : '';
+        var price = elPrice ? (parseFloat(elPrice.value) || 0) : 0;
+        var descr = elDesc ? elDesc.value.trim() : '';
+
+        // Limpiar URLs de imágenes (quitar vacías)
+        var cleanImgs = productEditorState.imgs.filter(function(u){ return u.trim() !== ''; });
+
         var row = {
-            id: pid,
             name: name,
             category_slug: category,
             price: price,
             descr: descr,
-            imgs: productEditorState.imgs,
+            imgs: cleanImgs,
             specs: productEditorState.specs,
-            tenant_id: TENANT.id,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
+            tenant_id: TENANT.id
         };
 
-        // 2. Guardar el producto principal
+        // 3. Guardar en Supabase (Producto principal)
         if (isNew) {
-            var { error } = await supabase.from('products_full').insert([row]);
-            if (error) throw error;
+            row.id = pid;
+            row.created_at = new Date().toISOString();
+            var { error: insErr } = await supabase.from('products_full').insert([row]);
+            if (insErr) throw insErr;
         } else {
             var { error: upErr } = await supabase
                 .from('products_full')
@@ -7419,10 +7442,10 @@ async function saveProductFromEditor() {
             if (upErr) throw upErr;
         }
 
-        // ─── INICIO DE LA CORRECCIÓN: GUARDAR VARIANTES ───
+        // ─── 4. GUARDAR VARIANTES (LA NUEVA PARTE) ───
         
-        // 3. Eliminar variantes que el usuario marcó para borrar
-        if (adminDeletedVariantIds.length > 0) {
+        // A. Eliminar variantes marcadas para borrar
+        if (typeof adminDeletedVariantIds !== 'undefined' && adminDeletedVariantIds.length > 0) {
             var { error: delErr } = await supabase
                 .from('product_variants')
                 .delete()
@@ -7431,13 +7454,12 @@ async function saveProductFromEditor() {
             if (delErr) throw delErr;
         }
 
-        // 4. Preparar y subir las variantes actuales de este producto
-        var variantsToSave = adminTempVariants[pid] || [];
+        // B. Upsert (crear/actualizar) variantes actuales
+        var variantsToSave = (typeof adminTempVariants !== 'undefined' && adminTempVariants[pid]) ? adminTempVariants[pid] : [];
         var variantRows = [];
 
         variantsToSave.forEach(function(v) {
-            if (v._deleted) return; // No subir las marcadas para borrar
-            
+            if (v._deleted) return; 
             var vRow = {
                 product_id: pid,
                 variant_type: v.variant_type,
@@ -7449,43 +7471,39 @@ async function saveProductFromEditor() {
                 tenant_id: TENANT.id,
                 updated_at: new Date().toISOString()
             };
-
-            // Si es una variante existente, incluimos su ID para que Supabase haga UPDATE en vez de INSERT
-            if (v.id && !v._new) {
-                vRow.id = v.id;
-            }
+            if (v.id && !v._new) vRow.id = v.id;
             variantRows.push(vRow);
         });
 
         if (variantRows.length > 0) {
-            // Usamos upsert para insertar las nuevas y actualizar las existentes
-            var { error: vErr } = await supabase
-                .from('product_variants')
-                .upsert(variantRows);
+            var { error: vErr } = await supabase.from('product_variants').upsert(variantRows);
             if (vErr) throw vErr;
         }
-        // ─── FIN DE LA CORRECCIÓN ───
 
-        // Limpiar estados temporales
-        adminTempVariants[pid] = []; 
-        adminDeletedVariantIds = [];
+        // 5. Limpieza y refresco de interfaz
+        if (typeof adminTempVariants !== 'undefined') adminTempVariants[pid] = [];
+        if (typeof adminDeletedVariantIds !== 'undefined') adminDeletedVariantIds = [];
 
-        // Recargar y cerrar
         await loadProducts();
-        await loadSupabaseVariants(); // Importante: recargar variantes para tener los nuevos IDs de Supabase
-        renderProductsWithPrices(CURRENT_RATE);
-        renderAdminProductsTable();
+        if (typeof loadSupabaseVariants === 'function') await loadSupabaseVariants();
         
-        status.textContent = '✅ Guardado con éxito';
+        // Refrescar todas las tablas y carruseles
+        if (typeof renderProductsWithPrices === 'function') renderProductsWithPrices(CURRENT_RATE);
+        if (typeof renderAdminProductsTable === 'function') renderAdminProductsTable();
+        if (typeof renderCarousel === 'function') renderCarousel();
+
+        status.textContent = '✅ Guardado correctamente';
         status.style.color = '#2d8a4e';
-        setTimeout(function(){ closeProductEditor(null); }, 700);
+        
+        setTimeout(function(){ closeProductEditor(null); }, 800);
 
     } catch(e) {
         console.error('Error al guardar:', e);
-        status.textContent = '❌ ' + (e.message || 'Error al guardar');
-        status.style.color = '#e63946';
+        status.textContent = '❌ ' + (e.message || 'Error desconocido');
+        status.style.color = '#d32f2f';
+    } finally {
+        btnSave.disabled = false;
     }
-    btnSave.disabled = false;
 }
 
         /* ── Eliminar producto actual ── */
