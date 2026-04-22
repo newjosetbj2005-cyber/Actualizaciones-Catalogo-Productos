@@ -7442,7 +7442,7 @@ async function saveProductFromEditor() {
             if (upErr) throw upErr;
         }
 
-        // ─── 4. GUARDAR VARIANTES (LA NUEVA PARTE) ───
+        // ─── 4. GUARDAR VARIANTES (CORRECCIÓN PARA ERROR 23502) ───
         
         // A. Eliminar variantes marcadas para borrar
         if (typeof adminDeletedVariantIds !== 'undefined' && adminDeletedVariantIds.length > 0) {
@@ -7454,12 +7454,15 @@ async function saveProductFromEditor() {
             if (delErr) throw delErr;
         }
 
-        // B. Upsert (crear/actualizar) variantes actuales
         var variantsToSave = (typeof adminTempVariants !== 'undefined' && adminTempVariants[pid]) ? adminTempVariants[pid] : [];
-        var variantRows = [];
+        
+        // SEPARAMOS PARA EVITAR EL ERROR DE ID: NULL
+        var toUpdate = []; // Las que ya tienen ID en Supabase
+        var toInsert = []; // Las nuevas que no tienen ID aún
 
         variantsToSave.forEach(function(v) {
             if (v._deleted) return; 
+
             var vRow = {
                 product_id: pid,
                 variant_type: v.variant_type,
@@ -7471,14 +7474,29 @@ async function saveProductFromEditor() {
                 tenant_id: TENANT.id,
                 updated_at: new Date().toISOString()
             };
-            if (v.id && !v._new) vRow.id = v.id;
-            variantRows.push(vRow);
+
+            // Si tiene un ID real (UUID), va a la lista de actualización
+            if (v.id && !v._new) {
+                vRow.id = v.id;
+                toUpdate.push(vRow);
+            } else {
+                // Si es nueva, NO incluimos la propiedad "id" para que la DB la genere
+                toInsert.push(vRow);
+            }
         });
 
-        if (variantRows.length > 0) {
-            var { error: vErr } = await supabase.from('product_variants').upsert(variantRows);
-            if (vErr) throw vErr;
+        // Ejecutamos las operaciones por separado
+        if (toUpdate.length > 0) {
+            var { error: upvErr } = await supabase.from('product_variants').upsert(toUpdate);
+            if (upvErr) throw upvErr;
         }
+        
+        if (toInsert.length > 0) {
+            var { error: invErr } = await supabase.from('product_variants').insert(toInsert);
+            if (invErr) throw invErr;
+        }
+
+        // ─── FIN DE LA CORRECCIÓN ───
 
         // 5. Limpieza y refresco de interfaz
         if (typeof adminTempVariants !== 'undefined') adminTempVariants[pid] = [];
