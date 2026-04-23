@@ -979,6 +979,46 @@
             margin-top: 8px;
         }
 
+        /* ── Acordeón de especificaciones ── */
+        .specs-details {
+            margin-top: 8px;
+        }
+        .specs-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            list-style: none;
+            padding: 10px 14px;
+            background: var(--bg3);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            user-select: none;
+            transition: var(--transition);
+        }
+        .specs-summary::-webkit-details-marker { display: none; }
+        .specs-summary:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        .specs-chevron {
+            font-size: 11px;
+            color: var(--secondary);
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+        .specs-details[open] .specs-chevron {
+            transform: rotate(180deg);
+        }
+        .specs-details .specs-table {
+            margin-top: 0;
+            border-top: none;
+            border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+        }
+
         /* Tabla de especificaciones: ancho completo, sin separación entre celdas */
         .specs-table {
             width: 100%;
@@ -1315,7 +1355,7 @@
             font-size: 14px; font-weight: 700; color: var(--secondary-dark); line-height: 1.1;
         }
         .variant-price-usd {
-            font-size: 10.5px; color: var(--text-light); margin-top: 1px;
+            display: none !important;
         }
         .variant-modal-footer {
             padding: 14px 18px 18px;
@@ -5230,8 +5270,10 @@
                     '<p class="detail-desc">' + p.desc + '</p>' +
                     priceDetailHtml +
                     variantChooserHtml +
-                    '<p class="specs-title">Especificaciones</p>' +
+                    '<details class="specs-details">' +
+                    '<summary class="specs-summary">Especificaciones <span class="specs-chevron">▼</span></summary>' +
                     '<table class="specs-table"><thead><tr><th>Caracter&#xED;stica</th><th>Valor</th></tr></thead><tbody>' + specsRows + '</tbody></table>' +
+                    '</details>' +
                     detailQtyHtml +
                     addCartDetailHtml +
                   '</div>' +
