@@ -331,6 +331,7 @@
             margin: 0 0 12px;
             display: flex;
             align-items: center;
+            gap: 8px;
         }
         .catalog-search-wrap input {
             flex: 1;
@@ -362,7 +363,7 @@
         }
         .catalog-search-clear {
             position: absolute;
-            right: 8px;
+            right: 58px;
             width: 26px;
             height: 26px;
             border-radius: 50%;
@@ -379,103 +380,129 @@
         }
         .catalog-search-clear:hover { background: var(--primary); }
 
-        /* ── Filter wrapper con botones de scroll (solo PC) ── */
-        /* Contenedor de la barra de filtros con sus botones de navegación lateral */
-        .filter-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Botones de flecha para desplazar la barra de filtros en escritorio */
-        .filter-scroll-btn {
+        /* Botón de filtro de categoría del catálogo */
+        .catalog-filter-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            border: 1px solid var(--primary);
-            background: var(--bg2);
-            color: var(--text);
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-            z-index: 5;
-        }
-
-        /* Hover del botón de flecha: resalta con color dorado */
-        .filter-scroll-btn:hover {
-            border-color: var(--secondary);
-            color: var(--secondary);
-            transform: scale(1.1);
-        }
-
-        /* Ícono SVG dentro del botón de flecha del filtro */
-        .filter-scroll-btn svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        /* Estado oculto: invisible pero mantiene su espacio para no saltar el layout */
-        /* El botón se vuelve invisible y no recibe clics, pero mantiene su espacio en el DOM */
-        .filter-scroll-btn.hidden-btn {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.7);
-        }
-
-        /* En móviles los botones no existen */
-        /* Oculta completamente los botones de flecha en pantallas pequeñas,
-           donde el scroll táctil hace innecesaria la navegación con flechas */
-        @media (max-width: 768px) {
-            .filter-scroll-btn {
-                display: none;
-            }
-        }
-
-        /* Barra de filtros deslizable: fila horizontal con scroll sin barra visible */
-        .filter-bar {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 8px 6px;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            flex: 1;
-        }
-
-        /* Oculta la barra de desplazamiento en WebKit (Chrome, Safari) */
-        .filter-bar::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Botón individual de categoría: pastilla con borde, sin fondo por defecto */
-        .filter-btn {
-            white-space: nowrap;
-            padding: 8px 16px;
+            gap: 5px;
+            padding: 9px 14px;
+            border: 1.5px solid var(--primary);
             border-radius: 50px;
-            border: 1px solid var(--primary);
-            background: transparent;
+            background: #fff;
             color: var(--text);
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
+            white-space: nowrap;
             flex-shrink: 0;
         }
-
-        /* Hover del botón de filtro: resalta borde y texto en dorado */
-        .filter-btn:hover {
+        .catalog-filter-btn:hover {
             border-color: var(--secondary);
             color: var(--secondary);
         }
-
-        /* Estado activo del filtro: fondo dorado sólido con texto blanco */
-        .filter-btn.active {
+        .catalog-filter-btn.active {
             background: var(--secondary);
-            color: #ffffff;
+            color: #fff;
             border-color: var(--secondary);
+        }
+        .catalog-filter-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Modal flotante de categorías del catálogo */
+        .catalog-filter-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 9000;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0;
+            animation: variantFadeIn 0.2s ease;
+        }
+        .catalog-filter-modal-overlay.open { display: flex; }
+        .catalog-filter-modal {
+            background: #fff;
+            width: 100%;
+            max-width: 440px;
+            max-height: 70vh;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
+            animation: variantSlideUp 0.28s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        @media (min-width: 600px) {
+            .catalog-filter-modal-overlay { align-items: center; padding: 20px; }
+            .catalog-filter-modal { border-radius: 20px; max-height: 60vh; }
+        }
+        .catalog-filter-modal-header {
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid var(--bg2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .catalog-filter-modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .catalog-filter-modal-close {
+            width: 32px; height: 32px; border-radius: 50%; border: none;
+            background: var(--bg2); color: var(--text); font-size: 15px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .catalog-filter-modal-close:hover { background: var(--primary); }
+        .catalog-filter-modal-body {
+            overflow-y: auto;
+            padding: 10px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .catalog-filter-modal-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border: 2px solid var(--bg2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            background: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            width: 100%;
+            text-align: left;
+        }
+        .catalog-filter-modal-item:hover {
+            border-color: var(--secondary-light);
+            background: #fffaee;
+        }
+        .catalog-filter-modal-item.active {
+            border-color: var(--secondary);
+            background: #fff6e0;
+            color: var(--secondary-dark);
+        }
+        .catalog-filter-modal-item .cfm-radio {
+            width: 18px; height: 18px; border-radius: 50%;
+            border: 2px solid var(--primary); flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .catalog-filter-modal-item.active .cfm-radio {
+            border-color: var(--secondary);
+        }
+        .catalog-filter-modal-item.active .cfm-radio::after {
+            content: ''; width: 9px; height: 9px; border-radius: 50%;
+            background: var(--secondary);
         }
 
         /* Cuadrícula de productos: columnas automáticas con ancho mínimo de 220px */
@@ -2321,9 +2348,12 @@
         }
         .admin-search-bar {
             padding: 0 22px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .admin-search-bar input {
-            width: 100%;
+            flex: 1;
             padding: 8px 14px;
             border: 1px solid var(--primary);
             border-radius: 50px;
@@ -2332,6 +2362,95 @@
             color: var(--text);
         }
         .admin-search-bar input:focus { outline: none; border-color: var(--secondary); }
+
+        /* Botón de filtro de categoría en admin */
+        .admin-filter-btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 8px 14px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .admin-filter-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        .admin-filter-btn.active {
+            background: var(--secondary);
+            color: #fff;
+            border-color: var(--secondary);
+        }
+        .admin-filter-btn svg {
+            width: 15px;
+            height: 15px;
+        }
+        /* Dropdown de categorías del admin */
+        .admin-cat-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            background: #fff;
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            z-index: 100;
+            min-width: 180px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding: 6px 0;
+            animation: modalPop 0.2s ease;
+        }
+        .admin-cat-dropdown.open {
+            display: block;
+        }
+        .admin-cat-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+        .admin-cat-dropdown-item:hover {
+            background: var(--bg2);
+        }
+        .admin-cat-dropdown-item.active {
+            color: var(--secondary);
+            font-weight: 700;
+            background: #fff6e0;
+        }
+        /* Lista de productos scrollable en admin */
+        .admin-products-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        .admin-products-list::-webkit-scrollbar { width: 5px; }
+        .admin-products-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        .admin-products-list::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
 
         .admin-panel-footer {
             padding: 16px 22px;
@@ -3549,24 +3668,31 @@
                 </button>
             </div>
 
-            <!-- Buscador inteligente -->
             <div class="catalog-search-wrap">
                 <svg class="catalog-search-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                 <input type="text" id="catalogSearchInput" placeholder="Buscar producto por nombre, descripción..." oninput="onCatalogSearchInput(this.value)"/>
                 <button class="catalog-search-clear" id="catalogSearchClear" onclick="clearCatalogSearch()" style="display:none;" aria-label="Limpiar búsqueda">✕</button>
+                <button class="catalog-filter-btn" id="catalogFilterBtn" onclick="openCatalogFilterModal()" title="Filtrar por categoría">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                    <span id="catalogFilterLabel">Filtrar</span>
+                </button>
             </div>
 
-            <div class="filter-wrapper">
-                <button class="filter-scroll-btn hidden-btn" id="filterBtnLeft" onclick="scrollFilter(-1)" aria-label="Anterior">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-                </button>
-                <div class="filter-bar" id="filterBar">
-                    <button class="filter-btn active" onclick="filterCat('all', this)">Todos</button>
+            <!-- Modal flotante de categorías (oculto) -->
+            <div class="catalog-filter-modal-overlay" id="catalogFilterOverlay" onclick="closeCatalogFilterModal(event)">
+                <div class="catalog-filter-modal" onclick="event.stopPropagation()">
+                    <div class="catalog-filter-modal-header">
+                        <h3>🏷️ Filtrar por categoría</h3>
+                        <button class="catalog-filter-modal-close" onclick="closeCatalogFilterModal(null)">✕</button>
+                    </div>
+                    <div class="catalog-filter-modal-body" id="catalogFilterModalBody">
+                        <!-- Se llena dinámicamente -->
+                    </div>
                 </div>
-                <button class="filter-scroll-btn" id="filterBtnRight" onclick="scrollFilter(1)" aria-label="Siguiente">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                </button>
             </div>
+
+            <!-- Barra de filtros oculta (se usa internamente para trackear estado) -->
+            <div id="filterBar" style="display:none;"></div>
         </div>
 
         <div id="catalogContent">
@@ -3789,6 +3915,11 @@
                 </div>
                 <div class="admin-search-bar">
                     <input type="text" id="adminProductSearch" placeholder="Buscar producto..." oninput="filterAdminProducts()"/>
+                    <button class="admin-filter-btn" id="adminFilterBtn" onclick="toggleAdminCatDropdown(event)">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                        <span id="adminFilterLabel">Filtrar</span>
+                        <div class="admin-cat-dropdown" id="adminCatDropdown"></div>
+                    </button>
                 </div>
                 <div class="admin-products-list" id="adminProductsList" style="padding: 0 8px 8px;">
                     <!-- Productos desplegables se insertan dinámicamente -->
@@ -4906,14 +5037,14 @@
             var filterBar = document.getElementById('filterBar');
             if (!filterBar) return;
 
-            // Recordar cuál categoría está activa actualmente (si el usuario tenía un filtro seleccionado)
+            // Recordar cuál categoría está activa actualmente
             var activeBtn = filterBar.querySelector('.filter-btn.active');
             var activeCatId = activeBtn ? (activeBtn.dataset.catId || 'all') : 'all';
 
-            // 1) Limpiar TODOS los botones existentes (evita duplicación al re-renderizar)
+            // 1) Limpiar los botones existentes (filterBar oculto, solo para tracking interno)
             filterBar.innerHTML = '';
 
-            // 2) Recrear el botón "Todos" (es el único hardcoded originalmente)
+            // 2) Recrear botón "Todos" oculto
             var btnAll = document.createElement('button');
             btnAll.className = 'filter-btn';
             btnAll.textContent = 'Todos';
@@ -4921,17 +5052,16 @@
             btnAll.onclick = function(){ filterCat('all', this); };
             filterBar.appendChild(btnAll);
 
-            // 3) Detectar qué categorías tienen al menos un producto activo
+            // 3) Detectar categorías con productos
             var categoriesWithProducts = {};
             for (var i = 0; i < PRODUCTS.length; i++) {
                 categoriesWithProducts[PRODUCTS[i].category] = true;
             }
 
-            // 4) Recorrer CATEGORIES (de Supabase, ya ordenadas por sort_order)
-            //    y crear un filter-btn solo si esa categoría tiene productos.
+            // 4) Crear botones ocultos para tracking
             for (var j = 0; j < CATEGORIES.length; j++) {
                 var cat = CATEGORIES[j];
-                if (!categoriesWithProducts[cat.slug]) continue; // saltar categorías vacías
+                if (!categoriesWithProducts[cat.slug]) continue;
                 var btn = document.createElement('button');
                 btn.className = 'filter-btn';
                 btn.textContent = cat.label;
@@ -4942,7 +5072,7 @@
                 filterBar.appendChild(btn);
             }
 
-            // 5) Restaurar el botón que estaba activo (si la categoría aún existe)
+            // 5) Restaurar el botón activo
             var btns = filterBar.querySelectorAll('.filter-btn');
             var restored = false;
             for (var k = 0; k < btns.length; k++) {
@@ -4952,16 +5082,90 @@
                     break;
                 }
             }
-            // Si la categoría activa desapareció (borrada), volver a "Todos"
             if (!restored && btns[0]) {
                 btns[0].classList.add('active');
-                // Reset de tarjetas para mostrar todas
                 var allCards = document.querySelectorAll('.product-card');
                 for (var c = 0; c < allCards.length; c++) allCards[c].classList.remove('hidden');
             }
 
-            // Refresh button visibility now that all filters are rendered
-            setTimeout(updateFilterBtns, 50);
+            // 6) Actualizar el label del botón de filtro del catálogo
+            updateCatalogFilterBtnLabel(activeCatId);
+        }
+
+        // Abre el modal flotante de categorías del catálogo
+        function openCatalogFilterModal() {
+            var overlay = document.getElementById('catalogFilterOverlay');
+            if (!overlay) return;
+            renderCatalogFilterModalItems();
+            overlay.classList.add('open');
+        }
+
+        // Cierra el modal flotante de categorías
+        function closeCatalogFilterModal(e) {
+            if (e && e.target && e.target !== document.getElementById('catalogFilterOverlay')) return;
+            var overlay = document.getElementById('catalogFilterOverlay');
+            if (overlay) overlay.classList.remove('open');
+        }
+
+        // Renderiza los items del modal de filtro
+        function renderCatalogFilterModalItems() {
+            var body = document.getElementById('catalogFilterModalBody');
+            if (!body) return;
+            var activeBtn = document.querySelector('#filterBar .filter-btn.active');
+            var activeCat = activeBtn ? (activeBtn.dataset.catId || 'all') : 'all';
+
+            var categoriesWithProducts = {};
+            for (var i = 0; i < PRODUCTS.length; i++) {
+                categoriesWithProducts[PRODUCTS[i].category] = true;
+            }
+
+            var html = '<button class="catalog-filter-modal-item' + (activeCat === 'all' ? ' active' : '') + '" onclick="selectCatalogFilterCat(\'all\')">' +
+                '<div class="cfm-radio"></div>' +
+                '<span>📦 Todos los productos</span>' +
+                '</button>';
+
+            for (var j = 0; j < CATEGORIES.length; j++) {
+                var cat = CATEGORIES[j];
+                if (!categoriesWithProducts[cat.slug]) continue;
+                html += '<button class="catalog-filter-modal-item' + (activeCat === cat.slug ? ' active' : '') + '" onclick="selectCatalogFilterCat(\'' + cat.slug + '\')">' +
+                    '<div class="cfm-radio"></div>' +
+                    '<span>' + cat.label + '</span>' +
+                    '</button>';
+            }
+            body.innerHTML = html;
+        }
+
+        // Selecciona una categoría desde el modal del catálogo
+        function selectCatalogFilterCat(slug) {
+            // Encontrar el botón oculto del filterBar que corresponde a esta categoría
+            var btns = document.querySelectorAll('#filterBar .filter-btn');
+            var targetBtn = null;
+            for (var i = 0; i < btns.length; i++) {
+                if (btns[i].dataset.catId === slug) {
+                    targetBtn = btns[i];
+                    break;
+                }
+            }
+            filterCat(slug, targetBtn);
+            closeCatalogFilterModal(null);
+        }
+
+        // Actualiza el label y estado del botón de filtro del catálogo
+        function updateCatalogFilterBtnLabel(catSlug) {
+            var label = document.getElementById('catalogFilterLabel');
+            var btn = document.getElementById('catalogFilterBtn');
+            if (!label || !btn) return;
+            if (!catSlug || catSlug === 'all') {
+                label.textContent = 'Filtrar';
+                btn.classList.remove('active');
+            } else {
+                var catLabel = catSlug;
+                for (var i = 0; i < CATEGORIES.length; i++) {
+                    if (CATEGORIES[i].slug === catSlug) { catLabel = CATEGORIES[i].label; break; }
+                }
+                label.textContent = catLabel;
+                btn.classList.add('active');
+            }
         }
 
         function navigateTo(targetId) {
@@ -5023,6 +5227,8 @@
             applyCatalogFilter(cat, catalogSearchTerm);
             // Actualizar banners publicitarios para la categoría seleccionada
             updateAdsForCategory(cat);
+            // Actualizar el label del botón de filtro
+            updateCatalogFilterBtnLabel(cat);
             // Persistir estado
             saveNavState();
         }
@@ -5386,24 +5592,12 @@
             return Math.max(apiRate, floor);
         }
 
-        // Indicador de tasa flotante (debajo del botón de carrito)
+        // Indicador de tasa flotante — OCULTO para el usuario
         function showRateBadge(apiRate) {
             var badge = document.getElementById('rateBadge');
             if (!badge) return;
-            if (CURRENT_RATE > 0) {
-                var usingFloor = (typeof apiRate === 'number') && (CURRENT_RATE > apiRate);
-                var rateLabel = CURRENT_RATE.toLocaleString('es-VE', {minimumFractionDigits:2, maximumFractionDigits:2});
-                var floorNote = usingFloor
-                    ? ' <span title="El dólar bajó; se mantiene el precio más alto registrado para proteger los precios." style="background:var(--secondary);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px;cursor:help;">🔒 Piso activo</span>'
-                    : '';
-                badge.innerHTML = '&#x1F4B5; Tasa del d\u00EDa: <strong>Bs. ' + rateLabel + '</strong>' + floorNote;
-                // Posicionar justo DEBAJO del botón del carrito (bottom: 16px = debajo del btn que está en bottom:52px)
-                badge.style.bottom = '16px';
-                // Solo mostrar si estamos en el catálogo
-                badge.style.display = (currentPage === 'catalog') ? 'flex' : 'none';
-            } else {
-                badge.style.display = 'none';
-            }
+            // Badge oculto permanentemente
+            badge.style.display = 'none';
         }
 
         function formatBs(usd, rate) {
@@ -5512,9 +5706,9 @@
                 // Cerrar panel si se va al landing
                 if (cartPanelOpen) toggleCartPanel();
             }
-            // El badge de tasa solo aparece en el catálogo
-            if (badge && badge.innerHTML !== '') {
-                badge.style.display = (currentPage === 'catalog') ? 'flex' : 'none';
+            // El badge de tasa está oculto permanentemente
+            if (badge) {
+                badge.style.display = 'none';
             }
         }
 
@@ -6745,6 +6939,8 @@
             updateAdminHeaderQuickPrice(pid);
         }
 
+        var adminActiveCatFilter = 'all';
+
         function filterAdminProducts() {
             var search = document.getElementById('adminProductSearch').value.toLowerCase().trim();
             var rows = document.querySelectorAll('[data-admin-product]');
@@ -6753,8 +6949,62 @@
                 var p = getProductById(pid);
                 if (!p) continue;
                 var txt = (p.name + ' ' + p.cat_label).toLowerCase();
-                rows[i].style.display = (!search || txt.indexOf(search) !== -1) ? '' : 'none';
+                var searchMatch = (!search || txt.indexOf(search) !== -1);
+                var catMatch = (adminActiveCatFilter === 'all' || p.category === adminActiveCatFilter);
+                rows[i].style.display = (searchMatch && catMatch) ? '' : 'none';
             }
+        }
+
+        function toggleAdminCatDropdown(e) {
+            e.stopPropagation();
+            var dd = document.getElementById('adminCatDropdown');
+            if (!dd) return;
+            var isOpen = dd.classList.contains('open');
+            dd.classList.toggle('open', !isOpen);
+            if (!isOpen) {
+                renderAdminCatDropdown();
+                // Cerrar al clickear fuera
+                setTimeout(function(){
+                    document.addEventListener('click', closeAdminCatDropdownOnOutside, { once: true });
+                }, 10);
+            }
+        }
+
+        function closeAdminCatDropdownOnOutside(e) {
+            var dd = document.getElementById('adminCatDropdown');
+            if (dd) dd.classList.remove('open');
+        }
+
+        function renderAdminCatDropdown() {
+            var dd = document.getElementById('adminCatDropdown');
+            if (!dd) return;
+            var html = '<button class="admin-cat-dropdown-item' + (adminActiveCatFilter === 'all' ? ' active' : '') + '" onclick="selectAdminCatFilter(\'all\', event)">📦 Todas las categorías</button>';
+            for (var i = 0; i < CATEGORIES.length; i++) {
+                var cat = CATEGORIES[i];
+                html += '<button class="admin-cat-dropdown-item' + (adminActiveCatFilter === cat.slug ? ' active' : '') + '" onclick="selectAdminCatFilter(\'' + cat.slug + '\', event)">' + cat.label + '</button>';
+            }
+            dd.innerHTML = html;
+        }
+
+        function selectAdminCatFilter(slug, e) {
+            e.stopPropagation();
+            adminActiveCatFilter = slug;
+            var label = document.getElementById('adminFilterLabel');
+            var btn = document.getElementById('adminFilterBtn');
+            if (slug === 'all') {
+                if (label) label.textContent = 'Filtrar';
+                if (btn) btn.classList.remove('active');
+            } else {
+                var catLabel = slug;
+                for (var i = 0; i < CATEGORIES.length; i++) {
+                    if (CATEGORIES[i].slug === slug) { catLabel = CATEGORIES[i].label; break; }
+                }
+                if (label) label.textContent = catLabel;
+                if (btn) btn.classList.add('active');
+            }
+            var dd = document.getElementById('adminCatDropdown');
+            if (dd) dd.classList.remove('open');
+            filterAdminProducts();
         }
 
         /* ── Save all changes to Supabase ── */
