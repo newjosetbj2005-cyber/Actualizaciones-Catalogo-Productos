@@ -145,14 +145,20 @@
             padding: 0 6px;
         }
 
-        /* Imagen de cada elemento del carrusel: cubre su contenedor con bordes redondeados */
+        /* Imagen de cada elemento del carrusel: cubre su contenedor con bordes redondeados.
+           pointer-events:none asegura que el carrusel sea solo decorativo
+           y no permita ningún tipo de clic/tap que pudiera saltar el auth gate. */
         .carousel-item img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border-radius: var(--radius);
             display: block;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-drag: none;
         }
+        .carousel-item { cursor: default; }
 
         /* Animación de desplazamiento horizontal del carrusel (se mueve al 50% para el loop) */
         @keyframes scroll-carousel {
@@ -225,39 +231,193 @@
             box-shadow: 0 8px 32px rgba(139, 101, 8, 0.4);
         }
 
-        /* Barra de redes sociales: fila centrada con espaciado y padding interno */
+        /* ════════════════════════════════════════════════════════════════
+           BARRA DE REDES SOCIALES — SISTEMA DE ANIMACIONES
+           Tres niveles:
+           1) Entrada en cascada cuando aparecen en pantalla.
+           2) Animación idle sutil (float) — los hace ver "vivos".
+           3) Botón central destacado con pulse + halo sostenido para atraer.
+           ════════════════════════════════════════════════════════════════ */
+
+        /* Barra contenedora: fila centrada con espaciado */
         .social-bar {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            padding: 20px;
+            align-items: center;
+            gap: 18px;
+            padding: 24px 20px;
+            /* perspective le da profundidad al hover de los botones */
+            perspective: 800px;
         }
 
-        /* Enlace de red social: fila con ícono + texto, color dorado y transición suave */
+        /* Botón base: posición relativa para el ::before del halo,
+           y animaciones combinadas (entrada + float idle). */
         .social-link {
+            position: relative;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             color: var(--secondary);
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
-            padding: 8px 12px;
-            transition: var(--transition);
+            padding: 10px 14px;
+            border-radius: 14px;
             cursor: pointer;
+            opacity: 0;                 /* arranca invisible para la animación de entrada */
+            transform: translateY(12px) scale(0.85);
+            /* Combinamos entrada + float continuo. El delay viene del style inline. */
+            animation:
+                socialEnter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) var(--enter-delay, 0ms) forwards,
+                socialFloat 3.6s ease-in-out calc(var(--enter-delay, 0ms) + 600ms) infinite;
+            transition: color 0.25s ease, filter 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Ícono SVG dentro del enlace social: tamaño fijo con transición */
+        /* Ícono del botón */
         .social-link svg {
             width: 24px;
             height: 24px;
-            transition: var(--transition);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Hover del enlace social: sube ligeramente y oscurece el color */
+        /* Hover: el botón se eleva un poco más, el ícono crece y "rebota",
+           y se suspende temporalmente la animación idle para no competir. */
         .social-link:hover {
-            transform: translateY(-3px);
             color: var(--secondary-dark);
+            animation-play-state: paused;
+            transform: translateY(-6px) scale(1.08);
+            filter: drop-shadow(0 6px 14px rgba(139, 101, 8, 0.35));
+        }
+        .social-link:hover svg { transform: scale(1.15) rotate(-4deg); }
+        .social-link:active { transform: translateY(-2px) scale(0.96); }
+
+        /* Animación 1 — entrada en cascada */
+        @keyframes socialEnter {
+            0%   { opacity: 0; transform: translateY(12px) scale(0.85); }
+            60%  { opacity: 1; transform: translateY(-3px) scale(1.05); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Animación 2 — idle float sutil (todos los botones laterales).
+           Movimiento muy ligero que los hace ver "vivos" sin distraer. */
+        @keyframes socialFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50%      { transform: translateY(-3px) scale(1.02); }
+        }
+
+        /* ───────────────────────────────────────────────────
+           BOTÓN CENTRAL DESTACADO (.social-link-featured)
+           Animación sostenida que invita al usuario a tocarlo:
+           - Pulse continuo (escala suave que respira).
+           - Halo ondulante (::before que se expande y desvanece).
+           - "Wiggle" cada ~5s para captar atención sin agotar.
+           ─────────────────────────────────────────────────── */
+        .social-link-featured {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: #fff !important;
+            padding: 12px 16px;
+            box-shadow:
+                0 6px 18px rgba(139, 101, 8, 0.35),
+                0 2px 4px rgba(139, 101, 8, 0.20);
+            /* transform-origin en la parte superior — así el botón "cuelga"
+               del top y se balancea de lado a lado, igual que un teléfono
+               que vibra colgado en una mesa. */
+            transform-origin: 50% 0%;
+            /* Animaciones:
+               - socialEnter: entrada en cascada (corre una vez, luego forwards)
+               - socialFeaturedRing: timbre dramático sostenido (translate+rotate)
+               El pulse de box-shadow se fusiona dentro del propio ring para
+               evitar que dos animaciones compitan por el mismo transform. */
+            animation:
+                socialEnter 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) var(--enter-delay, 0ms) forwards,
+                socialFeaturedRing 1.4s ease-in-out calc(var(--enter-delay, 0ms) + 800ms) infinite;
+            z-index: 2;
+            /* will-change avisa al navegador que va a animar transform/box-shadow
+               para que active aceleración por GPU y no haya saltos en móvil. */
+            will-change: transform, box-shadow;
+        }
+
+        /* Halo expansivo del featured (anillo que crece y se desvanece) */
+        .social-link-featured::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: var(--secondary);
+            z-index: -1;
+            opacity: 0;
+            animation: socialFeaturedHalo 1.4s ease-out calc(var(--enter-delay, 0ms) + 800ms) infinite;
+            pointer-events: none;
+        }
+
+        .social-link-featured svg { width: 26px; height: 26px; }
+        .social-link-featured:hover {
+            color: #fff !important;
+            filter: drop-shadow(0 8px 20px rgba(139, 101, 8, 0.5));
+            /* Al hover detenemos el timbre para que se sienta "atrapado"
+               por el cursor (sensación de control y precisión). */
+            animation-play-state: paused;
+            transform: translateY(-6px) scale(1.12);
+        }
+
+        /* Halo: anillo que se expande y desvanece. Sincronizado con el ring
+           (mismo período de 1.4s) — el halo "explota" justo en el pico del
+           timbre, reforzando el efecto. */
+        @keyframes socialFeaturedHalo {
+            0%   { transform: scale(1);    opacity: 0.6;  }
+            70%  { transform: scale(1.7);  opacity: 0;    }
+            100% { transform: scale(1.7);  opacity: 0;    }
+        }
+
+        /* ── TIMBRE DE TELÉFONO ──
+           Patrón rítmico tipo "teléfono Android timbrando". Dos sacudidas
+           seguidas (ring-ring), descanso, repite. Movimiento amplio y
+           perceptible — rota ±15° y se desplaza hasta 4px lateral.
+           El box-shadow también pulsa al ritmo del timbre, así el botón
+           da la sensación de "vibrar contra la mesa".
+
+           Estructura del ciclo (1.4s total):
+              0–35%   : primera sacudida (5 oscilaciones)
+              35–70%  : segunda sacudida (5 oscilaciones)
+              70–100% : reposo (botón quieto, listo para volver a sonar) */
+        @keyframes socialFeaturedRing {
+            /* Reposo */
+            0%   { transform: translateX(0)     rotate(0deg);
+                   box-shadow: 0 6px 18px rgba(139, 101, 8, 0.35), 0 2px 4px rgba(139, 101, 8, 0.20); }
+            /* === PRIMERA SACUDIDA === */
+            5%   { transform: translateX(-4px)  rotate(-15deg); }
+            10%  { transform: translateX(4px)   rotate(15deg); }
+            15%  { transform: translateX(-3px)  rotate(-12deg);
+                   box-shadow: 0 12px 30px rgba(139, 101, 8, 0.55), 0 3px 6px rgba(139, 101, 8, 0.28); }
+            20%  { transform: translateX(3px)   rotate(12deg); }
+            25%  { transform: translateX(-2px)  rotate(-8deg); }
+            30%  { transform: translateX(2px)   rotate(8deg); }
+            35%  { transform: translateX(0)     rotate(0deg); }
+            /* === SEGUNDA SACUDIDA (un toque después) === */
+            40%  { transform: translateX(-4px)  rotate(-15deg); }
+            45%  { transform: translateX(4px)   rotate(15deg);
+                   box-shadow: 0 12px 30px rgba(139, 101, 8, 0.55), 0 3px 6px rgba(139, 101, 8, 0.28); }
+            50%  { transform: translateX(-3px)  rotate(-12deg); }
+            55%  { transform: translateX(3px)   rotate(12deg); }
+            60%  { transform: translateX(-2px)  rotate(-8deg); }
+            65%  { transform: translateX(2px)   rotate(8deg); }
+            70%  { transform: translateX(0)     rotate(0deg); }
+            /* === REPOSO HASTA EL SIGUIENTE TIMBRE === */
+            100% { transform: translateX(0)     rotate(0deg);
+                   box-shadow: 0 6px 18px rgba(139, 101, 8, 0.35), 0 2px 4px rgba(139, 101, 8, 0.20); }
+        }
+
+        /* Respeto a usuarios con preferencia de "menos movimiento":
+           desactivamos las animaciones continuas pero conservamos la entrada
+           y el hover para que el botón siga siendo descubrible. */
+        @media (prefers-reduced-motion: reduce) {
+            .social-link,
+            .social-link-featured {
+                animation: socialEnter 0.4s ease var(--enter-delay, 0ms) forwards !important;
+            }
+            .social-link-featured::before { animation: none !important; }
         }
 
         /* Página del catálogo: sin padding superior para que el header pegue arriba */
@@ -2058,26 +2218,53 @@
             align-self: center;
         }
 
-        /* Botón "+ Nuevo producto" y sección categorías en panel */
+        /* ══ Barra de acciones del panel admin ══
+           Una sola fila horizontal. En móvil se desliza con el dedo
+           cuando los botones no caben todos en pantalla. */
         .admin-top-actions {
             display: flex;
             gap: 8px;
-            padding: 0 22px 10px;
-            flex-wrap: wrap;
+            padding: 0 22px 12px;
+            flex-wrap: nowrap;            /* siempre en una sola línea */
+            overflow-x: auto;             /* scroll horizontal cuando no caben */
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x proximity;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
         }
-        .btn-admin-new-product, .btn-admin-manage-cats {
-            padding: 8px 14px;
+        .admin-top-actions::-webkit-scrollbar { height: 4px; }
+        .admin-top-actions::-webkit-scrollbar-track { background: transparent; }
+        .admin-top-actions::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        /* Botón de acción unificado */
+        .btn-admin-action {
+            flex: 0 0 auto;                /* no se encogen */
+            scroll-snap-align: start;
+            padding: 9px 14px;
             border-radius: 50px;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            display: inline-flex; align-items: center; gap: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.15s;
+            white-space: nowrap;
+            font-family: inherit;
+            line-height: 1;
         }
+        .btn-admin-action .bta-icon { font-size: 14px; line-height: 1; }
+        .btn-admin-action .bta-label { white-space: nowrap; }
+
+        /* Variantes de color por acción */
         .btn-admin-new-product {
             background: var(--secondary); color: #fff; border: none;
         }
         .btn-admin-new-product:hover { background: var(--secondary-dark); }
+
         .btn-admin-manage-cats {
             background: #fff; color: var(--secondary-dark);
             border: 1.5px solid var(--secondary);
@@ -2086,18 +2273,21 @@
             background: var(--secondary); color: #fff;
         }
         .btn-admin-export {
-            padding: 8px 14px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex; align-items: center; gap: 5px;
             background: #1a7f4b; color: #fff;
             border: none;
-            transition: all 0.15s;
         }
         .btn-admin-export:hover { background: #146337; }
         .btn-admin-export:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Vistas alternables dentro de la sección de productos */
+        .admin-view {
+            animation: variantFadeIn 0.18s ease;
+        }
+        /* La lista de clientes en modo "vista completa" puede crecer más */
+        .stats-clients-list-full {
+            max-height: none;
+            margin-top: 14px;
+        }
 
         /* ══ Widget de uso del plan ══ */
         .plan-usage-widget {
@@ -2336,16 +2526,102 @@
             color: var(--secondary);
         }
 
-        /* Tabla de precios en admin */
+        /* ══ SECCIÓN DE PRODUCTOS / CLIENTES (panel admin) ══ */
         .admin-products-section {
             padding: 0;
+            /* Separación visual sutil entre la sección anterior (rate / plan)
+               y el bloque de productos: un margen + línea fina dorada
+               translúcida que no compite con el resto del diseño. */
+            margin-top: 14px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(139, 101, 8, 0.18);
+        }
+        /* Header de la sección: título a la izquierda, interruptor a la derecha */
+        .admin-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 22px 14px;
+            flex-wrap: wrap;
         }
         .admin-products-section h4 {
             font-size: 14px;
             font-weight: 700;
             color: var(--text);
-            padding: 16px 22px 8px;
+            padding: 0;       /* el padding ya lo da .admin-section-header */
+            margin: 0;
         }
+
+        /* ── Interruptor de cambio de vista (Productos ↔ Usuarios) ──
+           Estilo "segmented control" con un thumb que se desliza.
+           Cada lado tiene su color identificativo cuando está activo. */
+        .admin-view-switch {
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        .admin-view-switch:focus-visible .avs-track {
+            box-shadow: 0 0 0 3px rgba(139, 101, 8, 0.25);
+        }
+        .avs-track {
+            position: relative;
+            display: inline-flex;
+            background: var(--bg);
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            padding: 3px;
+            font-size: 11.5px;
+            font-weight: 700;
+            line-height: 1;
+            transition: border-color 0.2s ease;
+        }
+        .avs-option {
+            position: relative;
+            z-index: 2;
+            padding: 7px 12px;
+            border-radius: 50px;
+            color: var(--text-light);
+            transition: color 0.25s ease;
+            white-space: nowrap;
+        }
+        /* Thumb deslizante: tamaño/posición controlados por el atributo data-view */
+        .avs-thumb {
+            position: absolute;
+            z-index: 1;
+            top: 3px;
+            bottom: 3px;
+            border-radius: 50px;
+            transition: left 0.28s cubic-bezier(0.34,1.56,0.64,1),
+                        width 0.28s cubic-bezier(0.34,1.56,0.64,1),
+                        background 0.25s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+        }
+        /* Estado: vista PRODUCTOS activa → thumb a la izquierda, color dorado */
+        .admin-view-switch[data-view="products"] .avs-thumb {
+            left: 3px;
+            width: calc(50% - 3px);
+            background: var(--secondary);
+        }
+        .admin-view-switch[data-view="products"] .avs-products { color: #fff; }
+        .admin-view-switch[data-view="products"] .avs-track {
+            border-color: var(--secondary);
+        }
+        /* Estado: vista USUARIOS activa → thumb a la derecha, color azul */
+        .admin-view-switch[data-view="users"] .avs-thumb {
+            left: 50%;
+            width: calc(50% - 3px);
+            background: #2a4d8f;
+        }
+        .admin-view-switch[data-view="users"] .avs-users { color: #fff; }
+        .admin-view-switch[data-view="users"] .avs-track {
+            border-color: #2a4d8f;
+        }
+        /* Hover sutil sobre el thumb */
+        .admin-view-switch:hover .avs-thumb { filter: brightness(1.05); }
+
+        /* Tabla de precios en admin (selector legacy mantenido por compatibilidad) */
         .admin-search-bar {
             padding: 0 22px 12px;
             display: flex;
@@ -3492,6 +3768,507 @@
         }
         .ad-banner.hidden { display: none; }
 
+        /* ══════════════════════════════════════
+        SISTEMA DE AUTENTICACIÓN DE CLIENTES
+        ══════════════════════════════════════ */
+
+        /* Botones de auth en la landing page */
+        .auth-buttons-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 0 16px;
+        }
+        /* Mensaje informativo que avisa que el catálogo requiere sesión */
+        .auth-required-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 14px auto 14px;
+            padding: 10px 16px;
+            max-width: 420px;
+            background: rgba(139, 101, 8, 0.08);
+            border: 1px solid rgba(139, 101, 8, 0.18);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 12.5px;
+            line-height: 1.45;
+            text-align: left;
+        }
+        .auth-required-hint svg { color: var(--secondary); }
+        .auth-required-hint strong { color: var(--secondary); font-weight: 700; }
+        .btn-auth-login {
+            padding: 11px 28px;
+            border-radius: 50px;
+            border: 2px solid var(--secondary);
+            background: transparent;
+            color: var(--secondary);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+        }
+        .btn-auth-login:hover {
+            background: var(--secondary);
+            color: #fff;
+        }
+        .btn-auth-register {
+            padding: 11px 28px;
+            border-radius: 50px;
+            border: none;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+            box-shadow: 0 4px 20px rgba(139,101,8,0.25);
+        }
+        .btn-auth-register:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Botón de perfil (icono de persona) reemplaza la tuerquita cuando hay sesión */
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 9px 14px;
+            border: 1.5px solid var(--primary);
+            border-radius: 50px;
+            background: transparent;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .profile-btn:hover {
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+        .profile-btn svg { width: 16px; height: 16px; }
+
+        /* Saludo del usuario logueado en el catálogo */
+        .user-greeting {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 500;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Modal de auth (registro / login de clientes) */
+        .auth-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-modal-overlay.open { display: flex; }
+        .auth-modal {
+            background: #fff;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+            animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .auth-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 22px 16px;
+            border-bottom: 1px solid var(--bg2);
+        }
+        .auth-modal-header h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .auth-modal-close {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 22px;
+            line-height: 1;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+        .auth-modal-close:hover { background: var(--bg2); }
+
+        /* Tabs de login / registro */
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--bg2);
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+        }
+        .auth-tab.active {
+            color: var(--secondary);
+            border-bottom-color: var(--secondary);
+        }
+
+        .auth-modal-body {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .auth-field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .auth-field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .auth-field input {
+            padding: 10px 14px;
+            border: 1.5px solid var(--primary);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text);
+            background: var(--bg);
+            transition: border-color 0.18s;
+        }
+        .auth-field input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(184,134,11,0.12);
+        }
+        /* ─── Campo de contraseña con botón "ojo" ───
+           El input vive dentro de un wrapper relativo y el botón se
+           posiciona absoluto a la derecha sin invadir el área de texto. */
+        .auth-pwd-wrap {
+            position: relative;
+            display: flex;
+            align-items: stretch;
+        }
+        .auth-pwd-wrap input {
+            flex: 1;
+            padding-right: 44px;   /* deja espacio para el botón ojo */
+            /* Hereda los estilos de .auth-field input */
+        }
+        .auth-pwd-toggle {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: color 0.15s, background 0.15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .auth-pwd-toggle:hover {
+            color: var(--secondary);
+            background: rgba(139, 101, 8, 0.08);
+        }
+        .auth-pwd-toggle:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--secondary);
+        }
+        .auth-pwd-toggle svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+        /* Por defecto: contraseña oculta → mostramos icono "ojo abierto"
+           (significa "presiona aquí para VER"). El "ojo tachado" queda
+           escondido. Cuando aria-pressed="true" se intercambian. */
+        .auth-pwd-toggle .eye-closed { display: none; }
+        .auth-pwd-toggle[aria-pressed="true"] .eye-open { display: none; }
+        .auth-pwd-toggle[aria-pressed="true"] .eye-closed { display: block; }
+        .auth-pwd-toggle[aria-pressed="true"] {
+            color: var(--secondary);
+        }
+        .auth-hint {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: -8px;
+        }
+        .auth-error {
+            font-size: 12px;
+            color: #e63946;
+            font-weight: 600;
+            display: none;
+            background: #fff0f0;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #f5c6c6;
+        }
+        .auth-submit-btn {
+            padding: 13px;
+            border-radius: 50px;
+            border: none;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 4px;
+        }
+        .auth-submit-btn:hover { background: var(--secondary-dark); transform: translateY(-1px); }
+        .auth-submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+        /* Modal de perfil del cliente */
+        .profile-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .profile-modal-overlay.open { display: flex; }
+        .profile-modal {
+            background: #fff;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 380px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+            animation: modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .profile-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid var(--bg2);
+        }
+        .profile-modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .profile-modal-body {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .profile-avatar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--primary);
+        }
+        .profile-avatar-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .profile-avatar-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .profile-avatar-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .profile-avatar-sub {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+        .profile-save-status {
+            font-size: 12px;
+            color: var(--text-light);
+            min-height: 16px;
+        }
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+            padding: 0 22px 22px;
+        }
+        .btn-profile-logout {
+            flex: 1;
+            padding: 11px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            background: transparent;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-profile-logout:hover { border-color: #e63946; color: #e63946; }
+        .btn-profile-save {
+            flex: 1;
+            padding: 11px;
+            border-radius: 50px;
+            border: none;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-profile-save:hover { background: var(--secondary-dark); }
+
+        /* Contador minimalista de clientes en el footer de la landing */
+        .client-counter {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg2);
+            border-top: 1px solid var(--primary);
+            font-size: 12px;
+            color: var(--text-light);
+            letter-spacing: 0.3px;
+        }
+        .client-counter.visible { display: flex; }
+        .client-counter-num {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        /* Sección de estadísticas en el panel admin */
+        .admin-stats-section {
+            padding: 0 0 12px;
+            border-top: 1px solid var(--primary);
+        }
+        .admin-stats-section h4 {
+            font-size: 14px;
+            font-weight: 700;
+            padding: 16px 22px 12px;
+        }
+        .stats-counter-card {
+            margin: 0 22px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            border-radius: var(--radius-sm);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .stats-counter-num {
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .stats-counter-label {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .stats-counter-sub {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+        .stats-clients-list {
+            margin: 12px 22px 0;
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-sm);
+        }
+        .stats-clients-list::-webkit-scrollbar { width: 4px; }
+        .stats-clients-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+        .stats-client-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--bg2);
+            font-size: 13px;
+        }
+        .stats-client-row:last-child { border-bottom: none; }
+        .stats-client-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .stats-client-info { flex: 1; min-width: 0; }
+        .stats-client-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .stats-client-sub {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+        .stats-empty {
+            padding: 20px;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
         /* toast notificación */
         /* Notificación flotante del carrito: aparece brevemente al añadir un producto */
         #cartToast {
@@ -3614,6 +4391,207 @@
     letter-spacing: 0.04em;
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   PANEL DE ADMIN — AJUSTES MÓVILES
+   El panel y sus modales (editor de productos, gestor de categorías,
+   creador de variantes) deben ser cómodos en pantallas pequeñas.
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+    /* Panel admin: full-screen en móvil para aprovechar toda el área */
+    .admin-panel-overlay {
+        padding: 0;
+        align-items: stretch;
+    }
+    .admin-panel {
+        max-width: 100%;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    /* Header sticky para que el botón de cerrar siempre esté a la mano */
+    .admin-panel-header {
+        padding: 14px 16px;
+        flex-shrink: 0;
+    }
+    .admin-panel-header h3 {
+        font-size: 15px;
+    }
+    /* Contenido scrolleable entre header y footer */
+    .admin-panel-content,
+    .admin-panel-body,
+    .admin-panel > div:not(.admin-panel-header):not(.admin-panel-footer) {
+        /* nada — solo asegurar scroll del wrapper */
+    }
+    .admin-panel {
+        overflow-y: auto;
+    }
+    /* Reducir padding lateral en secciones */
+    .admin-rate-section,
+    .admin-stats-section h4 {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    .admin-rate-section { padding: 14px 16px; }
+    .stats-counter-card { margin: 0 16px; padding: 14px 16px; }
+    .stats-counter-num { font-size: 26px; }
+    .stats-clients-list { margin: 10px 16px 0; max-height: 320px; }
+
+    /* ── Sección de productos / clientes en móvil ── */
+    /* El header (título + interruptor) respeta el padding general */
+    .admin-section-header {
+        padding: 0 16px 12px;
+        gap: 10px;
+        /* Si título e interruptor no caben en una línea, pasan a dos
+           y el interruptor queda alineado a la izquierda en lugar de
+           pegarse al borde derecho. */
+    }
+    .admin-products-section h4 { padding: 0; }
+    /* La barra de acciones tiene padding lateral igual al resto y un
+       margen superior pequeño que la separa del interruptor.
+       En móvil, cuando hay scroll horizontal, el padding de 16px asegura
+       que el primer botón no quede pegado al borde izquierdo. */
+    .admin-top-actions {
+        padding: 4px 16px 14px;
+    }
+    /* También damos un poco más de aire entre la barra de botones y la
+       barra de búsqueda / contador para una jerarquía más clara */
+    .admin-search-bar {
+        padding: 6px 16px 12px;
+    }
+    /* La separación visual sutil entre la sección de tasa y la de productos
+       se hace más visible en móvil para no perderla con el padding reducido */
+    .admin-products-section {
+        margin-top: 6px;
+        padding-top: 14px;
+    }
+    /* Switch un pelín más compacto en pantallas pequeñas */
+    .avs-option { padding: 6px 10px; font-size: 11px; }
+    .apr-main {
+        padding: 12px 12px;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .apr-thumb, .apr-thumb-fallback { width: 44px; height: 44px; }
+    .apr-name-block {
+        flex: 1 1 calc(100% - 60px);
+        min-width: 0;
+    }
+    .apr-name { font-size: 13px; }
+    .apr-cat { font-size: 10.5px; }
+    /* Precio y acciones en una línea propia debajo del nombre,
+       sin margen artificial — ocupan todo el ancho disponible. */
+    .apr-price-block, .apr-actions {
+        margin-left: 0 !important;
+        margin-top: 6px;
+        width: 100%;
+        justify-content: flex-start;
+    }
+    .apr-actions { gap: 8px; flex-wrap: wrap; }
+    .apr-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 9px 10px;
+        font-size: 12px;
+        min-height: 36px;
+    }
+    .apr-btn span { display: inline !important; }  /* mostrar texto en móvil */
+    .apr-price-inline { padding: 6px 10px; }
+    .apr-price-inline input { width: 90px; font-size: 14px; }
+
+    /* Footer del panel admin: botones full-width apilados */
+    .admin-panel-footer {
+        padding: 12px 16px;
+        gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        position: sticky;
+        bottom: 0;
+        background: var(--bg2);
+        z-index: 5;
+    }
+    .admin-save-status {
+        flex: 0 0 auto;
+        text-align: center;
+        order: -1;
+    }
+    .btn-admin-save, .btn-admin-logout {
+        width: 100%;
+        padding: 12px 18px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MODALES DE EDICIÓN: producto, categorías, variantes
+       Bottom-sheet de pantalla completa, formularios cómodos
+       ═══════════════════════════════════════════════════════════ */
+    .product-editor-overlay {
+        padding: 0;
+        align-items: stretch;
+    }
+    .product-editor {
+        max-width: 100%;
+        max-height: 100vh;
+        height: 100vh;
+        border-radius: 0;
+    }
+    .product-editor-header {
+        padding: 14px 16px;
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 2;
+    }
+    .product-editor-header h3 { font-size: 15px; }
+    .product-editor-body {
+        padding: 16px;
+    }
+    .product-editor-footer {
+        padding: 12px 16px;
+        flex-direction: column-reverse;
+        gap: 8px;
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        z-index: 2;
+    }
+    .product-editor-footer button {
+        width: 100%;
+        min-height: 44px;
+        font-size: 14px;
+        padding: 12px;
+    }
+    /* Inputs del editor: más altos para tap cómodo y sin auto-zoom en iOS */
+    .pe-field input[type="text"],
+    .pe-field input[type="number"],
+    .pe-field input[type="url"],
+    .pe-field select,
+    .pe-field textarea {
+        font-size: 16px !important;  /* >=16px previene zoom en iOS */
+        padding: 11px 12px !important;
+        min-height: 44px;
+    }
+    .pe-field textarea { min-height: 80px; }
+    .pe-field label { font-size: 11px; }
+
+    /* Variantes dentro del editor: cada fila apilada */
+    .admin-variants-section { padding-top: 14px; }
+    .admin-variants-header { gap: 10px; }
+    .admin-add-variant-btn { padding: 8px 14px; font-size: 12px; min-height: 38px; }
+}
+
+/* En pantallas muy pequeñas, ajustes adicionales */
+@media (max-width: 380px) {
+    .apr-actions { flex-direction: column; }
+    .apr-btn { width: 100%; }
+    .btn-admin-action { padding: 8px 12px; font-size: 11.5px; }
+    .admin-panel-header h3 { font-size: 14px; }
+}
+
 
 
 
@@ -3639,7 +4617,34 @@
             </div>
             <h1 class="hero-title">Sómos tu ferretería <span>favorita</span></h1>
             <p class="hero-desc">Descubre nuestra amplia gama de soluciones ferreteras para la construcción con materiales de alta calidad.</p>
-            <button class="hero-cta" id="cta-button">Explorar Catálogo</button>
+
+            <!-- CTA "Explorar Catálogo" — solo visible cuando hay sesión activa -->
+            <button class="hero-cta" id="cta-button" style="display:none;">Explorar Catálogo</button>
+
+            <!-- Mensaje informativo: el catálogo requiere sesión -->
+            <div class="auth-required-hint" id="authRequiredHint">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;flex-shrink:0;"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5S13.4 12 12 12s-2.5-1.1-2.5-2.5S10.6 7 12 7zm0 13c-1.86 0-3.6-.91-4.65-2.43-.13-1.93 3.05-2.95 4.65-2.95 1.59 0 4.78 1.02 4.65 2.95C15.6 19.09 13.86 20 12 20z"/></svg>
+                <span>Para acceder al catálogo de productos, primero <strong>inicia sesión</strong> o <strong>crea una cuenta</strong>.</span>
+            </div>
+
+            <!-- Botones de autenticación (se ocultan cuando hay sesión activa) -->
+            <div class="auth-buttons-bar" id="authButtonsBar">
+                <button class="btn-auth-login" onclick="openAuthModal('login')">Iniciar Sesión</button>
+                <button class="btn-auth-register" onclick="openAuthModal('register')">Crear Cuenta</button>
+            </div>
+
+            <!-- Saludo post-login (se muestra cuando hay sesión activa) -->
+            <div id="heroUserGreeting" style="display:none;font-size:13px;color:var(--text-light);font-weight:500;">
+                Hola, <strong id="heroUserName" style="color:var(--secondary);"></strong> 👋
+                <button onclick="clientLogout()" style="margin-left:10px;font-size:12px;color:var(--text-light);border:none;background:transparent;cursor:pointer;text-decoration:underline;">Cerrar sesión</button>
+            </div>
+        </div>
+
+        <!-- Contador minimalista de clientes registrados -->
+        <div class="client-counter" id="clientCounter">
+            <span>👥</span>
+            <span class="client-counter-num" id="clientCounterNum">—</span>
+            <span>clientes se han unido</span>
         </div>
 
         <!-- ══ REDES SOCIALES PORTADA — se generan dinámicamente desde tenant.social_links ══ -->
@@ -3662,9 +4667,14 @@
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                     <span class="loc-text">Ubicación</span>
                 </button>
-                <button class="admin-btn" onclick="openAdminLogin()" title="Panel de administrador">
+                <button class="admin-btn" id="adminGearBtn" onclick="openAdminLogin()" title="Panel de administrador">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.49.49 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 00-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                     <span class="admin-text">Admin</span>
+                </button>
+                <!-- Botón de perfil de cliente (visible cuando hay sesión de cliente activa) -->
+                <button class="profile-btn" id="profileCatalogBtn" style="display:none;" onclick="openProfileModal()" title="Mi perfil">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                    <span class="user-greeting" id="catalogUserGreeting">Perfil</span>
                 </button>
             </div>
 
@@ -3761,6 +4771,107 @@
     </div>
 
     <div id="cartToast"></div>
+
+    <!-- ══ MODAL AUTH (REGISTRO / LOGIN CLIENTES) ══ -->
+    <div class="auth-modal-overlay" id="authModalOverlay" onclick="closeAuthModal(event)">
+        <div class="auth-modal" onclick="event.stopPropagation()">
+            <div class="auth-modal-header">
+                <h3 id="authModalTitle">👤 Acceso al Catálogo</h3>
+                <button class="auth-modal-close" onclick="closeAuthModal(null)">&#x2715;</button>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+                <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Crear Cuenta</button>
+            </div>
+
+            <!-- Panel: Login -->
+            <div id="authPanelLogin" class="auth-modal-body">
+                <div class="auth-field">
+                    <label>Número de Cédula</label>
+                    <input type="text" id="loginCedula" placeholder="Ej: V-12345678" autocomplete="username"/>
+                </div>
+                <div class="auth-field">
+                    <label>Teléfono (contraseña)</label>
+                    <div class="auth-pwd-wrap">
+                        <input type="password" id="loginTelefono" placeholder="Ej: 04141234567" autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLogin()"/>
+                        <button type="button" class="auth-pwd-toggle" data-target="loginTelefono" onclick="togglePasswordVisibility(this)" aria-label="Mostrar contraseña" aria-pressed="false">
+                            <!-- Icono ojo cerrado (estado inicial: contraseña oculta) -->
+                            <svg class="eye-open" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            <svg class="eye-closed" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                        </button>
+                    </div>
+                    <span class="auth-hint">Usa el teléfono con el que te registraste.</span>
+                </div>
+                <div class="auth-error" id="loginError">Cédula o teléfono incorrecto.</div>
+                <button class="auth-submit-btn" id="loginSubmitBtn" onclick="submitLogin()">Entrar</button>
+            </div>
+
+            <!-- Panel: Registro -->
+            <div id="authPanelRegister" class="auth-modal-body" style="display:none;">
+                <div class="auth-field">
+                    <label>Nombre completo</label>
+                    <input type="text" id="regNombre" placeholder="Tu nombre" autocomplete="name"/>
+                </div>
+                <div class="auth-field">
+                    <label>Número de Cédula</label>
+                    <input type="text" id="regCedula" placeholder="Ej: V-12345678" autocomplete="username"/>
+                </div>
+                <div class="auth-field">
+                    <label>Teléfono (será tu contraseña)</label>
+                    <div class="auth-pwd-wrap">
+                        <input type="password" id="regTelefono" placeholder="Ej: 04141234567" autocomplete="new-password"/>
+                        <button type="button" class="auth-pwd-toggle" data-target="regTelefono" onclick="togglePasswordVisibility(this)" aria-label="Mostrar contraseña" aria-pressed="false">
+                            <svg class="eye-open" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                            <svg class="eye-closed" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                        </button>
+                    </div>
+                    <span class="auth-hint">Recuérdalo bien — lo usarás para iniciar sesión.</span>
+                </div>
+                <div class="auth-field">
+                    <label>Dirección de entrega <span style="color:var(--text-light);font-weight:400;">(opcional)</span></label>
+                    <input type="text" id="regDireccion" placeholder="Ej: Urb. Los Pinos, Casa #5"/>
+                </div>
+                <div class="auth-error" id="registerError">Ya existe una cuenta con esa cédula.</div>
+                <button class="auth-submit-btn" id="registerSubmitBtn" onclick="submitRegister()">Crear Cuenta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ MODAL PERFIL DE CLIENTE ══ -->
+    <div class="profile-modal-overlay" id="profileModalOverlay" onclick="closeProfileModal(event)">
+        <div class="profile-modal" onclick="event.stopPropagation()">
+            <div class="profile-modal-header">
+                <h3>👤 Mi Perfil</h3>
+                <button class="auth-modal-close" onclick="closeProfileModal(null)">&#x2715;</button>
+            </div>
+            <div class="profile-modal-body">
+                <div class="profile-avatar">
+                    <div class="profile-avatar-icon" id="profileAvatarInitial">?</div>
+                    <div class="profile-avatar-info">
+                        <div class="profile-avatar-name" id="profileAvatarName">—</div>
+                        <div class="profile-avatar-sub" id="profileAvatarSub">—</div>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label>Nombre</label>
+                    <input type="text" id="profileNombre" placeholder="Tu nombre"/>
+                </div>
+                <div class="auth-field">
+                    <label>Teléfono</label>
+                    <input type="text" id="profileTelefono" placeholder="Ej: 04141234567"/>
+                </div>
+                <div class="auth-field">
+                    <label>Dirección de entrega</label>
+                    <input type="text" id="profileDireccion" placeholder="Ej: Urb. Los Pinos, Casa #5"/>
+                </div>
+                <div class="profile-save-status" id="profileSaveStatus"></div>
+            </div>
+            <div class="profile-actions">
+                <button class="btn-profile-logout" onclick="clientLogout()">Cerrar Sesión</button>
+                <button class="btn-profile-save" onclick="saveProfileChanges()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ══ MODAL LOGIN ADMIN ══ -->
     <!-- ══ MODAL EDITOR DE PRODUCTO ══ -->
@@ -3905,24 +5016,65 @@
                 </div>
             </div>
 
-            <!-- Sección de Productos -->
-            <div class="admin-products-section">
-                <h4>&#x1F4E6; Productos y Variantes</h4>
-                <div class="admin-top-actions">
-                    <button class="btn-admin-new-product" onclick="openProductEditor(null)">➕ Nuevo producto</button>
-                    <button class="btn-admin-manage-cats" onclick="openCatsManager()">🏷️ Gestionar categorías</button>
-                    <button class="btn-admin-export" onclick="exportCatalogToExcel()">📊 Exportar a Excel</button>
+            <!-- Sección de Productos / Clientes (vistas alternables) -->
+            <div class="admin-products-section" id="adminProductsSection">
+                <!-- Cabecera: título + interruptor para alternar vistas -->
+                <div class="admin-section-header">
+                    <h4 id="adminSectionTitle">&#x1F4E6; Productos y Variantes</h4>
+                    <!-- Interruptor: izquierda = productos / derecha = usuarios.
+                         Cada lado tiene un color identificativo cuando está activo. -->
+                    <div class="admin-view-switch" id="adminViewSwitch" data-view="products" role="switch" aria-checked="false" tabindex="0" onclick="toggleAdminView()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleAdminView();}">
+                        <div class="avs-track">
+                            <span class="avs-option avs-products" aria-hidden="true">📦 Productos</span>
+                            <span class="avs-option avs-users" aria-hidden="true">👥 Usuarios</span>
+                            <span class="avs-thumb"></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="admin-search-bar">
-                    <input type="text" id="adminProductSearch" placeholder="Buscar producto..." oninput="filterAdminProducts()"/>
-                    <button class="admin-filter-btn" id="adminFilterBtn" onclick="toggleAdminCatDropdown(event)">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
-                        <span id="adminFilterLabel">Filtrar</span>
-                        <div class="admin-cat-dropdown" id="adminCatDropdown"></div>
+
+                <!-- Barra de acciones: una sola fila con scroll táctil en móvil.
+                     Los botones de gestión (nuevo producto / categorías / Excel)
+                     son exclusivos de la vista de productos. -->
+                <div class="admin-top-actions" id="adminTopActions" role="toolbar" aria-label="Acciones del panel">
+                    <button class="btn-admin-action btn-admin-new-product" onclick="openProductEditor(null)">
+                        <span class="bta-icon">➕</span><span class="bta-label">Nuevo producto</span>
+                    </button>
+                    <button class="btn-admin-action btn-admin-manage-cats" onclick="openCatsManager()">
+                        <span class="bta-icon">🏷️</span><span class="bta-label">Gestionar categorías</span>
+                    </button>
+                    <button class="btn-admin-action btn-admin-export" onclick="exportCatalogToExcel()">
+                        <span class="bta-icon">📊</span><span class="bta-label">Exportar a Excel</span>
                     </button>
                 </div>
-                <div class="admin-products-list" id="adminProductsList" style="padding: 0 8px 8px;">
-                    <!-- Productos desplegables se insertan dinámicamente -->
+
+                <!-- Vista A: PRODUCTOS (tabla) -->
+                <div class="admin-view admin-view-products" id="adminViewProducts">
+                    <div class="admin-search-bar">
+                        <input type="text" id="adminProductSearch" placeholder="Buscar producto..." oninput="filterAdminProducts()"/>
+                        <button class="admin-filter-btn" id="adminFilterBtn" onclick="toggleAdminCatDropdown(event)">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                            <span id="adminFilterLabel">Filtrar</span>
+                            <div class="admin-cat-dropdown" id="adminCatDropdown"></div>
+                        </button>
+                    </div>
+                    <div class="admin-products-list" id="adminProductsList" style="padding: 0 8px 8px;">
+                        <!-- Productos desplegables se insertan dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Vista B: CLIENTES (contador + lista) -->
+                <div class="admin-view admin-view-users" id="adminViewUsers" style="display:none;">
+                    <div class="stats-counter-card">
+                        <div>
+                            <div class="stats-counter-num" id="statsClientNum">—</div>
+                            <div class="stats-counter-label">clientes registrados</div>
+                            <div class="stats-counter-sub">en este catálogo</div>
+                        </div>
+                        <svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.4)" style="width:48px;height:48px;margin-left:auto;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <div class="stats-clients-list stats-clients-list-full" id="statsClientsList">
+                        <div class="stats-empty">Cargando...</div>
+                    </div>
                 </div>
             </div>
 
@@ -4466,6 +5618,15 @@
             // Paso 2: Aplicar branding y configuración del tenant
             applyTenantBranding();
 
+            // Paso 2b: Restaurar sesión de cliente (si había una activa).
+            // Si el perfil restaurado es admin, también re-activar la
+            // bandera adminLoggedIn para que la tuerquita siga visible y
+            // funcione sin volver a pedir contraseña.
+            CURRENT_CLIENT = loadClientSession();
+            if (CURRENT_CLIENT && CURRENT_CLIENT.role === 'admin') {
+                adminLoggedIn = true;
+            }
+
             // Paso 3: Restaurar carrito del localStorage (ahora con clave tenant-scoped)
             cart = loadCartFromStorage();
 
@@ -4486,6 +5647,9 @@
             renderFilters();
             initFilterScroll();
             updateCartBadge();
+
+            // Inicializar UI de clientes según estado de sesión
+            updateClientUI();
 
             // Insertar banners publicitarios tras renderizar productos
             setTimeout(function() { updateAdsForCategory('all'); }, 100);
@@ -4635,7 +5799,7 @@
             youtube:   '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
             telegram:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.417 15.181l-.397 5.584c.568 0 .814-.244 1.109-.537l2.663-2.545 5.518 4.041c1.012.564 1.725.267 1.998-.931l3.622-16.972.001-.001c.321-1.496-.541-2.081-1.527-1.714l-21.29 8.151c-1.453.564-1.431 1.374-.247 1.741l5.443 1.693 12.643-7.911c.595-.394 1.136-.176.691.218"/></svg>',
             email:     '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.713l-11.985-9.713h23.97l-11.985 9.713zm0 2.574l-12-9.725v15.438h24v-15.438l-12 9.725z"/></svg>',
-            link:      '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/></svg>'
+            link:      '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>'
         };
 
         // Genera los botones de redes sociales en la portada según TENANT.social_links
@@ -4654,14 +5818,32 @@
             }
             if (!links || links.length === 0) { bar.innerHTML = ''; return; }
 
+            // Determinamos el índice del botón "central" para destacarlo con
+            // una animación especial. Si hay un número impar de enlaces, es el
+            // del medio exacto; si es par, tomamos el de la izquierda del centro.
+            var validLinks = [];
+            for (var k = 0; k < links.length; k++) {
+                if (links[k] && links[k].url) validLinks.push(links[k]);
+            }
+            var featuredIndex = validLinks.length > 0
+                ? Math.floor((validLinks.length - 1) / 2)
+                : -1;
+
             var html = '';
-            for (var i = 0; i < links.length; i++) {
-                var l = links[i];
-                if (!l || !l.url) continue;
+            for (var i = 0; i < validLinks.length; i++) {
+                var l = validLinks[i];
                 var iconKey = (l.icon || 'link').toLowerCase();
                 var iconSvg = SOCIAL_ICONS[iconKey] || SOCIAL_ICONS.link;
                 var title = l.name || iconKey;
-                html += '<a href="' + escapeAttr(l.url) + '" target="_blank" rel="noopener" class="social-link" title="' + escapeAttr(title) + '">' + iconSvg + '</a>';
+                // Clases: base + featured (solo el del medio) + delay de entrada
+                // por orden, para que aparezcan en cascada.
+                var classes = 'social-link';
+                if (i === featuredIndex) classes += ' social-link-featured';
+                var delayMs = 80 * i;
+                html += '<a href="' + escapeAttr(l.url) + '" target="_blank" rel="noopener" ' +
+                        'class="' + classes + '" ' +
+                        'style="--enter-delay:' + delayMs + 'ms;" ' +
+                        'title="' + escapeAttr(title) + '">' + iconSvg + '</a>';
             }
             bar.innerHTML = html;
         }
@@ -4928,10 +6110,13 @@
 
             for (var i = 0; i < picked.length; i++) {
                 var product = picked[i];
-                var onclickAttr = 'onclick="showProduct(\'' + product.id + '\')"';
+                // El carrusel es solo decorativo: muestra imágenes sin
+                // permitir entrar al detalle. El acceso al catálogo solo
+                // se da por el botón "Explorar Catálogo" tras iniciar
+                // sesión, para no saltar el sistema de autenticación.
                 if (product.img) {
-                    items += '<div class="carousel-item" style="cursor:pointer;" ' + onclickAttr + '>' +
-                        '<img src="' + product.img + '" alt="' + product.name + '"/>' +
+                    items += '<div class="carousel-item" aria-hidden="true">' +
+                        '<img src="' + product.img + '" alt="" draggable="false"/>' +
                         '</div>';
                 } else {
                     items += '<div class="carousel-item"><div class="placeholder-img">Imagen Promocional</div></div>';
@@ -5200,6 +6385,19 @@
         }
 
         function showCatalog() {
+            // Auth gate: el acceso al catálogo requiere sesión activa
+            // (cliente logueado O admin logueado).
+            if (!CURRENT_CLIENT && !adminLoggedIn) {
+                // Abrir modal de login y avisar al usuario
+                openAuthModal('login');
+                var errEl = document.getElementById('loginError');
+                if (errEl) {
+                    errEl.textContent = 'Inicia sesión o crea una cuenta para explorar el catálogo.';
+                    errEl.style.display = 'block';
+                    errEl.style.color = '#1e6091'; // tono informativo, no rojo
+                }
+                return;
+            }
             navigateTo('catalog');
         }
 
@@ -5207,6 +6405,16 @@
             if (currentPage === 'catalog') {
                 navigateTo('landing');
             } else if (currentPage === 'detail') {
+                // Si el usuario llegó al detalle por un deep link sin tener
+                // sesión (caso típico: alguien que recibió un link compartido),
+                // al darle "atrás" le pedimos iniciar sesión antes de ver el
+                // catálogo completo. showCatalog() se encarga del auth gate:
+                // si hay sesión, navega; si no, abre el modal de login con
+                // el mensaje informativo para que pueda crear cuenta o entrar.
+                if (!CURRENT_CLIENT && !adminLoggedIn) {
+                    showCatalog();    // dispara el modal de login con mensaje
+                    return;
+                }
                 navigateTo('catalog');
             }
         }
@@ -5339,6 +6547,12 @@
             }
 
             var msg = 'Hola! Estoy interesado en: ' + p.name + '. Quisiera conocer disponibilidad.';
+            // Si hay cliente logueado, agregar sus datos al mensaje
+            if (CURRENT_CLIENT) {
+                msg = 'Hola! Mi nombre es *' + CURRENT_CLIENT.nombre + '*, C.I.: ' + CURRENT_CLIENT.cedula + '.\n' +
+                    'Estoy interesado en: *' + p.name + '*. Quisiera conocer disponibilidad.' +
+                    (CURRENT_CLIENT.direccion ? '\nDirección de entrega: ' + CURRENT_CLIENT.direccion : '');
+            }
             var waLink = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
 
             // Build slides
@@ -6046,9 +7260,17 @@
             msg += '\n' + sep + '\n';
             msg += 'Estoy interesado en comprar este producto.\n\n';
             msg += '📋 *DATOS DEL CLIENTE*\n';
-            msg += '👤 Nombre: _______________\n';
-            msg += '🪪 Cédula: _______________\n';
-            msg += '📍 Dirección / Ubicación: _______________\n';
+            // Auto-rellenar si hay cliente logueado, sino dejar campos vacíos
+            if (CURRENT_CLIENT) {
+                msg += '👤 Nombre: ' + CURRENT_CLIENT.nombre + '\n';
+                msg += '🪪 Cédula: ' + CURRENT_CLIENT.cedula + '\n';
+                msg += '📍 Dirección / Ubicación: ' + (CURRENT_CLIENT.direccion || '(no especificada)') + '\n';
+                msg += '📞 Teléfono: ' + CURRENT_CLIENT.telefono + '\n';
+            } else {
+                msg += '👤 Nombre: _______________\n';
+                msg += '🪪 Cédula: _______________\n';
+                msg += '📍 Dirección / Ubicación: _______________\n';
+            }
             msg += sep;
             var btn = document.getElementById('detailBuyNowBtn_' + pid);
             if (btn) btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
@@ -6194,9 +7416,17 @@
             }
             msg += sep + '\n';
             msg += '\uD83D\uDCCB *DATOS DEL CLIENTE*\n';
-            msg += '   \uD83D\uDC64 Nombre: \n';
-            msg += '   \uD83C\uDD94 C\u00E9dula: \n';
-            msg += '   \uD83D\uDCCD Direcci\u00F3n / Ubicaci\u00F3n: \n';
+            // Auto-rellenar si hay cliente logueado
+            if (CURRENT_CLIENT) {
+                msg += '   \uD83D\uDC64 Nombre: ' + CURRENT_CLIENT.nombre + '\n';
+                msg += '   \uD83C\uDD94 C\u00E9dula: ' + CURRENT_CLIENT.cedula + '\n';
+                msg += '   \uD83D\uDCCD Direcci\u00F3n: ' + (CURRENT_CLIENT.direccion || '(no especificada)') + '\n';
+                msg += '   \uD83D\uDCDE Tel\u00E9fono: ' + CURRENT_CLIENT.telefono + '\n';
+            } else {
+                msg += '   \uD83D\uDC64 Nombre: \n';
+                msg += '   \uD83C\uDD94 C\u00E9dula: \n';
+                msg += '   \uD83D\uDCCD Direcci\u00F3n / Ubicaci\u00F3n: \n';
+            }
             msg += sep + '\n\n';
             btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
             btn.target = '_blank';
@@ -6274,6 +7504,47 @@
         var adminRateType = 'dolar'; // dolar | euro | personalizada
         var adminTempPrices = {}; // { product_id: newPrice }
 
+        /* ══════════════════════════════════════════════════════════════════
+           SISTEMA DE AUTENTICACIÓN DE CLIENTES
+           Estado global de la sesión del cliente. Se persiste en
+           localStorage para sobrevivir recargas, cierres de pestaña y
+           reaperturas del navegador. La sesión solo se cierra cuando el
+           usuario hace clic en "Cerrar sesión" explícitamente.
+           ══════════════════════════════════════════════════════════════════ */
+        var CURRENT_CLIENT = null; // { id, nombre, cedula, telefono, direccion, role, tenant_id }
+
+        function clientSessionKey() {
+            return 'gg_client_v1::' + (TENANT ? TENANT.slug : 'default');
+        }
+
+        function saveClientSession(profile) {
+            try { localStorage.setItem(clientSessionKey(), JSON.stringify(profile)); } catch(e) {}
+        }
+
+        function loadClientSession() {
+            try {
+                var raw = localStorage.getItem(clientSessionKey());
+                if (raw) return JSON.parse(raw);
+                // Migración: si quedó algo en sessionStorage de versiones
+                // anteriores, lo movemos a localStorage para no perder la
+                // sesión del usuario.
+                var legacy = sessionStorage.getItem(clientSessionKey());
+                if (legacy) {
+                    try {
+                        localStorage.setItem(clientSessionKey(), legacy);
+                        sessionStorage.removeItem(clientSessionKey());
+                    } catch(e) {}
+                    return JSON.parse(legacy);
+                }
+                return null;
+            } catch(e) { return null; }
+        }
+
+        function clearClientSession() {
+            try { localStorage.removeItem(clientSessionKey()); } catch(e) {}
+            try { sessionStorage.removeItem(clientSessionKey()); } catch(e) {}
+        }
+
         /* ── Load rate config from Supabase on startup ──
            NOTA: Los productos ya no se cargan aquí — eso ocurre en loadProducts()
            que consulta products_full. Esta función solo lee la config de tasa.
@@ -6308,8 +7579,19 @@
 
         /* ── Restaurar estado de navegación al recargar ── */
         // Prioridad:  deep link (URL) > estado guardado > landing (default)
+        // IMPORTANTE: si no hay sesión activa (ni cliente ni admin) NO se
+        // restaura ningún estado de catálogo/detalle — se queda en landing
+        // para forzar el login.
         function restoreAppState() {
-            // 1) Deep link gana si está presente en la URL
+            var hasSession = !!CURRENT_CLIENT || adminLoggedIn;
+
+            // 1) Deep link gana si está presente en la URL.
+            //    NOTA importante: aunque el catálogo requiere sesión, los
+            //    deep links a un producto SÍ se permiten sin sesión —
+            //    de esta forma cuando un cliente logueado comparte el link
+            //    de un producto a otra persona, esa persona puede ver el
+            //    detalle directamente. El auth gate se aplica recién cuando
+            //    intenten volver al catálogo (handleBack).
             var deepPid = getDeepLinkPid();
             if (deepPid) {
                 var found = false;
@@ -6325,6 +7607,11 @@
             // 2) Estado guardado en localStorage
             var state = loadNavState();
             if (!state || !state.page) return;
+
+            // Si no hay sesión, no restaurar catálogo/detalle
+            if (!hasSession && (state.page === 'catalog' || state.page === 'detail')) {
+                return;
+            }
 
             // Si el usuario estaba en el detalle de un producto
             if (state.page === 'detail' && state.detailPid) {
@@ -6465,6 +7752,14 @@
             // Update rate display
             updateAdminRateDisplay();
 
+            // Cargar estadísticas de clientes (en background, para que el
+            // contador esté listo cuando el admin cambie a vista de usuarios).
+            loadAdminStats();
+
+            // Cada vez que se abre el panel, arrancar en la vista de
+            // PRODUCTOS por defecto (no recordar la vista anterior).
+            setAdminView('products');
+
             document.getElementById('adminSaveStatus').textContent = '';
         }
 
@@ -6544,7 +7839,457 @@
 
         function adminLogout() {
             adminLoggedIn = false;
+            // Si el perfil de cliente activo era el de admin, también
+            // hay que limpiarlo — de lo contrario al recargar/relogear
+            // vuelve a entrar como admin automáticamente.
+            if (CURRENT_CLIENT && CURRENT_CLIENT.role === 'admin') {
+                CURRENT_CLIENT = null;
+                clearClientSession();
+            }
             closeAdminPanel(null);
+            // Refrescar UI para reflejar que ya no hay sesión admin.
+            updateClientUI();
+            // Si el usuario está actualmente en catálogo/detalle y no tiene
+            // sesión de cliente, devolverlo a landing.
+            if (!CURRENT_CLIENT && (currentPage === 'catalog' || currentPage === 'detail')) {
+                navigateTo('landing');
+            }
+        }
+
+        /* ══════════════════════════════════════════════════════════════════
+           AUTENTICACIÓN DE CLIENTES — funciones completas
+           ══════════════════════════════════════════════════════════════════ */
+
+        /* ── Inicializar UI según estado de sesión ── */
+        function updateClientUI() {
+            var isClient = !!CURRENT_CLIENT;
+            var isAdmin = adminLoggedIn;
+            // Si el perfil del cliente tiene role='admin', tratarlo también
+            // como admin para el renderizado de la UI (tuerquita en vez de
+            // icono de perfil) — el plan dice que el admin no debe ver dos
+            // íconos compitiendo.
+            var clientIsAdminRole = isClient && CURRENT_CLIENT.role === 'admin';
+            // ¿Hay alguna sesión válida (cliente regular o admin)?
+            var hasSession = isClient || isAdmin;
+
+            // Landing: botones auth vs saludo
+            var authBar = document.getElementById('authButtonsBar');
+            var greeting = document.getElementById('heroUserGreeting');
+            var heroName = document.getElementById('heroUserName');
+            if (authBar) authBar.style.display = hasSession ? 'none' : '';
+            if (greeting) greeting.style.display = hasSession ? '' : 'none';
+            if (heroName && isClient) heroName.textContent = CURRENT_CLIENT.nombre.split(' ')[0];
+            else if (heroName && isAdmin) heroName.textContent = 'Admin';
+
+            // Hero CTA "Explorar Catálogo" — solo visible con sesión activa
+            var ctaBtn = document.getElementById('cta-button');
+            if (ctaBtn) ctaBtn.style.display = hasSession ? '' : 'none';
+
+            // Mensaje "inicia sesión para ver el catálogo" — al revés
+            var authHint = document.getElementById('authRequiredHint');
+            if (authHint) authHint.style.display = hasSession ? 'none' : '';
+
+            // Catálogo: tuerquita vs botón perfil
+            var gearBtn = document.getElementById('adminGearBtn');
+            var profileBtn = document.getElementById('profileCatalogBtn');
+            var catalogGreeting = document.getElementById('catalogUserGreeting');
+
+            // Por defecto: la tuerquita aparece si NO hay cliente regular logueado
+            if (gearBtn) {
+                gearBtn.style.display = (isClient && !clientIsAdminRole) ? 'none' : '';
+            }
+            // El icono de perfil solo aparece para clientes regulares (no admin)
+            if (profileBtn) {
+                profileBtn.style.display = (isClient && !clientIsAdminRole) ? '' : 'none';
+                if (catalogGreeting && isClient) {
+                    catalogGreeting.textContent = CURRENT_CLIENT.nombre.split(' ')[0];
+                }
+            }
+
+            // Si es admin logueado por contraseña: mostrar tuerquita siempre
+            if (isAdmin && gearBtn) gearBtn.style.display = '';
+
+            // Contador de clientes en landing
+            loadClientCounter();
+        }
+
+        /* ── Cargar contador de clientes ── */
+        async function loadClientCounter() {
+            if (!TENANT) return;
+            try {
+                var { count, error } = await supabase
+                    .from('perfiles')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('tenant_id', TENANT.id)
+                    .eq('role', 'cliente');
+                if (!error && count >= 0) {
+                    var counterEl = document.getElementById('clientCounter');
+                    var numEl = document.getElementById('clientCounterNum');
+                    if (counterEl && numEl) {
+                        numEl.textContent = count;
+                        if (count > 0) counterEl.classList.add('visible');
+                    }
+                }
+            } catch(e) { /* silencioso */ }
+        }
+
+        /* ── Abrir modal de auth ── */
+        function openAuthModal(tab) {
+            if (CURRENT_CLIENT) { openProfileModal(); return; }
+            document.getElementById('authModalOverlay').classList.add('open');
+            switchAuthTab(tab || 'login');
+            clearAuthErrors();
+        }
+
+        function closeAuthModal(event) {
+            if (event === null || event.target === document.getElementById('authModalOverlay')) {
+                document.getElementById('authModalOverlay').classList.remove('open');
+                clearAuthErrors();
+            }
+        }
+
+        function clearAuthErrors() {
+            var errs = document.querySelectorAll('.auth-error');
+            for (var i = 0; i < errs.length; i++) errs[i].style.display = 'none';
+            var inputs = document.querySelectorAll('#authModalOverlay input');
+            for (var j = 0; j < inputs.length; j++) inputs[j].value = '';
+            // Resetear los botones de "ojo" al estado oculto (más seguro:
+            // la contraseña debe arrancar siempre oculta cada vez que se
+            // abre/limpia el modal, no recordar lo que el usuario tenía).
+            var toggles = document.querySelectorAll('#authModalOverlay .auth-pwd-toggle');
+            for (var k = 0; k < toggles.length; k++) {
+                var btn = toggles[k];
+                btn.setAttribute('aria-pressed', 'false');
+                btn.setAttribute('aria-label', 'Mostrar contraseña');
+                var targetId = btn.getAttribute('data-target');
+                var targetInput = document.getElementById(targetId);
+                if (targetInput) targetInput.type = 'password';
+            }
+        }
+
+        // Alterna la visibilidad del campo de contraseña asociado a este botón.
+        // El botón debe tener data-target con el id del input.
+        function togglePasswordVisibility(btn) {
+            if (!btn) return;
+            var targetId = btn.getAttribute('data-target');
+            var input = document.getElementById(targetId);
+            if (!input) return;
+            var isHidden = input.type === 'password';
+            // Si está oculta → mostrarla. Si está visible → ocultarla.
+            input.type = isHidden ? 'text' : 'password';
+            btn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+            btn.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        }
+
+        function switchAuthTab(tab) {
+            var isLogin = tab === 'login';
+            document.getElementById('tabLogin').classList.toggle('active', isLogin);
+            document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+            document.getElementById('authPanelLogin').style.display = isLogin ? '' : 'none';
+            document.getElementById('authPanelRegister').style.display = isLogin ? 'none' : '';
+            document.getElementById('authModalTitle').textContent = isLogin ? '🔐 Iniciar Sesión' : '✨ Crear Cuenta';
+            var firstInput = isLogin
+                ? document.getElementById('loginCedula')
+                : document.getElementById('regNombre');
+            if (firstInput) setTimeout(function(){ firstInput.focus(); }, 120);
+        }
+
+        /* ── LOGIN ── */
+        async function submitLogin() {
+            var cedula   = (document.getElementById('loginCedula').value || '').trim();
+            var telefono = (document.getElementById('loginTelefono').value || '').trim();
+            var errorEl  = document.getElementById('loginError');
+            var btn      = document.getElementById('loginSubmitBtn');
+
+            if (!cedula || !telefono) {
+                errorEl.textContent = 'Por favor completa todos los campos.';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (!TENANT) { errorEl.textContent = 'Error de catálogo. Recarga la página.'; errorEl.style.display = 'block'; return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Verificando...';
+            errorEl.style.display = 'none';
+
+            try {
+                var { data, error } = await supabase
+                    .from('perfiles')
+                    .select('*')
+                    .eq('tenant_id', TENANT.id)
+                    .eq('cedula', cedula)
+                    .maybeSingle();
+
+                if (error || !data) {
+                    errorEl.textContent = 'No encontramos una cuenta con esa cédula.';
+                    errorEl.style.display = 'block';
+                } else if (data.telefono !== telefono) {
+                    errorEl.textContent = 'Teléfono incorrecto. Intenta de nuevo.';
+                    errorEl.style.display = 'block';
+                } else {
+                    // Login exitoso
+                    CURRENT_CLIENT = data;
+                    saveClientSession(data);
+                    closeAuthModal(null);
+                    // Si el perfil tiene role='admin', activamos también la
+                    // sesión de admin (para que la tuerquita esté disponible
+                    // sin pedir contraseña), pero NO abrimos el panel: el
+                    // admin va al catálogo como cualquier cliente y entra
+                    // al panel cuando él clickea la tuerquita.
+                    if (data.role === 'admin') {
+                        adminLoggedIn = true;
+                    }
+                    updateClientUI();
+                    navigateTo('catalog');
+                }
+            } catch(e) {
+                errorEl.textContent = 'Error de conexión. Intenta más tarde.';
+                errorEl.style.display = 'block';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Entrar';
+        }
+
+        /* ── REGISTRO ── */
+        async function submitRegister() {
+            var nombre    = (document.getElementById('regNombre').value || '').trim();
+            var cedula    = (document.getElementById('regCedula').value || '').trim();
+            var telefono  = (document.getElementById('regTelefono').value || '').trim();
+            var direccion = (document.getElementById('regDireccion').value || '').trim();
+            var errorEl   = document.getElementById('registerError');
+            var btn       = document.getElementById('registerSubmitBtn');
+
+            if (!nombre || !cedula || !telefono) {
+                errorEl.textContent = 'Nombre, cédula y teléfono son obligatorios.';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (!TENANT) { errorEl.textContent = 'Error de catálogo. Recarga la página.'; errorEl.style.display = 'block'; return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Registrando...';
+            errorEl.style.display = 'none';
+
+            try {
+                var { data, error } = await supabase
+                    .from('perfiles')
+                    .insert([{
+                        tenant_id: TENANT.id,
+                        nombre:    nombre,
+                        cedula:    cedula,
+                        telefono:  telefono,
+                        direccion: direccion,
+                        role:      'cliente'
+                    }])
+                    .select()
+                    .single();
+
+                if (error) {
+                    if (error.code === '23505') {
+                        errorEl.textContent = 'Ya existe una cuenta con esa cédula en este catálogo.';
+                    } else {
+                        errorEl.textContent = 'Error al registrar: ' + (error.message || 'desconocido');
+                    }
+                    errorEl.style.display = 'block';
+                } else {
+                    CURRENT_CLIENT = data;
+                    saveClientSession(data);
+                    closeAuthModal(null);
+                    updateClientUI();
+                    // Tras registro exitoso: ir directo al catálogo
+                    // (el registro siempre es role='cliente').
+                    navigateTo('catalog');
+                }
+            } catch(e) {
+                errorEl.textContent = 'Error de conexión. Intenta más tarde.';
+                errorEl.style.display = 'block';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'Crear Cuenta';
+        }
+
+        /* ── CERRAR SESIÓN (cliente) ── */
+        function clientLogout() {
+            // Cerrar sesión limpia tanto el perfil de cliente como la
+            // bandera de admin (en caso de que el perfil tuviera role='admin').
+            CURRENT_CLIENT = null;
+            adminLoggedIn = false;
+            clearClientSession();
+            closeProfileModal(null);
+            updateClientUI();
+            // Si el cliente está en el catálogo/detalle al cerrar sesión,
+            // debe volver al landing porque el catálogo requiere sesión.
+            if (currentPage === 'catalog' || currentPage === 'detail') {
+                navigateTo('landing');
+            }
+        }
+
+        /* ── MODAL DE PERFIL ── */
+        function openProfileModal() {
+            if (!CURRENT_CLIENT) return;
+            document.getElementById('profileModalOverlay').classList.add('open');
+            document.getElementById('profileAvatarInitial').textContent = (CURRENT_CLIENT.nombre || '?').charAt(0).toUpperCase();
+            document.getElementById('profileAvatarName').textContent = CURRENT_CLIENT.nombre;
+            document.getElementById('profileAvatarSub').textContent = 'C.I.: ' + CURRENT_CLIENT.cedula;
+            document.getElementById('profileNombre').value = CURRENT_CLIENT.nombre || '';
+            document.getElementById('profileTelefono').value = CURRENT_CLIENT.telefono || '';
+            document.getElementById('profileDireccion').value = CURRENT_CLIENT.direccion || '';
+            document.getElementById('profileSaveStatus').textContent = '';
+        }
+
+        function closeProfileModal(event) {
+            if (event === null || event.target === document.getElementById('profileModalOverlay')) {
+                document.getElementById('profileModalOverlay').classList.remove('open');
+            }
+        }
+
+        async function saveProfileChanges() {
+            if (!CURRENT_CLIENT) return;
+            var nombre    = (document.getElementById('profileNombre').value || '').trim();
+            var telefono  = (document.getElementById('profileTelefono').value || '').trim();
+            var direccion = (document.getElementById('profileDireccion').value || '').trim();
+            var statusEl  = document.getElementById('profileSaveStatus');
+
+            if (!nombre || !telefono) {
+                statusEl.textContent = '⚠️ Nombre y teléfono son obligatorios.';
+                statusEl.style.color = '#e63946';
+                return;
+            }
+
+            statusEl.textContent = 'Guardando...';
+            statusEl.style.color = 'var(--text-light)';
+
+            try {
+                var { data, error } = await supabase
+                    .from('perfiles')
+                    .update({ nombre: nombre, telefono: telefono, direccion: direccion })
+                    .eq('id', CURRENT_CLIENT.id)
+                    .eq('tenant_id', TENANT.id)
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                CURRENT_CLIENT = data;
+                saveClientSession(data);
+                updateClientUI();
+                statusEl.textContent = '✅ Guardado correctamente';
+                statusEl.style.color = '#2d8a4e';
+                document.getElementById('profileAvatarInitial').textContent = (nombre).charAt(0).toUpperCase();
+                document.getElementById('profileAvatarName').textContent = nombre;
+            } catch(e) {
+                statusEl.textContent = '❌ Error al guardar: ' + (e.message || 'desconocido');
+                statusEl.style.color = '#e63946';
+            }
+        }
+
+        /* ══════════════════════════════════════════════════════════════════
+           ESTADÍSTICAS DE CLIENTES EN EL PANEL ADMIN
+           ══════════════════════════════════════════════════════════════════ */
+        async function loadAdminStats() {
+            if (!TENANT) return;
+            var numEl  = document.getElementById('statsClientNum');
+            var listEl = document.getElementById('statsClientsList');
+            if (!numEl || !listEl) return;
+
+            numEl.textContent = '...';
+            listEl.innerHTML = '<div class="stats-empty">Cargando...</div>';
+
+            try {
+                var { data, error } = await supabase
+                    .from('perfiles')
+                    .select('*')
+                    .eq('tenant_id', TENANT.id)
+                    .eq('role', 'cliente')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                var clientes = data || [];
+                numEl.textContent = clientes.length;
+
+                if (clientes.length === 0) {
+                    listEl.innerHTML = '<div class="stats-empty">Aún no hay clientes registrados.</div>';
+                    return;
+                }
+
+                var html = '';
+                for (var i = 0; i < clientes.length; i++) {
+                    var c = clientes[i];
+                    var initial = (c.nombre || '?').charAt(0).toUpperCase();
+                    var date = c.created_at ? new Date(c.created_at).toLocaleDateString('es-VE') : '';
+                    html += '<div class="stats-client-row">' +
+                        '<div class="stats-client-avatar">' + initial + '</div>' +
+                        '<div class="stats-client-info">' +
+                            '<div class="stats-client-name">' + escapeHtml(c.nombre) + '</div>' +
+                            '<div class="stats-client-sub">C.I.: ' + escapeHtml(c.cedula) + ' · ' + escapeHtml(c.telefono || '—') + '</div>' +
+                        '</div>' +
+                        '<div style="font-size:10px;color:var(--text-light);flex-shrink:0;">' + date + '</div>' +
+                    '</div>';
+                }
+                listEl.innerHTML = html;
+
+            } catch(e) {
+                listEl.innerHTML = '<div class="stats-empty">Error al cargar: ' + (e.message || '') + '</div>';
+            }
+        }
+
+        // Alterna entre la vista de productos y la vista de clientes
+        // dentro del panel admin. 'view' puede ser 'products' o 'users'.
+        //  - products: muestra la barra de gestión (Nuevo, Categorías, Excel),
+        //    la barra de búsqueda y la tabla de productos.
+        //  - users: oculta la barra de gestión (esas acciones son exclusivas
+        //    de productos) y muestra el contador grande + lista de clientes.
+        // El interruptor visual se sincroniza vía atributo data-view.
+        function setAdminView(view) {
+            var viewProducts = document.getElementById('adminViewProducts');
+            var viewUsers    = document.getElementById('adminViewUsers');
+            var topActions   = document.getElementById('adminTopActions');
+            var sectionTitle = document.getElementById('adminSectionTitle');
+            var switchEl     = document.getElementById('adminViewSwitch');
+            if (!viewProducts || !viewUsers) return;
+
+            if (view === 'users') {
+                viewProducts.style.display = 'none';
+                viewUsers.style.display    = '';
+                // Las acciones (Nuevo producto / Categorías / Excel) solo
+                // tienen sentido en la vista de productos: las ocultamos.
+                if (topActions) topActions.style.display = 'none';
+                if (sectionTitle) sectionTitle.innerHTML = '👥 Clientes Registrados';
+                if (switchEl) {
+                    switchEl.setAttribute('data-view', 'users');
+                    switchEl.setAttribute('aria-checked', 'true');
+                }
+                // Refrescar la lista al entrar (por si hay nuevos registros)
+                loadAdminStats();
+            } else {
+                viewProducts.style.display = '';
+                viewUsers.style.display    = 'none';
+                if (topActions) topActions.style.display = '';
+                if (sectionTitle) sectionTitle.innerHTML = '📦 Productos y Variantes';
+                if (switchEl) {
+                    switchEl.setAttribute('data-view', 'products');
+                    switchEl.setAttribute('aria-checked', 'false');
+                }
+            }
+        }
+
+        // Handler del interruptor visual: detecta el estado actual y alterna.
+        function toggleAdminView() {
+            var switchEl = document.getElementById('adminViewSwitch');
+            var current = switchEl ? switchEl.getAttribute('data-view') : 'products';
+            setAdminView(current === 'users' ? 'products' : 'users');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g,'&amp;')
+                .replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;');
         }
 
         async function loadAdminCustomRate() {
