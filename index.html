@@ -6043,6 +6043,73 @@
             }
         }
 
+        /* ══════════════════════════════════════════════════════════════════
+           BOTÓN "ATRÁS" DEL MÓVIL — INTEGRACIÓN CON HISTORY API
+           Mantiene una pila lógica de acciones reversibles (modales abiertos
+           y páginas visitadas) y la sincroniza con history.pushState. Cuando
+           el usuario presiona el botón "Atrás" del navegador o del móvil,
+           popstate dispara y deshacemos la última acción en orden inverso:
+              · si hay un modal abierto → cerrarlo
+              · si estamos en detail   → volver al catálogo (con auth gate)
+              · si estamos en catalog  → volver al landing
+              · si estamos en landing  → dejar que el navegador salga del sitio
+           ══════════════════════════════════════════════════════════════════ */
+
+        // Pila de acciones reversibles. Cada item es un objeto con:
+        //   { type: 'page' | 'modal', name: string, close?: function }
+        var backStack = [];
+        var ignoreNextPopstate = false;
+
+        // Empuja un nuevo estado al history y lo registra en la pila.
+        // Llamar SIEMPRE que se abra un modal o se navegue a una nueva página
+        // que el botón atrás deba poder cerrar/retroceder.
+        function pushHistoryState(item) {
+            backStack.push(item);
+            try {
+                history.pushState({ step: backStack.length, name: item.name }, '');
+            } catch(e) { /* ignorar si el navegador no lo soporta */ }
+        }
+
+        // Al cerrar un modal o retroceder MANUALMENTE (no por popstate),
+        // hay que sacar el item de la pila y rebobinar el history sin que
+        // popstate ejecute de nuevo el cierre. Esto evita bucles infinitos.
+        function popHistoryState(name) {
+            // Buscar el último item con ese nombre (case por si se cierran
+            // modales en orden distinto al de apertura)
+            for (var i = backStack.length - 1; i >= 0; i--) {
+                if (backStack[i].name === name) {
+                    backStack.splice(i, 1);
+                    ignoreNextPopstate = true;
+                    try { history.back(); } catch(e) {}
+                    return;
+                }
+            }
+        }
+
+        // Listener global del botón atrás del navegador / móvil.
+        window.addEventListener('popstate', function() {
+            if (ignoreNextPopstate) {
+                // Esto fue causado por nosotros mismos al cerrar un modal
+                // programáticamente — no hacer nada extra.
+                ignoreNextPopstate = false;
+                return;
+            }
+            // Tomar el último item de la pila y deshacerlo
+            var item = backStack.pop();
+            if (!item) return;
+            if (item.type === 'modal' && typeof item.close === 'function') {
+                // Modal abierto → cerrarlo (sin volver a tocar el history,
+                // porque popstate ya consumió un paso del historial).
+                try { item.close(); } catch(e) {}
+            } else if (item.type === 'page') {
+                // Página → ejecutar handleBack que sabe la lógica correcta
+                // (catalog → landing, detail → catalog con auth gate).
+                // Le indicamos que viene de history (fromHistory=true) para
+                // que NO llame history.back() de nuevo (ya lo consumimos).
+                handleBack(true);
+            }
+        });
+
         function setupEventListeners() {
             document.getElementById('cta-button').addEventListener('click', showCatalog);
             document.getElementById('back-catalog-btn').addEventListener('click', handleBack);
@@ -6375,7 +6442,20 @@
                 toEl.getBoundingClientRect();
                 toEl.style.opacity = '';
 
+                var prevPage = currentPage;
                 currentPage = targetId;
+
+                // Sincronizar con la pila del History API. Solo registramos
+                // navegaciones "hacia adelante" (de landing a catalog, de
+                // catalog a detail). Las regresiones son consumidas por
+                // popstate, no las pusheamos.
+                var isForward =
+                    (prevPage === 'landing' && (targetId === 'catalog' || targetId === 'detail')) ||
+                    (prevPage === 'catalog' && targetId === 'detail');
+                if (isForward) {
+                    pushHistoryState({ type: 'page', name: 'page:' + targetId });
+                }
+
                 setTimeout(function() {
                     isTransitioning = false;
                 }, 480);
@@ -6401,16 +6481,41 @@
             navigateTo('catalog');
         }
 
-        function handleBack() {
+        // handleBack puede ser llamado desde el botón visual de "atrás" (clic
+        // del usuario) o desde popstate (botón atrás del navegador/móvil).
+        // En ambos casos hace lo mismo lógicamente; la diferencia es la
+        // sincronización con history.pushState:
+        //   - Si fromHistory=true → popstate ya consumió el paso, no lo tocamos.
+        //   - Si fromHistory=false → llamamos history.back() para mantener
+        //     coherencia entre la pila del navegador y la del usuario.
+        function handleBack(fromHistory) {
             if (currentPage === 'catalog') {
+                if (!fromHistory) {
+                    // El usuario tocó el botón visual; emulamos atrás del nav
+                    // para que la pila no se desincronice. popstate caerá
+                    // dentro del listener y ejecutará handleBack(true).
+                    try { history.back(); return; } catch(e) {}
+                }
+                // Sacar el item correspondiente de nuestra pila lógica
+                for (var i = backStack.length - 1; i >= 0; i--) {
+                    if (backStack[i].name === 'page:catalog') {
+                        backStack.splice(i, 1);
+                        break;
+                    }
+                }
                 navigateTo('landing');
             } else if (currentPage === 'detail') {
-                // Si el usuario llegó al detalle por un deep link sin tener
-                // sesión (caso típico: alguien que recibió un link compartido),
-                // al darle "atrás" le pedimos iniciar sesión antes de ver el
-                // catálogo completo. showCatalog() se encarga del auth gate:
-                // si hay sesión, navega; si no, abre el modal de login con
-                // el mensaje informativo para que pueda crear cuenta o entrar.
+                if (!fromHistory) {
+                    try { history.back(); return; } catch(e) {}
+                }
+                for (var j = backStack.length - 1; j >= 0; j--) {
+                    if (backStack[j].name === 'page:detail') {
+                        backStack.splice(j, 1);
+                        break;
+                    }
+                }
+                // Si el usuario llegó al detalle por un deep link sin sesión,
+                // al volver pedimos login antes de ver el catálogo completo.
                 if (!CURRENT_CLIENT && !adminLoggedIn) {
                     showCatalog();    // dispara el modal de login con mensaje
                     return;
@@ -7010,7 +7115,30 @@
             saveCartToStorage();
         }
 
+        /* ══════════════════════════════════════════════════════════════════
+           AUTH GATE PARA ACCIONES DE COMPRA
+           Helper centralizado: si no hay sesión activa, abre el modal de
+           login con un mensaje informativo y devuelve false (la acción que
+           lo invocó debe abortar). Si hay sesión, devuelve true.
+           Las acciones protegidas son: añadir al carrito, abrir modal de
+           variantes, comprar ahora — el usuario sin sesión puede VER el
+           detalle (caso de deep link compartido) pero no puede comprar.
+           ══════════════════════════════════════════════════════════════════ */
+        function requireAuth(message) {
+            if (CURRENT_CLIENT || adminLoggedIn) return true;
+            // Sin sesión → abrir modal con mensaje contextual
+            openAuthModal('login');
+            var errEl = document.getElementById('loginError');
+            if (errEl) {
+                errEl.textContent = message || 'Inicia sesión o crea una cuenta para continuar.';
+                errEl.style.display = 'block';
+                errEl.style.color = '#1e6091'; // azul informativo, no rojo de error
+            }
+            return false;
+        }
+
         function addToCartById(pid) {
+            if (!requireAuth('Inicia sesión o crea una cuenta para añadir productos al carrito.')) return;
             var p = getProductById(pid);
             if (!p) return;
             // Si el producto tiene variantes → abrir modal selector
@@ -7033,6 +7161,7 @@
         }
 
         function addToCartFromDetail(pid) {
+            if (!requireAuth('Inicia sesión o crea una cuenta para añadir productos al carrito.')) return;
             var p = getProductById(pid);
             if (!p) return;
             // Si el producto tiene variantes → abrir modal selector
@@ -7057,6 +7186,7 @@
            MODAL SELECTOR DE VARIANTES
            ══════════════════════════════════════ */
         function openVariantModal(pid) {
+            if (!requireAuth('Inicia sesión o crea una cuenta para seleccionar una variación del producto.')) return;
             var p = getProductById(pid);
             if (!p) return;
             var vars = getVariantsSorted(pid);
@@ -7106,12 +7236,23 @@
             document.getElementById('variantModalBody').innerHTML = html;
             document.getElementById('variantModalQty').textContent = '1';
             document.getElementById('variantConfirmBtn').disabled = true;
-            document.getElementById('variantModalOverlay').classList.add('open');
+            var vmOverlay = document.getElementById('variantModalOverlay');
+            if (!vmOverlay.classList.contains('open')) {
+                pushHistoryState({
+                    type: 'modal', name: 'variantModal',
+                    close: function(){ closeVariantModal(null); }
+                });
+            }
+            vmOverlay.classList.add('open');
         }
 
         function closeVariantModal(event) {
             if (event === null || event.target === document.getElementById('variantModalOverlay')) {
-                document.getElementById('variantModalOverlay').classList.remove('open');
+                var vmOverlay = document.getElementById('variantModalOverlay');
+                if (vmOverlay.classList.contains('open')) {
+                    popHistoryState('variantModal');
+                }
+                vmOverlay.classList.remove('open');
             }
         }
 
@@ -7135,6 +7276,13 @@
         }
 
         function confirmVariantSelection() {
+            // Defensa en profundidad: aunque openVariantModal ya valida sesión,
+            // bloqueamos también este punto para que no se pueda burlar el gate
+            // manipulando el DOM o invocando la función desde la consola.
+            if (!requireAuth('Inicia sesión o crea una cuenta para añadir esta variación al carrito.')) {
+                closeVariantModal(null);
+                return;
+            }
             var s = variantModalState;
             if (!s.pid || !s.selectedId) return;
             var p = getProductById(s.pid);
@@ -7237,6 +7385,14 @@
 
         // Actualiza el link del botón "Comprar Ahora" con la cantidad actual del contador
         function updateBuyNowLink(pid, event) {
+            // Auth gate: el botón "Comprar Ahora" abre WhatsApp directamente,
+            // así que necesitamos interceptar el click ANTES de que el navegador
+            // siga el href. Si no hay sesión, prevenimos la navegación y
+            // mostramos el modal de login.
+            if (!requireAuth('Inicia sesión o crea una cuenta para comprar este producto.')) {
+                if (event) { event.preventDefault(); event.stopPropagation(); }
+                return;
+            }
             var p = getProductById(pid);
             if (!p) return;
             // Si el producto tiene variantes, interceptar y abrir el modal en vez de ir a WhatsApp
@@ -7285,10 +7441,23 @@
                 panel.classList.remove('hidden');
                 if (overlay) overlay.classList.add('open');
                 renderCartItems();
+                // Que el botón atrás cierre el carrito en lugar de salir
+                pushHistoryState({
+                    type: 'modal', name: 'cartPanel',
+                    close: function(){
+                        // Cerrar panel sin recursión
+                        cartPanelOpen = false;
+                        panel.classList.add('hidden');
+                        if (overlay) overlay.classList.remove('open');
+                        if (cartDeleteMode) exitDeleteMode();
+                    }
+                });
             } else {
                 panel.classList.add('hidden');
                 if (overlay) overlay.classList.remove('open');
                 if (cartDeleteMode) exitDeleteMode();
+                // El usuario cerró manualmente → sincronizar history
+                popHistoryState('cartPanel');
             }
         }
 
@@ -7936,14 +8105,29 @@
         /* ── Abrir modal de auth ── */
         function openAuthModal(tab) {
             if (CURRENT_CLIENT) { openProfileModal(); return; }
-            document.getElementById('authModalOverlay').classList.add('open');
+            var overlay = document.getElementById('authModalOverlay');
+            // Si ya está abierto, no apilamos otro estado (evita duplicar)
+            if (!overlay.classList.contains('open')) {
+                pushHistoryState({
+                    type: 'modal', name: 'authModal',
+                    close: function(){ closeAuthModal(null); }
+                });
+            }
+            overlay.classList.add('open');
             switchAuthTab(tab || 'login');
             clearAuthErrors();
         }
 
         function closeAuthModal(event) {
             if (event === null || event.target === document.getElementById('authModalOverlay')) {
-                document.getElementById('authModalOverlay').classList.remove('open');
+                var overlay = document.getElementById('authModalOverlay');
+                if (overlay.classList.contains('open')) {
+                    // Si fuimos llamados manualmente (clic en X / fuera) hay
+                    // que rebobinar el history. popHistoryState se encarga
+                    // de no entrar en bucle con popstate.
+                    popHistoryState('authModal');
+                }
+                overlay.classList.remove('open');
                 clearAuthErrors();
             }
         }
