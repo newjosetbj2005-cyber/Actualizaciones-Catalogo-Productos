@@ -7,10 +7,19 @@
     <title>Ferretería Golden Gray - 2026</title>
     <link rel="shortcut icon" href="https://i.ibb.co/zTKNMvgL/Golden-Gray-Logo-Recortado.png" type="image/x-icon">
 
-    <!-- SUPABASE SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <!-- SheetJS (XLSX) para exportar Excel -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- ──────────────────────────────────────────────────────────────────
+         CARGA DE LIBRERÍAS EXTERNAS CON FALLBACK AUTOMÁTICO
+         Si cdn.jsdelivr.net está bloqueado por antivirus, DNS privado o
+         firewall del proveedor de internet, el navegador intenta de
+         inmediato descargar la librería desde unpkg.com como respaldo.
+         Esto reduce drásticamente los casos de "no carga nada".
+         ────────────────────────────────────────────────────────────── -->
+    <!-- SUPABASE SDK (con fallback a unpkg) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"
+            onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js';"></script>
+    <!-- SheetJS (XLSX) para exportar Excel (con fallback a unpkg) -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+            onerror="this.onerror=null;this.src='https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';"></script>
 
     <!-- GOOGLE FONTS -->
     <link
@@ -7284,7 +7293,142 @@
             setTimeout(function () { showProduct(pid); }, 120);
         }
 
-        // 2. Función para verificar conexión con Supabase con tiempo límite (Timeout)
+        /* ══════════════════════════════════════════════════════════════════
+           SISTEMA DE DIAGNÓSTICO DE CONEXIÓN
+           Construye un objeto con info técnica útil para diagnosticar por
+           qué el catálogo no pudo cargar. Se muestra al usuario en la
+           pantalla de error y se puede copiar al portapapeles para enviarlo
+           a soporte.
+           ══════════════════════════════════════════════════════════════════ */
+        function buildDiagnostics(ctx) {
+            var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+            return {
+                fecha_local: new Date().toString(),
+                fecha_iso: new Date().toISOString(),
+                url: (window.location && window.location.href) || '',
+                online: !!navigator.onLine,
+                idioma: navigator.language || '',
+                plataforma: navigator.platform || '',
+                user_agent: navigator.userAgent || '',
+                conexion: conn ? {
+                    tipo_efectivo: conn.effectiveType || 'desconocido',
+                    downlink_mbps: (conn.downlink != null) ? conn.downlink : 'desconocido',
+                    rtt_ms: (conn.rtt != null) ? conn.rtt : 'desconocido',
+                    save_data: !!conn.saveData
+                } : 'API no disponible',
+                sdk_supabase_cargado: typeof window.supabase !== 'undefined',
+                cliente_supabase_creado: (typeof supabase !== 'undefined' && supabase !== null),
+                sdk_xlsx_cargado: typeof XLSX !== 'undefined',
+                sdk_init_error: (typeof SUPABASE_INIT_ERROR !== 'undefined') ? SUPABASE_INIT_ERROR : null,
+                contexto: ctx || null
+            };
+        }
+
+        // Convierte el diagnóstico en texto legible (JSON formateado).
+        function diagnosticsToText(diag) {
+            try { return JSON.stringify(diag, null, 2); }
+            catch (e) { return String(diag); }
+        }
+
+        // Copia texto al portapapeles. Funciona en navegadores modernos
+        // (Clipboard API) y antiguos (textarea + execCommand fallback).
+        function copyDiagnosticsToClipboard(text, btn) {
+            function flash(msg) {
+                if (!btn) return;
+                var orig = btn.textContent;
+                btn.textContent = msg;
+                setTimeout(function () { btn.textContent = orig; }, 1800);
+            }
+            function legacyCopy() {
+                try {
+                    var ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.setAttribute('readonly', '');
+                    ta.style.position = 'fixed';
+                    ta.style.top = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    var ok = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    return ok;
+                } catch (e) { return false; }
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text)
+                    .then(function () { flash('✅ Copiado'); })
+                    .catch(function () { flash(legacyCopy() ? '✅ Copiado' : '❌ Falló'); });
+            } else {
+                flash(legacyCopy() ? '✅ Copiado' : '❌ Falló');
+            }
+        }
+
+        // Escapa texto para insertarlo de forma segura en HTML.
+        function escapeHtmlForError(s) {
+            return String(s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        /* Muestra una pantalla de error de conexión enriquecida con
+           diagnóstico técnico expandible. Reutilizable para los 3 casos:
+           sin internet, SDK no cargado, Supabase inalcanzable.
+           opts: { title, reason, likelyCause, errorCode, error } */
+        function showConnectionError(opts) {
+            opts = opts || {};
+            var diag = buildDiagnostics({
+                error_code: opts.errorCode || null,
+                error_msg: opts.error ? (opts.error.message || String(opts.error)) : null,
+                error_name: (opts.error && opts.error.name) || null
+            });
+            var diagText = diagnosticsToText(diag);
+            var diagId = 'conn-diag-' + Date.now();
+            var esc = escapeHtmlForError;
+
+            var html = ''
+                + '<div style="min-height:100vh;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Inter,system-ui,sans-serif;box-sizing:border-box;">'
+                + '  <div style="max-width:520px;width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:18px;padding:32px 26px;text-align:center;">'
+                + '    <div style="font-size:54px;line-height:1;margin-bottom:12px;">⚠️</div>'
+                + '    <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;color:#ff6b6b;">' + esc(opts.title || 'Problema de conexión') + '</h1>'
+                + '    <p style="font-size:15px;line-height:1.5;color:#e0e0e0;margin:0 0 12px;">' + esc(opts.reason || 'No se pudo conectar con el catálogo.') + '</p>'
+                + (opts.likelyCause
+                    ? '    <p style="font-size:13px;line-height:1.55;color:#999;margin:0 0 22px;">' + esc(opts.likelyCause) + '</p>'
+                    : '    <div style="height:14px;"></div>')
+                + '    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:18px;">'
+                + '      <button onclick="window.location.reload()" style="padding:10px 22px;background:#007bff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;">🔄 Reintentar</button>'
+                + '      <button id="' + diagId + '-toggle" type="button" style="padding:10px 22px;background:transparent;color:#bbb;border:1px solid #444;border-radius:8px;cursor:pointer;font-size:14px;">▼ Ver detalles técnicos</button>'
+                + '    </div>'
+                + '    <div id="' + diagId + '" style="display:none;text-align:left;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;padding:14px;margin-top:8px;">'
+                + '      <div style="font-size:11px;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Diagnóstico (compártelo con soporte)</div>'
+                + '      <pre style="margin:0 0 12px;font-size:11px;line-height:1.45;color:#c0c0c0;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;max-height:280px;overflow:auto;">' + esc(diagText) + '</pre>'
+                + '      <button id="' + diagId + '-copy" type="button" style="padding:8px 16px;background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;border-radius:6px;cursor:pointer;font-size:13px;">📋 Copiar diagnóstico</button>'
+                + '    </div>'
+                + '    <p style="font-size:11px;color:#666;margin:18px 0 0;">Código: ' + esc(opts.errorCode || 'UNKNOWN') + '</p>'
+                + '  </div>'
+                + '</div>';
+
+            document.body.innerHTML = html;
+
+            // Wire-up de los botones (más seguro que onclick inline con strings escapados)
+            var toggleBtn = document.getElementById(diagId + '-toggle');
+            var panel = document.getElementById(diagId);
+            if (toggleBtn && panel) {
+                toggleBtn.addEventListener('click', function () {
+                    var hidden = panel.style.display === 'none';
+                    panel.style.display = hidden ? 'block' : 'none';
+                    toggleBtn.textContent = hidden ? '▲ Ocultar detalles' : '▼ Ver detalles técnicos';
+                });
+            }
+            var copyBtn = document.getElementById(diagId + '-copy');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', function () {
+                    copyDiagnosticsToClipboard(diagText, copyBtn);
+                });
+            }
+        }
+
+        // Verifica conexión con Supabase con timeout. Devuelve un objeto
+        // { ok, code?, error? } para que el llamador pueda mostrar un
+        // diagnóstico específico según el tipo de fallo.
         async function checkSupabaseHealth() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos de espera
@@ -7292,38 +7436,56 @@
             try {
                 const { data, error } = await supabase.from('tenants').select('id').limit(1).abortSignal(controller.signal);
                 clearTimeout(timeoutId);
-                if (error) throw error;
-                return true;
+                if (error) {
+                    return { ok: false, code: 'SUPABASE_QUERY_ERROR', error: error };
+                }
+                return { ok: true };
             } catch (err) {
+                clearTimeout(timeoutId);
                 console.error("Error de conexión con el servidor:", err);
-                return false;
+                var code = 'SUPABASE_FETCH_FAILED';
+                if (err && (err.name === 'AbortError' || /aborted/i.test(err.message || ''))) {
+                    code = 'SUPABASE_TIMEOUT';
+                }
+                return { ok: false, code: code, error: err };
             }
         }
 
         async function initializeApp() {
+            // 0. Verificar que el SDK de Supabase haya cargado.
+            // Si SUPABASE_INIT_ERROR no es null o supabase es null, el SDK
+            // nunca se descargó (CDN bloqueado por antivirus, DNS, firewall).
+            if (!supabase || SUPABASE_INIT_ERROR) {
+                showConnectionError({
+                    title: 'No se pudo cargar el catálogo',
+                    reason: 'La librería de conexión (Supabase SDK) no se descargó correctamente.',
+                    likelyCause: 'Esto suele pasar cuando un antivirus, una extensión del navegador, un DNS privado o el firewall del proveedor de internet bloquea los CDN públicos (cdn.jsdelivr.net y unpkg.com). Probá desactivar el antivirus y las extensiones, revisá la fecha y hora del dispositivo, o probá desde otra red.',
+                    errorCode: SUPABASE_INIT_ERROR || 'SDK_NOT_LOADED'
+                });
+                return;
+            }
+
             // 1. Verificar si hay internet básico
             if (!navigator.onLine) {
-                document.body.innerHTML = `
-                    <div style="padding: 20px; text-align: center; font-family: sans-serif; background: #111; color: white; height: 100vh; display: flex; flex-direction: column; justify-content: center;">
-                        <h2 style="color: #ff4d4d;">⚠️ Sin Conexión a Internet</h2>
-                        <p>No tienes conexión a internet. Revisa tu WiFi o datos móviles.</p>
-                        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;">Reintentar conexión</button>
-                    </div>
-                `;
+                showConnectionError({
+                    title: 'Sin conexión a internet',
+                    reason: 'Tu dispositivo indica que no tiene conexión a internet en este momento.',
+                    likelyCause: 'Revisá que el WiFi o los datos móviles estén activos. Si estás en avión o en una zona con poca señal, intentá moverte a un lugar con mejor cobertura.',
+                    errorCode: 'NO_INTERNET'
+                });
                 return;
             }
 
             // 2. Verificar conexión con Supabase
-            const isConnected = await checkSupabaseHealth();
-            if (!isConnected) {
-                document.body.innerHTML = `
-                    <div style="padding: 20px; text-align: center; font-family: sans-serif; background: #111; color: white; height: 100vh; display: flex; flex-direction: column; justify-content: center;">
-                        <h2 style="color: #ff4d4d;">⚠️ Problema de Conexión Local</h2>
-                        <p>El catálogo no puede conectar con la base de datos.</p>
-                        <p style="font-size: 0.9em; color: #888;">Esto puede deberse a un bloqueo de tu proveedor de internet o señal muy débil.</p>
-                        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;">Reintentar conexión</button>
-                    </div>
-                `;
+            const healthResult = await checkSupabaseHealth();
+            if (!healthResult.ok) {
+                showConnectionError({
+                    title: 'Problema de conexión con el catálogo',
+                    reason: 'Tenés internet, pero tu navegador no logró comunicarse con la base de datos del catálogo.',
+                    likelyCause: 'Las causas más comunes son: (1) un antivirus o extensión bloqueando supabase.co, (2) un DNS privado o VPN filtrando el dominio, (3) la fecha y hora del dispositivo está mal (rompe los certificados HTTPS). Revisá esos tres puntos.',
+                    errorCode: healthResult.code || 'SUPABASE_UNREACHABLE',
+                    error: healthResult.error
+                });
                 return;
             }
 
@@ -9504,7 +9666,27 @@
 
         var SUPABASE_URL = 'https://veqoslxoezvtsqamvpdm.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_oPsy5PwNv9XmQoQp0GHM6g_cFIOt5QQ';
-        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ── Inicialización segura del cliente Supabase ──
+        // Si window.supabase no existe, significa que el SDK no se descargó
+        // (normalmente porque un antivirus, extensión, DNS privado o firewall
+        // del proveedor bloqueó cdn.jsdelivr.net Y unpkg.com). En vez de
+        // dejar que la app explote con un TypeError, guardamos el motivo y
+        // initializeApp() mostrará una pantalla de error clara con
+        // diagnóstico técnico.
+        var supabase = null;
+        var SUPABASE_INIT_ERROR = null;
+        try {
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else {
+                SUPABASE_INIT_ERROR = 'SDK_NOT_LOADED';
+                console.error('[Init] El SDK de Supabase no se cargó desde el CDN.');
+            }
+        } catch (e) {
+            SUPABASE_INIT_ERROR = 'SDK_INIT_FAILED: ' + ((e && e.message) ? e.message : 'desconocido');
+            console.error('[Init] Error creando cliente Supabase:', e);
+        }
         var adminLoggedIn = false;
         var adminRateType = 'dolar'; // dolar | euro | personalizada
         var adminTempPrices = {}; // { product_id: newPrice }
