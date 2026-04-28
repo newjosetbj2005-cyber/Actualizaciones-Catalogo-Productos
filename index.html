@@ -4582,8 +4582,8 @@
             height: 18px;
         }
 
-        /* ── Badge Caseha en tarjeta ── */
-        /* Insignia dorada con gradiente que indica productos de la marca Caseha */
+        /* ── Badge Cashea en tarjeta ── */
+        /* Insignia dorada con gradiente que indica facilidad de pago con Cashea */
         .card-caseha-badge {
             display: inline-flex;
             align-items: center;
@@ -6111,6 +6111,30 @@
                 min-width: 120px;
             }
         }
+        /* Skeletons para mejorar la percepción de carga */
+        .skeleton {
+            background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite linear;
+            border-radius: 8px;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .skeleton-card {
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
+        .skeleton-img { height: 180px; width: 100%; border-radius: var(--radius-sm); }
+        .skeleton-line { height: 14px; width: 100%; border-radius: 4px; }
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.price { height: 24px; width: 40%; margin-top: 8px; }
     </style>
 
 </head>
@@ -7314,49 +7338,46 @@
             applyTenantBranding();
 
             // Paso 2b: Restaurar sesión de cliente (si había una activa).
-            // Si el perfil restaurado es admin, también re-activar la
-            // bandera adminLoggedIn para que la tuerquita siga visible y
-            // funcione sin volver a pedir contraseña.
             CURRENT_CLIENT = loadClientSession();
             if (CURRENT_CLIENT && CURRENT_CLIENT.role === 'admin') {
                 adminLoggedIn = true;
             }
 
-            // Paso 3: Restaurar carrito del localStorage (ahora con clave tenant-scoped)
+            // Paso 3: Restaurar carrito del localStorage
             cart = loadCartFromStorage();
 
             setupEventListeners();
 
-            // Iniciar tasa en paralelo con la carga de productos
+            // Iniciar tasa en paralelo
             fetchRateAuto();
 
-            // Carga secuencial: categorías → productos → variantes
-            // (productos necesitan categorías para su cat_label)
-            await loadCategories();
-            await loadProducts();
-            await loadSupabaseVariants();
+            // Carga en segundo plano para no bloquear la interfaz inicial
+            (async function loadDataInBackground() {
+                // Carga secuencial interna para mantener consistencia
+                await loadCategories();
+                await loadProducts();
+                await loadSupabaseVariants();
 
-            // Ya tenemos todo: renderizar
-            renderCarousel();
-            renderProducts();
-            renderFilters();
-            initFilterScroll();
-            updateCartBadge();
+                // Renderizar cuando los datos estén listos
+                renderCarousel();
+                renderProducts();
+                renderFilters();
+                initFilterScroll();
+                updateCartBadge();
+                updateAdsForCategory('all');
+            })();
 
-            // Inicializar UI de clientes según estado de sesión
+            // Inicializar UI de clientes inmediatamente (si ya están logueados)
             updateClientUI();
 
-            // Insertar banners publicitarios tras renderizar productos
-            setTimeout(function () { updateAdsForCategory('all'); }, 100);
-
-            // Procesar deep link (?producto=ID) o restaurar estado guardado
-            restoreAppState();
-
-            // Habilitar botones de autenticación una vez cargada la aplicación
+            // Habilitar botones de autenticación de inmediato
             var btnLogin = document.getElementById('navLoginBtn');
             var btnReg = document.getElementById('navRegisterBtn');
             if (btnLogin) btnLogin.disabled = false;
             if (btnReg) btnReg.disabled = false;
+
+            // Procesar deep link o restaurar estado
+            restoreAppState();
         }
 
         /* ══════════════════════════════════════════════════════════════════
@@ -7367,6 +7388,22 @@
         // Devuelve true si se cargó correctamente, false si no existe.
         async function loadTenant() {
             var slug = getTenantSlugFromURL();
+            
+            // 1. Intentar obtenerlo de la memoria local primero
+            const cachedTenant = localStorage.getItem(`tenant_${slug}`);
+            if (cachedTenant) {
+                try {
+                    const cachedData = JSON.parse(cachedTenant);
+                    // Opcional: verificar si la caché ha expirado (ej. 1 hora)
+                    // Por ahora la usamos directa para máxima velocidad
+                    TENANT = cachedData;
+                    if (TENANT.whatsapp_number) WA_NUMBER = TENANT.whatsapp_number;
+                    return true;
+                } catch(e) {
+                    localStorage.removeItem(`tenant_${slug}`);
+                }
+            }
+
             try {
                 var { data, error } = await supabase
                     .from('tenants')
@@ -7382,6 +7419,10 @@
                     console.warn('Tenant no encontrado:', slug);
                     return false;
                 }
+                
+                // Guardar en caché para la próxima vez
+                localStorage.setItem(`tenant_${slug}`, JSON.stringify(data));
+
                 if (data.is_active === false) {
                     console.warn('Tenant inactivo:', slug);
                     TENANT = data; // guardamos para mostrar nombre en error
@@ -7714,7 +7755,7 @@
                 if (!TENANT) return;
                 var { data, error } = await supabase
                     .from('products_full')
-                    .select('*')
+                    .select('id, name, category_slug, price, descr, imgs, specs, sort_order, is_active')
                     .eq('tenant_id', TENANT.id)
                     .eq('is_active', true)
                     .order('sort_order', { ascending: true });
@@ -7954,10 +7995,28 @@
 
         function renderProducts() {
             var grid = document.getElementById('productsGrid');
+            if (!grid) return;
             var html = '';
+
+            if (PRODUCTS.length === 0) {
+                // Mostrar Skeletons si aún no hay productos
+                for (var i = 0; i < 6; i++) {
+                    html += `
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-img"></div>
+                            <div class="skeleton skeleton-line short"></div>
+                            <div class="skeleton skeleton-line"></div>
+                            <div class="skeleton skeleton-line price"></div>
+                        </div>
+                    `;
+                }
+                grid.innerHTML = html;
+                return;
+            }
+
             for (var i = 0; i < PRODUCTS.length; i++) {
                 var product = PRODUCTS[i];
-                var imgHtml = product.img ? '<img src="' + product.img + '" alt="' + product.name + '"/>' : '<div class="placeholder-img">Sin imagen<br><small>' + product.id + '</small></div>';
+                var imgHtml = product.img ? '<img src="' + product.img + '" loading="lazy" alt="' + product.name + '"/>' : '<div class="placeholder-img">Sin imagen<br><small>' + product.id + '</small></div>';
                 var priceHtml = getCardPriceHtml(product, CURRENT_RATE);
                 var pid = product.id;
                 var variantsBadge = getCardVariantsBadgeHtml(pid);
@@ -7971,7 +8030,7 @@
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
                     variantsBadge +
-                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
+                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> Cashea - Facilidad de Pago</div>' +
                     '<div class="card-actions">' +
                     '<button class="card-btn" style="flex:1;">Ver Detalles</button>' +
                     '<button class="card-share-btn" onclick="shareProduct(\'' + pid + '\', event)" title="Compartir producto">' +
@@ -8628,11 +8687,12 @@
 
         function renderProductsWithPrices(rate) {
             var grid = document.getElementById('productsGrid');
+            if (!grid) return;
             var html = '';
             for (var i = 0; i < PRODUCTS.length; i++) {
                 var product = PRODUCTS[i];
                 var imgHtml = product.img
-                    ? '<img src="' + product.img + '" alt="' + product.name + '"/>'
+                    ? '<img src="' + product.img + '" loading="lazy" alt="' + product.name + '"/>'
                     : '<div class="placeholder-img">Sin imagen<br><small>' + product.id + '</small></div>';
                 var priceHtml = getCardPriceHtml(product, rate);
                 var pid = product.id;
@@ -8647,7 +8707,7 @@
                     '<p class="card-desc">' + product.desc + '</p>' +
                     priceHtml +
                     variantsBadge +
-                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> CASEHA - Facilidad de pago</div>' +
+                    '<div class="card-caseha-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg> Cashea - Facilidad de Pago</div>' +
                     '<div class="card-actions">' +
                     '<button class="card-btn" style="flex:1;">Ver Detalles</button>' +
                     '<button class="card-share-btn" onclick="shareProduct(\'' + pid + '\', event)" title="Compartir producto">' +
