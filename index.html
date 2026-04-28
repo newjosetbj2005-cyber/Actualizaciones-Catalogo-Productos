@@ -4821,9 +4821,15 @@
             letter-spacing: 0.3px;
         }
 
-        .btn-auth-login:hover {
+        .btn-auth-login:hover:not(:disabled) {
             background: var(--secondary);
             color: #fff;
+        }
+
+        .btn-auth-login:disabled, .btn-auth-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
         }
 
         .btn-auth-register {
@@ -4840,7 +4846,7 @@
             box-shadow: 0 4px 20px rgba(139, 101, 8, 0.25);
         }
 
-        .btn-auth-register:hover {
+        .btn-auth-register:hover:not(:disabled) {
             background: var(--secondary-dark);
             transform: translateY(-2px);
         }
@@ -5811,6 +5817,300 @@
                 font-size: 14px;
             }
         }
+
+        /* ══════════════════════════════════════════════════════════════════
+           SISTEMA DE CUPONES DE DESCUENTO
+           ══════════════════════════════════════════════════════════════════ */
+
+        /* ── Badge de cupón en el perfil del cliente ── */
+        .coupon-badge {
+            background: linear-gradient(135deg, #b8860b 0%, #7a5507 100%);
+            color: #fff;
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 0 0 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coupon-badge::before {
+            content: '';
+            position: absolute;
+            right: -18px;
+            top: -18px;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+        }
+
+        .coupon-badge::after {
+            content: '';
+            position: absolute;
+            right: 14px;
+            bottom: -20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+            pointer-events: none;
+        }
+
+        .coupon-badge-title {
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .coupon-badge-desc {
+            font-size: 11.5px;
+            font-weight: 500;
+            opacity: 0.92;
+        }
+
+        .coupon-badge-remaining {
+            font-size: 12px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 5px 10px;
+            display: inline-block;
+            margin-top: 4px;
+            width: fit-content;
+        }
+
+        .coupon-badge-exhausted {
+            background: var(--bg2);
+            color: var(--text-light);
+            border: 1.5px solid var(--primary);
+        }
+
+        .coupon-badge-exhausted .coupon-badge-remaining {
+            background: var(--bg3);
+        }
+
+        /* ── Sección de configuración de cupones en admin ── */
+        .coupon-config-section {
+            margin: 0 22px 14px;
+            background: #fff;
+            border: 1.5px solid rgba(184, 134, 11, 0.28);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .coupon-config-header {
+            background: linear-gradient(135deg, rgba(184, 134, 11, 0.1) 0%, rgba(139, 101, 8, 0.06) 100%);
+            padding: 11px 16px;
+            border-bottom: 1px solid rgba(184, 134, 11, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .coupon-config-header h5 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .coupon-config-body {
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .coupon-config-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .coupon-config-row label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text);
+            min-width: 150px;
+            flex-shrink: 0;
+        }
+
+        .coupon-config-row input[type="number"] {
+            width: 80px;
+            padding: 7px 10px;
+            border: 1px solid var(--primary);
+            border-radius: 50px;
+            font-size: 13px;
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            text-align: center;
+        }
+
+        .coupon-config-row input[type="number"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.15);
+        }
+
+        .coupon-config-hint {
+            font-size: 11px;
+            color: var(--text-light);
+            flex: 1;
+        }
+
+        /* Toggle switch pill */
+        .coupon-toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coupon-toggle {
+            position: relative;
+            width: 42px;
+            height: 24px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .coupon-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .coupon-toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--bg2);
+            border: 1.5px solid var(--primary);
+            border-radius: 50px;
+            transition: 0.25s;
+        }
+
+        .coupon-toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.25s;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .coupon-toggle input:checked+.coupon-toggle-slider {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .coupon-toggle input:checked+.coupon-toggle-slider::before {
+            transform: translateY(-50%) translateX(18px);
+        }
+
+        .coupon-toggle-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text);
+            min-width: 68px;
+        }
+
+        .coupon-config-save-btn {
+            padding: 8px 18px;
+            border-radius: 50px;
+            border: none;
+            background: var(--secondary);
+            color: #fff;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .coupon-config-save-btn:hover {
+            background: var(--secondary-dark);
+        }
+
+        .coupon-config-status {
+            font-size: 11.5px;
+            font-weight: 500;
+        }
+
+        /* ── Badge de cupón restante en ficha de cliente (admin) ── */
+        .stats-client-coupon {
+            font-size: 10.5px;
+            color: var(--secondary-dark);
+            font-weight: 700;
+            background: rgba(184, 134, 11, 0.1);
+            border-radius: 6px;
+            padding: 3px 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+            width: fit-content;
+        }
+
+        .stats-client-coupon.exhausted {
+            color: var(--text-light);
+            background: var(--bg2);
+            font-weight: 500;
+        }
+
+        /* ── Fila de descuento en el carrito ── */
+        .cart-discount-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0 4px;
+            font-size: 12.5px;
+            color: #2d8a4e;
+            font-weight: 600;
+            border-top: 1.5px dashed rgba(45, 138, 78, 0.3);
+            margin-top: 6px;
+        }
+
+        .cart-discount-badge {
+            background: rgba(45, 138, 78, 0.12);
+            border-radius: 6px;
+            padding: 3px 9px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #2d8a4e;
+        }
+
+        .cart-original-price {
+            font-size: 11px;
+            color: var(--text-light);
+            text-decoration: line-through;
+            font-weight: 400;
+            display: block;
+        }
+
+        @media (max-width: 640px) {
+            .coupon-config-section {
+                margin: 0 16px 14px;
+            }
+
+            .coupon-config-row label {
+                min-width: 120px;
+            }
+        }
     </style>
 
 </head>
@@ -5854,8 +6154,8 @@
 
             <!-- Botones de autenticación (se ocultan cuando hay sesión activa) -->
             <div class="auth-buttons-bar" id="authButtonsBar">
-                <button class="btn-auth-login" onclick="openAuthModal('login')">Iniciar Sesión</button>
-                <button class="btn-auth-register" onclick="openAuthModal('register')">Crear Cuenta</button>
+                <button class="btn-auth-login" id="navLoginBtn" disabled onclick="openAuthModal('login')">Iniciar Sesión</button>
+                <button class="btn-auth-register" id="navRegisterBtn" disabled onclick="openAuthModal('register')">Crear Cuenta</button>
             </div>
 
             <!-- Saludo post-login (se muestra cuando hay sesión activa) -->
@@ -6006,9 +6306,15 @@
             <div class="cart-total-row">
                 <span class="cart-total-label">Total a pagar:</span>
                 <div class="cart-total-vals">
+                    <span class="cart-original-price" id="cartOriginalPrice" style="display:none;"></span>
                     <div class="cart-total-bs" id="cartTotalBs">Bs. 0,00</div>
                     <div class="cart-total-usd" id="cartTotalUsd">$ 0.00 USD</div>
                 </div>
+            </div>
+            <!-- Fila de descuento por cupón (visible solo cuando aplica) -->
+            <div class="cart-discount-row" id="cartDiscountRow" style="display:none;">
+                <span>🎟️ Descuento cupón (<span id="cartDiscountPct">10</span>%)</span>
+                <span class="cart-discount-badge" id="cartDiscountAmt">- Bs. 0,00</span>
             </div>
             <div class="cart-actions-row">
                 <button class="btn-cart-manage" id="btnDeleteMode" onclick="toggleDeleteMode()">
@@ -6053,13 +6359,14 @@
             <div id="authPanelLogin" class="auth-modal-body">
                 <div class="auth-field">
                     <label>Número de Cédula</label>
-                    <input type="text" id="loginCedula" placeholder="12345678" autocomplete="username" />
+                    <input type="text" id="loginCedula" placeholder="12345678" autocomplete="username" oninput="preventSpaces(this, 'errLoginCedula')" />
+                    <div class="auth-error" id="errLoginCedula" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                 </div>
                 <div class="auth-field">
                     <label>Teléfono (contraseña)</label>
                     <div class="auth-pwd-wrap">
                         <input type="password" id="loginTelefono" placeholder="04141234567"
-                            autocomplete="current-password" onkeydown="if(event.key==='Enter')submitLogin()" />
+                            autocomplete="current-password" oninput="preventSpaces(this, 'errLoginTelefono')" onkeydown="if(event.key==='Enter')submitLogin()" />
                         <button type="button" class="auth-pwd-toggle" data-target="loginTelefono"
                             onclick="togglePasswordVisibility(this)" aria-label="Mostrar contraseña"
                             aria-pressed="false">
@@ -6074,9 +6381,10 @@
                             </svg>
                         </button>
                     </div>
+                    <div class="auth-error" id="errLoginTelefono" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                     <span class="auth-hint">Usa el teléfono con el que te registraste.</span>
                 </div>
-                <div class="auth-error" id="loginError">Cédula o teléfono incorrecto.</div>
+                <div class="auth-error" id="loginError" style="display:none;"></div>
                 <button class="auth-submit-btn" id="loginSubmitBtn" onclick="submitLogin()">Entrar</button>
             </div>
 
@@ -6085,15 +6393,17 @@
                 <div class="auth-field">
                     <label>Nombre completo</label>
                     <input type="text" id="regNombre" placeholder="Tu nombre" autocomplete="name" />
+                    <div class="auth-error" id="errRegNombre" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                 </div>
                 <div class="auth-field">
                     <label>Número de Cédula</label>
-                    <input type="text" id="regCedula" placeholder="12345678" autocomplete="username" />
+                    <input type="text" id="regCedula" placeholder="12345678" autocomplete="username" oninput="preventSpaces(this, 'errRegCedula')" />
+                    <div class="auth-error" id="errRegCedula" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                 </div>
                 <div class="auth-field">
                     <label>Teléfono (será tu contraseña)</label>
                     <div class="auth-pwd-wrap">
-                        <input type="password" id="regTelefono" placeholder="04141234567" autocomplete="new-password" />
+                        <input type="password" id="regTelefono" placeholder="04141234567" autocomplete="new-password" oninput="preventSpaces(this, 'errRegTelefono')" />
                         <button type="button" class="auth-pwd-toggle" data-target="regTelefono"
                             onclick="togglePasswordVisibility(this)" aria-label="Mostrar contraseña"
                             aria-pressed="false">
@@ -6107,6 +6417,7 @@
                             </svg>
                         </button>
                     </div>
+                    <div class="auth-error" id="errRegTelefono" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                     <span class="auth-hint">Recuérdalo bien — lo usarás para iniciar sesión.</span>
                 </div>
                 <div class="auth-field">
@@ -6114,7 +6425,7 @@
                             style="color:var(--text-light);font-weight:400;">(opcional)</span></label>
                     <input type="text" id="regDireccion" placeholder="Ej: Urb. Los Pinos, Casa #5" />
                 </div>
-                <div class="auth-error" id="registerError">Ya existe una cuenta con esa cédula.</div>
+                <div class="auth-error" id="registerError" style="display:none;"></div>
                 <button class="auth-submit-btn" id="registerSubmitBtn" onclick="submitRegister()">Crear Cuenta</button>
             </div>
         </div>
@@ -6134,6 +6445,12 @@
                         <div class="profile-avatar-name" id="profileAvatarName">—</div>
                         <div class="profile-avatar-sub" id="profileAvatarSub">—</div>
                     </div>
+                </div>
+                <!-- ══ CUPÓN DE DESCUENTO DEL CLIENTE ══ -->
+                <div class="coupon-badge" id="profileCouponBadge" style="display:none;">
+                    <div class="coupon-badge-title">🎟️ Cupón de Bienvenida Activo</div>
+                    <div class="coupon-badge-desc" id="profileCouponDesc">Descuento en tus primeras compras</div>
+                    <span class="coupon-badge-remaining" id="profileCouponRemaining">Cargando...</span>
                 </div>
                 <div class="auth-field">
                     <label>Nombre</label>
@@ -6361,6 +6678,36 @@
 
                 <!-- Vista B: CLIENTES (contador + lista) -->
                 <div class="admin-view admin-view-users" id="adminViewUsers" style="display:none;">
+                    <!-- ══ CONFIGURACIÓN GLOBAL DE CUPÓN ══ -->
+                    <div class="coupon-config-section" id="couponConfigSection">
+                        <div class="coupon-config-header">
+                            <h5>🎟️ Cupón de Descuento para Clientes</h5>
+                            <div class="coupon-toggle-wrap">
+                                <label class="coupon-toggle" title="Activar o desactivar cupón">
+                                    <input type="checkbox" id="couponEnabled" onchange="updateCouponEnabledUI()" />
+                                    <span class="coupon-toggle-slider"></span>
+                                </label>
+                                <span class="coupon-toggle-label" id="couponEnabledLabel">Desactivado</span>
+                            </div>
+                        </div>
+                        <div class="coupon-config-body">
+                            <div class="coupon-config-row">
+                                <label>Compras cubiertas:</label>
+                                <input type="number" id="couponPurchases" min="1" max="999" value="5" />
+                                <span class="coupon-config-hint">Nº de primeras compras con descuento</span>
+                            </div>
+                            <div class="coupon-config-row">
+                                <label>Descuento (%):</label>
+                                <input type="number" id="couponDiscount" min="1" max="100" value="10" />
+                                <span class="coupon-config-hint">Porcentaje de descuento aplicado al total</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                                <button class="coupon-config-save-btn" onclick="saveCouponConfig()">💾 Guardar configuración</button>
+                                <span class="coupon-config-status" id="couponConfigStatus"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ══ CONTADOR Y LISTA DE CLIENTES ══ -->
                     <div class="stats-counter-card">
                         <div>
                             <div class="stats-counter-num" id="statsClientNum">—</div>
@@ -6913,7 +7260,49 @@
             setTimeout(function () { showProduct(pid); }, 120);
         }
 
+        // 2. Función para verificar conexión con Supabase con tiempo límite (Timeout)
+        async function checkSupabaseHealth() {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos de espera
+
+            try {
+                const { data, error } = await supabase.from('tenants').select('id').limit(1).abortSignal(controller.signal);
+                clearTimeout(timeoutId);
+                if (error) throw error;
+                return true;
+            } catch (err) {
+                console.error("Error de conexión con el servidor:", err);
+                return false;
+            }
+        }
+
         async function initializeApp() {
+            // 1. Verificar si hay internet básico
+            if (!navigator.onLine) {
+                document.body.innerHTML = `
+                    <div style="padding: 20px; text-align: center; font-family: sans-serif; background: #111; color: white; height: 100vh; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 style="color: #ff4d4d;">⚠️ Sin Conexión a Internet</h2>
+                        <p>No tienes conexión a internet. Revisa tu WiFi o datos móviles.</p>
+                        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;">Reintentar conexión</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // 2. Verificar conexión con Supabase
+            const isConnected = await checkSupabaseHealth();
+            if (!isConnected) {
+                document.body.innerHTML = `
+                    <div style="padding: 20px; text-align: center; font-family: sans-serif; background: #111; color: white; height: 100vh; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 style="color: #ff4d4d;">⚠️ Problema de Conexión Local</h2>
+                        <p>El catálogo no puede conectar con la base de datos.</p>
+                        <p style="font-size: 0.9em; color: #888;">Esto puede deberse a un bloqueo de tu proveedor de internet o señal muy débil.</p>
+                        <button onclick="window.location.reload()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer;">Reintentar conexión</button>
+                    </div>
+                `;
+                return;
+            }
+
             // Paso 1: Cargar el tenant primero. TODO lo demás depende de esto.
             var tenantLoaded = await loadTenant();
             if (!tenantLoaded) {
@@ -6962,6 +7351,12 @@
 
             // Procesar deep link (?producto=ID) o restaurar estado guardado
             restoreAppState();
+
+            // Habilitar botones de autenticación una vez cargada la aplicación
+            var btnLogin = document.getElementById('navLoginBtn');
+            var btnReg = document.getElementById('navRegisterBtn');
+            if (btnLogin) btnLogin.disabled = false;
+            if (btnReg) btnReg.disabled = false;
         }
 
         /* ══════════════════════════════════════════════════════════════════
@@ -8369,8 +8764,25 @@
                     totalUsd += unitPrice * item.qty;
                 }
             }
-            var totalBs = CURRENT_RATE > 0 ? totalUsd * CURRENT_RATE : 0;
-            return { usd: totalUsd, bs: totalBs };
+            // ── Aplicar descuento de cupón si corresponde ──
+            var discountUsd = 0;
+            var discountPct = 0;
+            var couponApplied = false;
+            if (COUPON_CONFIG.enabled && CURRENT_CLIENT && getCouponRemaining(CURRENT_CLIENT) > 0) {
+                discountPct = COUPON_CONFIG.discount;
+                discountUsd = totalUsd * (discountPct / 100);
+                couponApplied = true;
+            }
+            var discountedUsd = totalUsd - discountUsd;
+            var totalBs = CURRENT_RATE > 0 ? discountedUsd * CURRENT_RATE : 0;
+            return {
+                usd: discountedUsd,
+                bs: totalBs,
+                originalUsd: totalUsd,
+                discountUsd: discountUsd,
+                discountPct: discountPct,
+                couponApplied: couponApplied
+            };
         }
 
         function getProductById(pid) {
@@ -8839,6 +9251,24 @@
             }
             if (totalUsdEl) totalUsdEl.style.display = 'none';
 
+            // ── Mostrar/ocultar fila de descuento ──
+            var discountRow = document.getElementById('cartDiscountRow');
+            var discountPctEl = document.getElementById('cartDiscountPct');
+            var discountAmtEl = document.getElementById('cartDiscountAmt');
+            var originalPriceEl = document.getElementById('cartOriginalPrice');
+            if (totals.couponApplied && CURRENT_RATE > 0) {
+                if (discountRow) discountRow.style.display = 'flex';
+                if (discountPctEl) discountPctEl.textContent = totals.discountPct;
+                if (discountAmtEl) discountAmtEl.textContent = '- ' + formatBs(totals.discountUsd, CURRENT_RATE);
+                if (originalPriceEl) {
+                    originalPriceEl.style.display = 'block';
+                    originalPriceEl.textContent = formatBs(totals.originalUsd, CURRENT_RATE);
+                }
+            } else {
+                if (discountRow) discountRow.style.display = 'none';
+                if (originalPriceEl) originalPriceEl.style.display = 'none';
+            }
+
             updateBuyBtn(itemKeys);
         }
 
@@ -8887,7 +9317,14 @@
             msg += '🧾 *RESUMEN FINAL*\n';
             msg += '   📦 Productos: ' + itemKeys.length + '\n';
             if (CURRENT_RATE > 0) {
-                msg += '   🇻🇪 *Total: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
+                // Mostrar descuento si aplica cupón
+                if (totals.couponApplied) {
+                    msg += '   💵 Subtotal sin descuento: ' + formatBs(totals.originalUsd, CURRENT_RATE) + '\n';
+                    msg += '   🎟️ Descuento cupón (' + totals.discountPct + '%): -' + formatBs(totals.discountUsd, CURRENT_RATE) + '\n';
+                    msg += '   🇻🇪 *TOTAL CON DESCUENTO: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
+                } else {
+                    msg += '   🇻🇪 *Total: ' + formatBs(totals.usd, CURRENT_RATE) + '*\n';
+                }
             }
             msg += sep + '\n';
             msg += '\uD83D\uDCCB *DATOS DEL CLIENTE*\n';
@@ -8905,7 +9342,40 @@
             msg += sep + '\n\n';
             btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
             btn.target = '_blank';
-            btn.onclick = null;
+            // Si aplica cupón, registrar uso de compra al hacer clic
+            if (totals.couponApplied && CURRENT_CLIENT) {
+                btn.onclick = function () {
+                    incrementClientPurchase();
+                    return true; // permite que el href se abra
+                };
+            } else {
+                btn.onclick = null;
+            }
+        }
+
+        /* ── Incrementar contador de compras del cliente (cupón) ── */
+        async function incrementClientPurchase() {
+            if (!CURRENT_CLIENT || !TENANT) return;
+            try {
+                var newCount = (parseInt(CURRENT_CLIENT.purchases_used) || 0) + 1;
+                var { data, error } = await supabase
+                    .from('perfiles')
+                    .update({ purchases_used: newCount })
+                    .eq('id', CURRENT_CLIENT.id)
+                    .eq('tenant_id', TENANT.id)
+                    .select()
+                    .single();
+                if (!error && data) {
+                    CURRENT_CLIENT = data;
+                    saveClientSession(data);
+                    // Actualizar UI del carrito (el descuento puede haber cambiado)
+                    setTimeout(function () {
+                        if (cartPanelOpen) renderCartItems();
+                    }, 300);
+                }
+            } catch (e) {
+                console.error('Error incrementando compras:', e);
+            }
         }
 
         function toggleDeleteMode() {
@@ -8980,6 +9450,25 @@
         var adminTempPrices = {}; // { product_id: newPrice }
 
         /* ══════════════════════════════════════════════════════════════════
+           SISTEMA DE CUPONES — Estado global
+           Se carga desde la tabla `config` (campos: coupon_enabled,
+           coupon_purchases, coupon_discount) y es por tenant.
+           El campo `purchases_used` en `perfiles` registra cuántas compras
+           con cupón ha consumido cada cliente.
+
+           SQL necesario en Supabase (ejecutar una vez):
+           ─────────────────────────────────────────────
+           ALTER TABLE config
+             ADD COLUMN IF NOT EXISTS coupon_enabled   BOOLEAN DEFAULT false,
+             ADD COLUMN IF NOT EXISTS coupon_purchases  INTEGER DEFAULT 5,
+             ADD COLUMN IF NOT EXISTS coupon_discount   INTEGER DEFAULT 10;
+
+           ALTER TABLE perfiles
+             ADD COLUMN IF NOT EXISTS purchases_used INTEGER DEFAULT 0;
+           ══════════════════════════════════════════════════════════════════ */
+        var COUPON_CONFIG = { enabled: false, purchases: 5, discount: 10 };
+
+        /* ══════════════════════════════════════════════════════════════════
            SISTEMA DE AUTENTICACIÓN DE CLIENTES
            Estado global de la sesión del cliente. Se persiste en
            localStorage para sobrevivir recargas, cierres de pestaña y
@@ -9036,6 +9525,11 @@
 
                 if (configData && !configErr) {
                     adminRateType = configData.rate_type || 'dolar';
+
+                    // ── Cargar config de cupón ──
+                    COUPON_CONFIG.enabled = !!configData.coupon_enabled;
+                    COUPON_CONFIG.purchases = parseInt(configData.coupon_purchases) || 5;
+                    COUPON_CONFIG.discount = parseInt(configData.coupon_discount) || 10;
 
                     if (adminRateType === 'personalizada' && configData.custom_rate > 0) {
                         CURRENT_RATE = parseFloat(configData.custom_rate);
@@ -9442,7 +9936,10 @@
             var errs = document.querySelectorAll('.auth-error');
             for (var i = 0; i < errs.length; i++) errs[i].style.display = 'none';
             var inputs = document.querySelectorAll('#authModalOverlay input');
-            for (var j = 0; j < inputs.length; j++) inputs[j].value = '';
+            for (var j = 0; j < inputs.length; j++) {
+                inputs[j].value = '';
+                inputs[j].style.borderColor = '';
+            }
             // Resetear los botones de "ojo" al estado oculto (más seguro:
             // la contraseña debe arrancar siempre oculta cada vez que se
             // abre/limpia el modal, no recordar lo que el usuario tenía).
@@ -9484,23 +9981,59 @@
             if (firstInput) setTimeout(function () { firstInput.focus(); }, 120);
         }
 
+        function preventSpaces(input, errorId) {
+            if (input.value.indexOf(' ') !== -1) {
+                input.value = input.value.replace(/\s/g, '');
+                var errEl = document.getElementById(errorId);
+                if (errEl) {
+                    errEl.textContent = 'No se permiten espacios en este campo.';
+                    errEl.style.display = 'block';
+                    input.style.borderColor = '#e63946';
+                    
+                    clearTimeout(input.spaceErrorTimeout);
+                    input.spaceErrorTimeout = setTimeout(function() {
+                        errEl.style.display = 'none';
+                        input.style.borderColor = '';
+                    }, 2500);
+                }
+            }
+        }
+
         /* ── LOGIN ── */
         async function submitLogin() {
-            var cedula = (document.getElementById('loginCedula').value || '').trim();
-            var telefono = (document.getElementById('loginTelefono').value || '').trim();
+            var cedulaInput = document.getElementById('loginCedula');
+            var telefonoInput = document.getElementById('loginTelefono');
+            var cedula = (cedulaInput.value || '').trim();
+            var telefono = (telefonoInput.value || '').trim();
             var errorEl = document.getElementById('loginError');
             var btn = document.getElementById('loginSubmitBtn');
 
-            if (!cedula || !telefono) {
-                errorEl.textContent = 'Por favor completa todos los campos.';
-                errorEl.style.display = 'block';
-                return;
+            // Limpiar errores
+            document.getElementById('errLoginCedula').style.display = 'none';
+            document.getElementById('errLoginTelefono').style.display = 'none';
+            cedulaInput.style.borderColor = '';
+            telefonoInput.style.borderColor = '';
+            errorEl.style.display = 'none';
+
+            var hasError = false;
+            if (!cedula) {
+                document.getElementById('errLoginCedula').textContent = 'La cédula es obligatoria.';
+                document.getElementById('errLoginCedula').style.display = 'block';
+                cedulaInput.style.borderColor = '#e63946';
+                hasError = true;
             }
+            if (!telefono) {
+                document.getElementById('errLoginTelefono').textContent = 'El teléfono es obligatorio.';
+                document.getElementById('errLoginTelefono').style.display = 'block';
+                telefonoInput.style.borderColor = '#e63946';
+                hasError = true;
+            }
+            if (hasError) return;
+
             if (!TENANT) { errorEl.textContent = 'Error de catálogo. Recarga la página.'; errorEl.style.display = 'block'; return; }
 
             btn.disabled = true;
             btn.textContent = 'Verificando...';
-            errorEl.style.display = 'none';
 
             try {
                 var { data, error } = await supabase
@@ -9511,11 +10044,13 @@
                     .maybeSingle();
 
                 if (error || !data) {
-                    errorEl.textContent = 'No encontramos una cuenta con esa cédula.';
-                    errorEl.style.display = 'block';
+                    document.getElementById('errLoginCedula').textContent = 'No existe una cuenta con esta cédula.';
+                    document.getElementById('errLoginCedula').style.display = 'block';
+                    cedulaInput.style.borderColor = '#e63946';
                 } else if (data.telefono !== telefono) {
-                    errorEl.textContent = 'Teléfono incorrecto. Intenta de nuevo.';
-                    errorEl.style.display = 'block';
+                    document.getElementById('errLoginTelefono').textContent = 'Teléfono incorrecto. Intenta de nuevo.';
+                    document.getElementById('errLoginTelefono').style.display = 'block';
+                    telefonoInput.style.borderColor = '#e63946';
                 } else {
                     // Login exitoso
                     CURRENT_CLIENT = data;
@@ -9543,23 +10078,55 @@
 
         /* ── REGISTRO ── */
         async function submitRegister() {
-            var nombre = (document.getElementById('regNombre').value || '').trim();
-            var cedula = (document.getElementById('regCedula').value || '').trim();
-            var telefono = (document.getElementById('regTelefono').value || '').trim();
+            var nombreInput = document.getElementById('regNombre');
+            var cedulaInput = document.getElementById('regCedula');
+            var telefonoInput = document.getElementById('regTelefono');
+            var nombre = (nombreInput.value || '').trim();
+            var cedula = (cedulaInput.value || '').trim();
+            var telefono = (telefonoInput.value || '').trim();
             var direccion = (document.getElementById('regDireccion').value || '').trim();
             var errorEl = document.getElementById('registerError');
             var btn = document.getElementById('registerSubmitBtn');
 
-            if (!nombre || !cedula || !telefono) {
-                errorEl.textContent = 'Nombre, cédula y teléfono son obligatorios.';
-                errorEl.style.display = 'block';
-                return;
+            // Limpiar errores
+            document.getElementById('errRegNombre').style.display = 'none';
+            document.getElementById('errRegCedula').style.display = 'none';
+            document.getElementById('errRegTelefono').style.display = 'none';
+            nombreInput.style.borderColor = '';
+            cedulaInput.style.borderColor = '';
+            telefonoInput.style.borderColor = '';
+            errorEl.style.display = 'none';
+
+            var hasError = false;
+            if (!nombre) {
+                document.getElementById('errRegNombre').textContent = 'El nombre es obligatorio.';
+                document.getElementById('errRegNombre').style.display = 'block';
+                nombreInput.style.borderColor = '#e63946';
+                hasError = true;
             }
+            if (!cedula) {
+                document.getElementById('errRegCedula').textContent = 'La cédula es obligatoria.';
+                document.getElementById('errRegCedula').style.display = 'block';
+                cedulaInput.style.borderColor = '#e63946';
+                hasError = true;
+            } else if (!/^[0-9]+$/.test(cedula)) {
+                document.getElementById('errRegCedula').textContent = 'La cédula solo debe contener números.';
+                document.getElementById('errRegCedula').style.display = 'block';
+                cedulaInput.style.borderColor = '#e63946';
+                hasError = true;
+            }
+            if (!telefono) {
+                document.getElementById('errRegTelefono').textContent = 'El teléfono es obligatorio.';
+                document.getElementById('errRegTelefono').style.display = 'block';
+                telefonoInput.style.borderColor = '#e63946';
+                hasError = true;
+            }
+            if (hasError) return;
+
             if (!TENANT) { errorEl.textContent = 'Error de catálogo. Recarga la página.'; errorEl.style.display = 'block'; return; }
 
             btn.disabled = true;
             btn.textContent = 'Registrando...';
-            errorEl.style.display = 'none';
 
             try {
                 var { data, error } = await supabase
@@ -9577,11 +10144,13 @@
 
                 if (error) {
                     if (error.code === '23505') {
-                        errorEl.textContent = 'Ya existe una cuenta con esa cédula en este catálogo.';
+                        document.getElementById('errRegCedula').textContent = 'Esta cédula ya está registrada en este catálogo.';
+                        document.getElementById('errRegCedula').style.display = 'block';
+                        cedulaInput.style.borderColor = '#e63946';
                     } else {
                         errorEl.textContent = 'Error al registrar: ' + (error.message || 'desconocido');
+                        errorEl.style.display = 'block';
                     }
-                    errorEl.style.display = 'block';
                 } else {
                     CURRENT_CLIENT = data;
                     saveClientSession(data);
@@ -9627,6 +10196,36 @@
             document.getElementById('profileTelefono').value = CURRENT_CLIENT.telefono || '';
             document.getElementById('profileDireccion').value = CURRENT_CLIENT.direccion || '';
             document.getElementById('profileSaveStatus').textContent = '';
+
+            // ── Mostrar badge de cupón si el cupón está activo ──
+            renderProfileCouponBadge();
+        }
+
+        /* Renderiza (o actualiza) el badge de cupón en el modal de perfil */
+        function renderProfileCouponBadge() {
+            var badge = document.getElementById('profileCouponBadge');
+            if (!badge || !CURRENT_CLIENT) return;
+
+            if (!COUPON_CONFIG.enabled) {
+                badge.style.display = 'none';
+                return;
+            }
+
+            var remaining = getCouponRemaining(CURRENT_CLIENT);
+            var desc = document.getElementById('profileCouponDesc');
+            var rem = document.getElementById('profileCouponRemaining');
+
+            badge.style.display = 'flex';
+
+            if (remaining > 0) {
+                badge.classList.remove('coupon-badge-exhausted');
+                if (desc) desc.textContent = COUPON_CONFIG.discount + '% de descuento en tus primeras ' + COUPON_CONFIG.purchases + ' compras';
+                if (rem) rem.textContent = '🎉 Te quedan ' + remaining + ' compra' + (remaining !== 1 ? 's' : '') + ' con descuento';
+            } else {
+                badge.classList.add('coupon-badge-exhausted');
+                if (desc) desc.textContent = 'Has utilizado todas tus compras con descuento (' + COUPON_CONFIG.purchases + '/' + COUPON_CONFIG.purchases + ')';
+                if (rem) rem.textContent = '✅ Cupón completamente utilizado';
+            }
         }
 
         function closeProfileModal(event) {
@@ -9687,6 +10286,10 @@
             numEl.textContent = '...';
             listEl.innerHTML = '<div class="stats-empty">Cargando...</div>';
 
+            // Cargar config de cupón (siempre fresco al abrir vista de usuarios)
+            await loadCouponConfig();
+            renderCouponConfigAdmin();
+
             try {
                 var { data, error } = await supabase
                     .from('perfiles')
@@ -9710,11 +10313,24 @@
                     var c = clientes[i];
                     var initial = (c.nombre || '?').charAt(0).toUpperCase();
                     var date = c.created_at ? new Date(c.created_at).toLocaleDateString('es-VE') : '';
+
+                    // Badge de cupón por cliente
+                    var couponHtml = '';
+                    if (COUPON_CONFIG.enabled) {
+                        var remaining = getCouponRemaining(c);
+                        if (remaining > 0) {
+                            couponHtml = '<div class="stats-client-coupon">🎟️ Cupón: ' + remaining + ' de ' + COUPON_CONFIG.purchases + ' compras restantes</div>';
+                        } else {
+                            couponHtml = '<div class="stats-client-coupon exhausted">✅ Cupón agotado</div>';
+                        }
+                    }
+
                     html += '<div class="stats-client-row">' +
                         '<div class="stats-client-avatar">' + initial + '</div>' +
                         '<div class="stats-client-info">' +
                         '<div class="stats-client-name">' + escapeHtml(c.nombre) + '</div>' +
                         '<div class="stats-client-sub">C.I.: ' + escapeHtml(c.cedula) + ' · ' + escapeHtml(c.telefono || '—') + '</div>' +
+                        couponHtml +
                         '</div>' +
                         '<div style="font-size:10px;color:var(--text-light);flex-shrink:0;">' + date + '</div>' +
                         '</div>';
@@ -9780,6 +10396,112 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
+        }
+
+        /* ══════════════════════════════════════════════════════════════════
+           SISTEMA DE CUPONES — Funciones
+           ══════════════════════════════════════════════════════════════════ */
+
+        /* Retorna cuántas compras con descuento le quedan a un cliente */
+        function getCouponRemaining(client) {
+            if (!COUPON_CONFIG.enabled || !client) return 0;
+            var used = parseInt(client.purchases_used) || 0;
+            return Math.max(0, COUPON_CONFIG.purchases - used);
+        }
+
+        /* Carga la configuración del cupón desde Supabase (por tenant) */
+        async function loadCouponConfig() {
+            if (!TENANT) return;
+            try {
+                var { data } = await supabase
+                    .from('config')
+                    .select('coupon_enabled, coupon_purchases, coupon_discount')
+                    .eq('tenant_id', TENANT.id)
+                    .maybeSingle();
+                if (data) {
+                    COUPON_CONFIG.enabled = !!data.coupon_enabled;
+                    COUPON_CONFIG.purchases = parseInt(data.coupon_purchases) || 5;
+                    COUPON_CONFIG.discount = parseInt(data.coupon_discount) || 10;
+                }
+            } catch (e) {
+                console.error('Error cargando config de cupón:', e);
+            }
+        }
+
+        /* Guarda la configuración del cupón en Supabase */
+        async function saveCouponConfig() {
+            if (!TENANT) return;
+            var enabledCb = document.getElementById('couponEnabled');
+            var purchasesInput = document.getElementById('couponPurchases');
+            var discountInput = document.getElementById('couponDiscount');
+            var statusEl = document.getElementById('couponConfigStatus');
+
+            var enabled = enabledCb ? enabledCb.checked : false;
+            var purchases = Math.max(1, parseInt((purchasesInput ? purchasesInput.value : '') || '5') || 5);
+            var discount = Math.min(100, Math.max(1, parseInt((discountInput ? discountInput.value : '') || '10') || 10));
+
+            if (statusEl) { statusEl.textContent = 'Guardando...'; statusEl.style.color = 'var(--text-light)'; }
+
+            try {
+                var payload = {
+                    coupon_enabled: enabled,
+                    coupon_purchases: purchases,
+                    coupon_discount: discount,
+                    updated_at: new Date().toISOString()
+                };
+
+                var { data: upd, error } = await supabase
+                    .from('config')
+                    .update(payload)
+                    .eq('tenant_id', TENANT.id)
+                    .select();
+
+                if (error) throw error;
+
+                if (!upd || upd.length === 0) {
+                    var ins = await supabase
+                        .from('config')
+                        .insert([Object.assign({ tenant_id: TENANT.id }, payload)]);
+                    if (ins.error) throw ins.error;
+                }
+
+                // Actualizar estado global
+                COUPON_CONFIG.enabled = enabled;
+                COUPON_CONFIG.purchases = purchases;
+                COUPON_CONFIG.discount = discount;
+
+                if (statusEl) { statusEl.textContent = '✅ Guardado'; statusEl.style.color = '#2d8a4e'; }
+                setTimeout(function () { if (statusEl) statusEl.textContent = ''; }, 2200);
+
+                // Refrescar la lista para que se actualicen los badges
+                loadAdminStats();
+
+            } catch (e) {
+                if (statusEl) {
+                    statusEl.textContent = '❌ Error: ' + (e.message || 'desconocido');
+                    statusEl.style.color = '#e63946';
+                }
+            }
+        }
+
+        /* Renderiza la UI de configuración de cupón en el panel admin */
+        function renderCouponConfigAdmin() {
+            var enabledCb = document.getElementById('couponEnabled');
+            var purchasesInput = document.getElementById('couponPurchases');
+            var discountInput = document.getElementById('couponDiscount');
+            var label = document.getElementById('couponEnabledLabel');
+
+            if (enabledCb) enabledCb.checked = COUPON_CONFIG.enabled;
+            if (purchasesInput) purchasesInput.value = COUPON_CONFIG.purchases;
+            if (discountInput) discountInput.value = COUPON_CONFIG.discount;
+            if (label) label.textContent = COUPON_CONFIG.enabled ? '✅ Activado' : 'Desactivado';
+        }
+
+        /* Actualiza el label del toggle de cupón al cambiarlo */
+        function updateCouponEnabledUI() {
+            var cb = document.getElementById('couponEnabled');
+            var label = document.getElementById('couponEnabledLabel');
+            if (label) label.textContent = (cb && cb.checked) ? '✅ Activado' : 'Desactivado';
         }
 
         async function loadAdminCustomRate() {
