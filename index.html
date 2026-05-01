@@ -7,19 +7,10 @@
     <title>Ferretería Golden Gray - 2026</title>
     <link rel="shortcut icon" href="https://i.ibb.co/zTKNMvgL/Golden-Gray-Logo-Recortado.png" type="image/x-icon">
 
-    <!-- ──────────────────────────────────────────────────────────────────
-         CARGA DE LIBRERÍAS EXTERNAS CON FALLBACK AUTOMÁTICO
-         Si cdn.jsdelivr.net está bloqueado por antivirus, DNS privado o
-         firewall del proveedor de internet, el navegador intenta de
-         inmediato descargar la librería desde unpkg.com como respaldo.
-         Esto reduce drásticamente los casos de "no carga nada".
-         ────────────────────────────────────────────────────────────── -->
-    <!-- SUPABASE SDK (con fallback a unpkg) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"
-            onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.min.js';"></script>
-    <!-- SheetJS (XLSX) para exportar Excel (con fallback a unpkg) -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
-            onerror="this.onerror=null;this.src='https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';"></script>
+    <!-- SUPABASE SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <!-- SheetJS (XLSX) para exportar Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <!-- GOOGLE FONTS -->
     <link
@@ -5248,20 +5239,33 @@
         }
 
         .btn-profile-save {
-            flex: 1;
-            padding: 11px;
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 9px 14px;
             border-radius: 50px;
-            border: none;
-            background: var(--secondary);
-            color: #fff;
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
         }
 
         .btn-profile-save:hover {
-            background: var(--secondary-dark);
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-profile-delete-request {
+            transition: all 0.2s ease;
+        }
+
+        .btn-profile-delete-request:hover {
+            background: #e63946 !important;
+            color: white !important;
         }
 
         /* Contador minimalista de clientes en el footer de la landing */
@@ -6144,6 +6148,153 @@
         .skeleton-line { height: 14px; width: 100%; border-radius: 4px; }
         .skeleton-line.short { width: 60%; }
         .skeleton-line.price { height: 24px; width: 40%; margin-top: 8px; }
+
+        /* ── Panel de Error de Conexión (Mejora) ── */
+        .error-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .error-overlay.active {
+            display: flex;
+        }
+
+        .error-card {
+            max-width: 420px;
+            width: 100%;
+            background: #fff;
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--bg2);
+        }
+
+        .error-icon-wrap {
+            width: 80px;
+            height: 80px;
+            background: #fff0f0;
+            color: #e63946;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .error-icon-wrap svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .error-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .error-msg {
+            font-size: 15px;
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .error-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-retry {
+            background: var(--secondary);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(184, 134, 11, 0.3);
+        }
+
+        .btn-retry:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-tech-details {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--primary);
+            padding: 12px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-tech-details:hover {
+            background: var(--bg2);
+            color: var(--text);
+        }
+
+        .tech-details-box {
+            display: none;
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            text-align: left;
+            color: var(--text-light);
+            border: 1px dashed var(--primary);
+            overflow-x: auto;
+            max-height: 150px;
+            position: relative;
+        }
+
+        .tech-details-box.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .btn-copy-tech {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #fff;
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
     </style>
 
 </head>
@@ -6392,14 +6543,14 @@
             <div id="authPanelLogin" class="auth-modal-body">
                 <div class="auth-field">
                     <label>Número de Cédula</label>
-                    <input type="text" id="loginCedula" placeholder="12345678" autocomplete="username" oninput="preventSpaces(this, 'errLoginCedula')" />
+                    <input type="text" id="loginCedula" placeholder="12345678" autocomplete="username" oninput="validateCedulaRealTime(this, 'errLoginCedula')" />
                     <div class="auth-error" id="errLoginCedula" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                 </div>
                 <div class="auth-field">
                     <label>Teléfono (contraseña)</label>
                     <div class="auth-pwd-wrap">
                         <input type="password" id="loginTelefono" placeholder="04141234567"
-                            autocomplete="current-password" oninput="preventSpaces(this, 'errLoginTelefono')" onkeydown="if(event.key==='Enter')submitLogin()" />
+                            autocomplete="current-password" oninput="validatePhoneRealTime(this, 'errLoginTelefono')" onkeydown="if(event.key==='Enter')submitLogin()" />
                         <button type="button" class="auth-pwd-toggle" data-target="loginTelefono"
                             onclick="togglePasswordVisibility(this)" aria-label="Mostrar contraseña"
                             aria-pressed="false">
@@ -6430,13 +6581,13 @@
                 </div>
                 <div class="auth-field">
                     <label>Número de Cédula</label>
-                    <input type="text" id="regCedula" placeholder="12345678" autocomplete="username" oninput="preventSpaces(this, 'errRegCedula')" />
+                    <input type="text" id="regCedula" placeholder="12345678" autocomplete="username" oninput="validateCedulaRealTime(this, 'errRegCedula')" />
                     <div class="auth-error" id="errRegCedula" style="display:none; margin-top:5px; text-align:left; font-size:12px;"></div>
                 </div>
                 <div class="auth-field">
                     <label>Teléfono (será tu contraseña)</label>
                     <div class="auth-pwd-wrap">
-                        <input type="password" id="regTelefono" placeholder="04141234567" autocomplete="new-password" oninput="preventSpaces(this, 'errRegTelefono')" />
+                        <input type="password" id="regTelefono" placeholder="04141234567" autocomplete="new-password" oninput="validatePhoneRealTime(this, 'errRegTelefono')" />
                         <button type="button" class="auth-pwd-toggle" data-target="regTelefono"
                             onclick="togglePasswordVisibility(this)" aria-label="Mostrar contraseña"
                             aria-pressed="false">
@@ -6490,18 +6641,45 @@
                     <input type="text" id="profileNombre" placeholder="Tu nombre" />
                 </div>
                 <div class="auth-field">
-                    <label>Teléfono</label>
-                    <input type="text" id="profileTelefono" placeholder="Ej: 04141234567" />
-                </div>
-                <div class="auth-field">
                     <label>Dirección de entrega</label>
                     <input type="text" id="profileDireccion" placeholder="Ej: Urb. Los Pinos, Casa #5" />
                 </div>
-                <div class="profile-save-status" id="profileSaveStatus"></div>
+                <div class="profile-save-status" id="profileSaveStatus" style="display:none;"></div>
             </div>
-            <div class="profile-actions">
-                <button class="btn-profile-logout" onclick="clientLogout()">Cerrar Sesión</button>
-                <button class="btn-profile-save" onclick="saveProfileChanges()">💾 Guardar</button>
+            <div class="profile-actions" style="justify-content:flex-end;">
+                <button class="btn-profile-save" id="profileSaveBtn" onclick="saveProfileChanges()">💾 Guardar</button>
+                <button class="btn-profile-delete-request" onclick="requestAccountDeletion()">🗑️ Solicitar eliminación de cuenta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ MODAL SOLICITUD DE ELIMINACIÓN DE CUENTA ══ -->
+    <div class="auth-modal-overlay" id="deleteRequestOverlay" onclick="closeDeleteRequestModal(event)">
+        <div class="auth-modal" onclick="event.stopPropagation()">
+            <div class="auth-modal-header">
+                <h3>🗑️ Solicitar Eliminación de Cuenta</h3>
+                <button class="auth-modal-close" onclick="closeDeleteRequestModal(null)">&#x2715;</button>
+            </div>
+            <div class="auth-modal-body">
+                <div style="background:#fff0f0;padding:12px 16px;border-radius:10px;margin-bottom:10px;font-size:12px;color:#e63946;">
+                    ⚠️ <strong>Advertencia:</strong> Esta acción solicitará al administrador eliminar tu cuenta permanentemente. Una vez aprobada, perderás acceso a tu historial de compras y datos personales.
+                </div>
+                <div class="profile-avatar" style="margin-bottom:14px;">
+                    <div class="profile-avatar-icon" style="background:#e63946;" id="delReqUserIcon">!</div>
+                    <div class="profile-avatar-info">
+                        <div class="profile-avatar-name" id="delReqUserName">—</div>
+                        <div class="profile-avatar-sub">C.I.: <span id="delReqUserCedula"></span> · Tel: <span id="delReqUserPhone"></span></div>
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label>Razón de la eliminación (opcional)</label>
+                    <textarea id="delReqReason" placeholder="Ej: Ya no necesito los servicios..." style="width:100%;padding:10px 14px;border:1.5px solid var(--primary);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;resize:vertical;min-height:70px;"></textarea>
+                </div>
+                <div class="auth-error" id="delReqStatus" style="display:none;"></div>
+            </div>
+            <div class="profile-actions" style="padding:16px 22px;">
+                <button class="btn-profile-logout" onclick="closeDeleteRequestModal(null)" style="flex:1;">Cancelar</button>
+                <button class="btn-profile-save" id="delReqSubmitBtn" onclick="submitDeletionRequest()" style="background:#e63946;border-color:#e63946;flex:1;">🗑️ Enviar Solicitud</button>
             </div>
         </div>
     </div>
@@ -6601,7 +6779,32 @@
         </div>
     </div>
 
+    <!-- ══ PANEL DE ERROR DE CONEXIÓN ══ -->
+    <div id="connectionErrorOverlay" class="error-overlay">
+        <div class="error-card">
+            <div class="error-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7l10.08 12.56c.8 1 2.32 1 3.12 0L23.64 7zm-12.83 3.5l.01-.01c.32-.4 1.01-.4 1.33 0l.01.01L19.51 19h-15l7.3-9.5zM12 11c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1zm0 4c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z"/>
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                </svg>
+            </div>
+            <h2 class="error-title">¡Ups! Problema de conexión</h2>
+            <p class="error-msg">No pudimos cargar el catálogo. Por favor, verifica tu conexión a WiFi o datos móviles e intenta de nuevo.</p>
+            
+            <div class="error-actions">
+                <button class="btn-retry" onclick="retryInitializeApp()">Reintentar carga</button>
+                <button class="btn-tech-details" onclick="toggleTechDetails()">Ver detalles técnicos</button>
+            </div>
+
+            <div id="techDetailsBox" class="tech-details-box">
+                <button class="btn-copy-tech" onclick="copyTechDetails()">Copiar</button>
+                <pre id="techDetailsContent"></pre>
+            </div>
+        </div>
+    </div>
+
     <div class="admin-login-overlay" id="adminLoginOverlay" onclick="closeAdminLogin(event)">
+
         <div class="admin-login-modal">
             <div class="admin-login-header">
                 <h3>&#x1F512; Acceso Administrador</h3>
@@ -6797,6 +7000,104 @@
     <script>
         const PRODUCTS = [];
 
+        // Validaciones de seguridad para Cédula Venezolana y Teléfono
+        // - Cedula: solo números, 7 a 9 dígitos (ej: 31550230)
+        // - Teléfono: 11 dígitos, debe empezar con 04 (ej: 04245961533)
+        const CEDULA_REGEX_VZ = /^\d{7,9}$/;
+        const TELEFONO_REGEX_VZ = /^04\d{9}$/; // 11 dígitos que empiezan con 04
+
+        function sanitizeCedula(v) {
+            return (v || '').toString().replace(/\D/g, ''); // Solo deja dígitos
+        }
+
+        function sanitizePhone(v) {
+            return (v || '').toString().replace(/\D/g, ''); // Solo deja dígitos
+        }
+
+        function formatCedula(ced) {
+            // Formato: 31.550.230
+            if (!ced) return '';
+            return ced.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function formatTelefono(ph) {
+            // Formato: 0424-596.1533
+            if (!ph || ph.length !== 11) return ph;
+            return ph.substring(0, 4) + '-' + ph.substring(4, 7) + '.' + ph.substring(7);
+        }
+
+        function isCedulaValid(ced) {
+            return CEDULA_REGEX_VZ.test(ced);
+        }
+
+        function isPhoneValid(ph) {
+            return TELEFONO_REGEX_VZ.test(sanitizePhone(ph));
+        }
+
+        // Validación reactiva con retraso de 1 segundo
+        // El borde verde aparece INMEDIATAMENTE cuando es válido
+        // El mensaje de error aparece DESPUÉS DE 1 SEGUNDO de inactividad
+        var cedulaTimeout = null;
+        var phoneTimeout = null;
+
+        function validateCedulaRealTime(input, errorId) {
+            var val = sanitizeCedula(input.value);
+            var errEl = document.getElementById(errorId);
+            
+            // Limpiar timeout anterior si existe
+            if (cedulaTimeout) { clearTimeout(cedulaTimeout); cedulaTimeout = null; }
+            
+            if (val.length === 0) {
+                errEl.style.display = 'none';
+                input.style.borderColor = '';
+                return;
+            }
+            
+            if (isCedulaValid(val)) {
+                // VÁLIDO: Borde verde INMEDIATO, sin mensajes
+                errEl.style.display = 'none';
+                input.style.borderColor = '#2d8a4e';
+            } else {
+                // INVÁLIDO: Esperar 1 segundo de inactividad
+                cedulaTimeout = setTimeout(function() {
+                    errEl.textContent = 'Cédula inválida. Use solo números (7-9 dígitos). Ej: 12345678';
+                    errEl.style.display = 'block';
+                    input.style.borderColor = '#e63946';
+                }, 1000);
+            }
+        }
+
+        function validatePhoneRealTime(input, errorId) {
+            var val = sanitizePhone(input.value);
+            var errEl = document.getElementById(errorId);
+            
+            // Limpiar timeout anterior si existe
+            if (phoneTimeout) { clearTimeout(phoneTimeout); phoneTimeout = null; }
+            
+            if (val.length === 0) {
+                errEl.style.display = 'none';
+                input.style.borderColor = '';
+                return;
+            }
+            
+            if (isPhoneValid(val)) {
+                // VÁLIDO: Borde verde INMEDIATO, sin mensajes
+                errEl.style.display = 'none';
+                input.style.borderColor = '#2d8a4e';
+            } else {
+                // INVÁLIDO: Esperar 1 segundo de inactividad
+                phoneTimeout = setTimeout(function() {
+                    errEl.textContent = 'Teléfono inválido. Use formato venezolano de 11 dígitos empezando con 04. Ej: 04141234567';
+                    errEl.style.display = 'block';
+                    input.style.borderColor = '#e63946';
+                }, 1000);
+            }
+        }
+
+        function isPhoneValid(ph) {
+            return TELEFONO_REGEX_VZ.test(ph);
+        }
+
         /* ══════════════════════════════════════════════════════════════════
            SISTEMA MULTI-TENANT
            ══════════════════════════════════════════════════════════════════
@@ -6922,9 +7223,15 @@
         });
 
         window.addEventListener('DOMContentLoaded', function () {
+            // Verificación de seguridad: ¿Cargó el SDK de Supabase?
+            if (typeof supabase === 'undefined') {
+                showConnectionError(
+                    'Error de sistema', 
+                    new Error('No se pudo cargar el SDK de Supabase. Verifique su conexión.')
+                );
+                return;
+            }
             initializeApp();
-            // ── Deep link: abrir producto directo si hay hash en la URL ──
-            // (se ejecuta después de Supabase dentro de restoreAppState)
         });
 
 
@@ -7293,253 +7600,101 @@
             setTimeout(function () { showProduct(pid); }, 120);
         }
 
-        /* ══════════════════════════════════════════════════════════════════
-           SISTEMA DE DIAGNÓSTICO DE CONEXIÓN
-           Construye un objeto con info técnica útil para diagnosticar por
-           qué el catálogo no pudo cargar. Se muestra al usuario en la
-           pantalla de error y se puede copiar al portapapeles para enviarlo
-           a soporte.
-           ══════════════════════════════════════════════════════════════════ */
-        function buildDiagnostics(ctx) {
-            var conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-            return {
-                fecha_local: new Date().toString(),
-                fecha_iso: new Date().toISOString(),
-                url: (window.location && window.location.href) || '',
-                online: !!navigator.onLine,
-                idioma: navigator.language || '',
-                plataforma: navigator.platform || '',
-                user_agent: navigator.userAgent || '',
-                conexion: conn ? {
-                    tipo_efectivo: conn.effectiveType || 'desconocido',
-                    downlink_mbps: (conn.downlink != null) ? conn.downlink : 'desconocido',
-                    rtt_ms: (conn.rtt != null) ? conn.rtt : 'desconocido',
-                    save_data: !!conn.saveData
-                } : 'API no disponible',
-                sdk_supabase_cargado: !!(typeof __supabaseSDK !== 'undefined' && __supabaseSDK && typeof __supabaseSDK.createClient === 'function'),
-                cliente_supabase_creado: (typeof supabase !== 'undefined' && supabase !== null),
-                sdk_xlsx_cargado: typeof XLSX !== 'undefined',
-                sdk_init_error: (typeof SUPABASE_INIT_ERROR !== 'undefined') ? SUPABASE_INIT_ERROR : null,
-                contexto: ctx || null
-            };
-        }
-
-        // Convierte el diagnóstico en texto legible (JSON formateado).
-        function diagnosticsToText(diag) {
-            try { return JSON.stringify(diag, null, 2); }
-            catch (e) { return String(diag); }
-        }
-
-        // Copia texto al portapapeles. Funciona en navegadores modernos
-        // (Clipboard API) y antiguos (textarea + execCommand fallback).
-        function copyDiagnosticsToClipboard(text, btn) {
-            function flash(msg) {
-                if (!btn) return;
-                var orig = btn.textContent;
-                btn.textContent = msg;
-                setTimeout(function () { btn.textContent = orig; }, 1800);
-            }
-            function legacyCopy() {
-                try {
-                    var ta = document.createElement('textarea');
-                    ta.value = text;
-                    ta.setAttribute('readonly', '');
-                    ta.style.position = 'fixed';
-                    ta.style.top = '-9999px';
-                    document.body.appendChild(ta);
-                    ta.select();
-                    var ok = document.execCommand('copy');
-                    document.body.removeChild(ta);
-                    return ok;
-                } catch (e) { return false; }
-            }
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text)
-                    .then(function () { flash('✅ Copiado'); })
-                    .catch(function () { flash(legacyCopy() ? '✅ Copiado' : '❌ Falló'); });
-            } else {
-                flash(legacyCopy() ? '✅ Copiado' : '❌ Falló');
-            }
-        }
-
-        // Escapa texto para insertarlo de forma segura en HTML.
-        function escapeHtmlForError(s) {
-            return String(s)
-                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        }
-
-        /* Muestra una pantalla de error de conexión enriquecida con
-           diagnóstico técnico expandible. Reutilizable para los 3 casos:
-           sin internet, SDK no cargado, Supabase inalcanzable.
-           opts: { title, reason, likelyCause, errorCode, error } */
-        function showConnectionError(opts) {
-            opts = opts || {};
-            var diag = buildDiagnostics({
-                error_code: opts.errorCode || null,
-                error_msg: opts.error ? (opts.error.message || String(opts.error)) : null,
-                error_name: (opts.error && opts.error.name) || null
-            });
-            var diagText = diagnosticsToText(diag);
-            var diagId = 'conn-diag-' + Date.now();
-            var esc = escapeHtmlForError;
-
-            var html = ''
-                + '<div style="min-height:100vh;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px;font-family:Inter,system-ui,sans-serif;box-sizing:border-box;">'
-                + '  <div style="max-width:520px;width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:18px;padding:32px 26px;text-align:center;">'
-                + '    <div style="font-size:54px;line-height:1;margin-bottom:12px;">⚠️</div>'
-                + '    <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;color:#ff6b6b;">' + esc(opts.title || 'Problema de conexión') + '</h1>'
-                + '    <p style="font-size:15px;line-height:1.5;color:#e0e0e0;margin:0 0 12px;">' + esc(opts.reason || 'No se pudo conectar con el catálogo.') + '</p>'
-                + (opts.likelyCause
-                    ? '    <p style="font-size:13px;line-height:1.55;color:#999;margin:0 0 22px;">' + esc(opts.likelyCause) + '</p>'
-                    : '    <div style="height:14px;"></div>')
-                + '    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:18px;">'
-                + '      <button onclick="window.location.reload()" style="padding:10px 22px;background:#007bff;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;">🔄 Reintentar</button>'
-                + '      <button id="' + diagId + '-toggle" type="button" style="padding:10px 22px;background:transparent;color:#bbb;border:1px solid #444;border-radius:8px;cursor:pointer;font-size:14px;">▼ Ver detalles técnicos</button>'
-                + '    </div>'
-                + '    <div id="' + diagId + '" style="display:none;text-align:left;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:10px;padding:14px;margin-top:8px;">'
-                + '      <div style="font-size:11px;color:#888;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">Diagnóstico (compártelo con soporte)</div>'
-                + '      <pre style="margin:0 0 12px;font-size:11px;line-height:1.45;color:#c0c0c0;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;max-height:280px;overflow:auto;">' + esc(diagText) + '</pre>'
-                + '      <button id="' + diagId + '-copy" type="button" style="padding:8px 16px;background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;border-radius:6px;cursor:pointer;font-size:13px;">📋 Copiar diagnóstico</button>'
-                + '    </div>'
-                + '    <p style="font-size:11px;color:#666;margin:18px 0 0;">Código: ' + esc(opts.errorCode || 'UNKNOWN') + '</p>'
-                + '  </div>'
-                + '</div>';
-
-            document.body.innerHTML = html;
-
-            // Wire-up de los botones (más seguro que onclick inline con strings escapados)
-            var toggleBtn = document.getElementById(diagId + '-toggle');
-            var panel = document.getElementById(diagId);
-            if (toggleBtn && panel) {
-                toggleBtn.addEventListener('click', function () {
-                    var hidden = panel.style.display === 'none';
-                    panel.style.display = hidden ? 'block' : 'none';
-                    toggleBtn.textContent = hidden ? '▲ Ocultar detalles' : '▼ Ver detalles técnicos';
-                });
-            }
-            var copyBtn = document.getElementById(diagId + '-copy');
-            if (copyBtn) {
-                copyBtn.addEventListener('click', function () {
-                    copyDiagnosticsToClipboard(diagText, copyBtn);
-                });
-            }
-        }
-
-        // Verifica conexión con Supabase con timeout. Devuelve un objeto
-        // { ok, code?, error? } para que el llamador pueda mostrar un
-        // diagnóstico específico según el tipo de fallo.
+        // 2. Función para verificar conexión con Supabase con tiempo límite (Timeout)
         async function checkSupabaseHealth() {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 segundos de espera
-
             try {
-                const { data, error } = await supabase.from('tenants').select('id').limit(1).abortSignal(controller.signal);
-                clearTimeout(timeoutId);
-                if (error) {
-                    return { ok: false, code: 'SUPABASE_QUERY_ERROR', error: error };
-                }
-                return { ok: true };
+                // Timeout manual de 8 segundos
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Timeout: Supabase no responde')), 8000);
+                });
+                
+                const queryPromise = supabase.from('tenants').select('id').limit(1);
+                
+                const { data, error } = await Promise.race([queryPromise, timeoutPromise]);
+                
+                if (error) throw error;
+                return true;
             } catch (err) {
-                clearTimeout(timeoutId);
-                console.error("Error de conexión con el servidor:", err);
-                var code = 'SUPABASE_FETCH_FAILED';
-                if (err && (err.name === 'AbortError' || /aborted/i.test(err.message || ''))) {
-                    code = 'SUPABASE_TIMEOUT';
-                }
-                return { ok: false, code: code, error: err };
+                console.error("Error de conexión con el servidor:", err.message || err);
+                return false;
+            }
+        }
+
+        async function checkSupabaseHealth() {
+            try {
+                const { data, error } = await supabase.from('categories').select('id').limit(1).maybeSingle();
+                if (error) throw error;
+                return true;
+            } catch (err) {
+                console.error("Error de salud de Supabase:", err);
+                return false;
             }
         }
 
         async function initializeApp() {
-            // 0. Verificar que el SDK de Supabase haya cargado.
-            // Si SUPABASE_INIT_ERROR no es null o supabase es null, el SDK
-            // nunca se descargó (CDN bloqueado por antivirus, DNS, firewall).
-            if (!supabase || SUPABASE_INIT_ERROR) {
-                showConnectionError({
-                    title: 'No se pudo cargar el catálogo',
-                    reason: 'La librería de conexión (Supabase SDK) no se descargó correctamente.',
-                    likelyCause: 'Esto suele pasar cuando un antivirus, una extensión del navegador, un DNS privado o el firewall del proveedor de internet bloquea los CDN públicos (cdn.jsdelivr.net y unpkg.com). Probá desactivar el antivirus y las extensiones, revisá la fecha y hora del dispositivo, o probá desde otra red.',
-                    errorCode: SUPABASE_INIT_ERROR || 'SDK_NOT_LOADED'
-                });
-                return;
-            }
+            // Limpiar errores previos si los hay
+            hideConnectionError();
 
-            // 1. Verificar si hay internet básico
-            if (!navigator.onLine) {
-                showConnectionError({
-                    title: 'Sin conexión a internet',
-                    reason: 'Tu dispositivo indica que no tiene conexión a internet en este momento.',
-                    likelyCause: 'Revisá que el WiFi o los datos móviles estén activos. Si estás en avión o en una zona con poca señal, intentá moverte a un lugar con mejor cobertura.',
-                    errorCode: 'NO_INTERNET'
-                });
-                return;
-            }
-
-            // 2. Verificar conexión con Supabase
-            const healthResult = await checkSupabaseHealth();
-            if (!healthResult.ok) {
-                showConnectionError({
-                    title: 'Problema de conexión con el catálogo',
-                    reason: 'Tenés internet, pero tu navegador no logró comunicarse con la base de datos del catálogo.',
-                    likelyCause: 'Las causas más comunes son: (1) un antivirus o extensión bloqueando supabase.co, (2) un DNS privado o VPN filtrando el dominio, (3) la fecha y hora del dispositivo está mal (rompe los certificados HTTPS). Revisá esos tres puntos.',
-                    errorCode: healthResult.code || 'SUPABASE_UNREACHABLE',
-                    error: healthResult.error
-                });
-                return;
-            }
-
-            // Paso 1: Cargar el tenant primero. TODO lo demás depende de esto.
-            var tenantLoaded = await loadTenant();
-            if (!tenantLoaded) {
-                showTenantError();
-                return; // Detener arranque; la pantalla de error ya es visible
-            }
-
-            // Paso 2: Aplicar branding y configuración del tenant
-            applyTenantBranding();
-
-            // Paso 2b: Restaurar sesión de cliente (si había una activa).
-            CURRENT_CLIENT = loadClientSession();
-            if (CURRENT_CLIENT && CURRENT_CLIENT.role === 'admin') {
-                adminLoggedIn = true;
-            }
-
-            // Paso 3: Restaurar carrito del localStorage
-            cart = loadCartFromStorage();
-
-            setupEventListeners();
-
-            // Iniciar tasa en paralelo
-            fetchRateAuto();
-
-            // Carga en segundo plano para no bloquear la interfaz inicial
-            (async function loadDataInBackground() {
-                // Carga secuencial interna para mantener consistencia
-                await loadCategories();
-                await loadProducts();
-                await loadSupabaseVariants();
-
-                // Renderizar cuando los datos estén listos
-                renderCarousel();
-                renderProducts();
-                renderFilters();
-                initFilterScroll();
-                updateCartBadge();
-                updateAdsForCategory('all');
-            })();
-
-            // Inicializar UI de clientes inmediatamente (si ya están logueados)
-            updateClientUI();
-
-            // Habilitar botones de autenticación de inmediato
+            // PRIORIDAD 1: Habilitar botones de login/registro INMEDIATAMENTE
             var btnLogin = document.getElementById('navLoginBtn');
             var btnReg = document.getElementById('navRegisterBtn');
             if (btnLogin) btnLogin.disabled = false;
             if (btnReg) btnReg.disabled = false;
 
-            // Procesar deep link o restaurar estado
-            restoreAppState();
+            // PRIORIDAD 2: Cargar tenant PRIMERO
+            try {
+                var tenantLoaded = await loadTenant();
+                if (!tenantLoaded) {
+                    showTenantError();
+                    return;
+                }
+                applyTenantBranding();
+            } catch(e) {
+                console.error('Error cargando tenant:', e);
+                showConnectionError('Error al cargar configuración del catálogo', e);
+                return;
+            }
+
+            // PRIORIDAD 3: Restaurar sesión
+            CURRENT_CLIENT = loadClientSession();
+            if (CURRENT_CLIENT) {
+                var role = CURRENT_CLIENT.role || 'cliente';
+                if (role === 'admin' || role === 'sub_admin') adminLoggedIn = true;
+            }
+            updateClientUI();
+
+            // PRIORIDAD 4: Configuración básica
+            try {
+                cart = loadCartFromStorage();
+                setupEventListeners();
+                fetchRateAuto();
+            } catch(e) { console.error(e); }
+
+            // PRIORIDAD 5: Carga de datos pesados
+            setTimeout(function() {
+                (async function loadDataInBackground() {
+                    try {
+                        const isHealthy = await checkSupabaseHealth();
+                        if (!isHealthy) throw new Error('No se pudo establecer conexión con el servidor.');
+
+                        await loadCategories();
+                        await loadProducts();
+                        await loadSupabaseVariants();
+
+                        renderCarousel();
+                        renderProducts();
+                        renderFilters();
+                        initFilterScroll();
+                        updateCartBadge();
+                        updateAdsForCategory('all');
+                    } catch(e) {
+                        console.error('Error en carga:', e);
+                        showConnectionError('Error al cargar productos del catálogo', e);
+                    }
+                })();
+            }, 100);
+
+            try { restoreAppState(); } catch(e) {}
         }
 
         /* ══════════════════════════════════════════════════════════════════
@@ -9666,30 +9821,7 @@
 
         var SUPABASE_URL = 'https://veqoslxoezvtsqamvpdm.supabase.co';
         var SUPABASE_ANON_KEY = 'sb_publishable_oPsy5PwNv9XmQoQp0GHM6g_cFIOt5QQ';
-
-        // ── Inicialización segura del cliente Supabase ──
-        // IMPORTANTE: en JavaScript, una declaración `var foo` a nivel global
-        // crea una propiedad en `window`. Si escribimos `var supabase = null`
-        // directamente, la asignación PISA `window.supabase` (el SDK que el
-        // <script> de jsdelivr/unpkg dejó ahí) con null, y luego cualquier
-        // verificación de `window.supabase` falla aunque el SDK haya cargado
-        // bien. Para evitarlo, capturamos primero la referencia al SDK en
-        // una variable distinta y luego la usamos para crear el cliente.
-        var __supabaseSDK = (typeof window !== 'undefined') ? window.supabase : null;
-
-        var supabase = null;
-        var SUPABASE_INIT_ERROR = null;
-        try {
-            if (__supabaseSDK && typeof __supabaseSDK.createClient === 'function') {
-                supabase = __supabaseSDK.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } else {
-                SUPABASE_INIT_ERROR = 'SDK_NOT_LOADED';
-                console.error('[Init] El SDK de Supabase no se cargó desde el CDN (jsdelivr ni unpkg).');
-            }
-        } catch (e) {
-            SUPABASE_INIT_ERROR = 'SDK_INIT_FAILED: ' + ((e && e.message) ? e.message : 'desconocido');
-            console.error('[Init] Error creando cliente Supabase:', e);
-        }
+        var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         var adminLoggedIn = false;
         var adminRateType = 'dolar'; // dolar | euro | personalizada
         var adminTempPrices = {}; // { product_id: newPrice }
@@ -9796,26 +9928,37 @@
         // IMPORTANTE: si no hay sesión activa (ni cliente ni admin) NO se
         // restaura ningún estado de catálogo/detalle — se queda en landing
         // para forzar el login.
+        // Función auxiliar que espera a que PRODUCTS cargue antes de mostrar el detalle
+        function waitForProductsAndShow(pid) {
+            if (PRODUCTS.length > 0) {
+                var p = getProductById(pid);
+                if (p) {
+                    setTimeout(function () { showProduct(pid); }, 80);
+                }
+                return;
+            }
+            // Si no hay productos aún, reintentar cada 300ms (máx 20 intentos = 6s)
+            var attempts = 0;
+            var interval = setInterval(function() {
+                attempts++;
+                if (PRODUCTS.length > 0 || attempts >= 20) {
+                    clearInterval(interval);
+                    var p = getProductById(pid);
+                    if (p) {
+                        setTimeout(function () { showProduct(pid); }, 80);
+                    }
+                }
+            }, 300);
+        }
+        
         function restoreAppState() {
             var hasSession = !!CURRENT_CLIENT || adminLoggedIn;
 
             // 1) Deep link gana si está presente en la URL.
-            //    NOTA importante: aunque el catálogo requiere sesión, los
-            //    deep links a un producto SÍ se permiten sin sesión —
-            //    de esta forma cuando un cliente logueado comparte el link
-            //    de un producto a otra persona, esa persona puede ver el
-            //    detalle directamente. El auth gate se aplica recién cuando
-            //    intenten volver al catálogo (handleBack).
             var deepPid = getDeepLinkPid();
             if (deepPid) {
-                var found = false;
-                for (var i = 0; i < PRODUCTS.length; i++) {
-                    if (PRODUCTS[i].id === deepPid) { found = true; break; }
-                }
-                if (found) {
-                    setTimeout(function () { showProduct(deepPid); }, 80);
-                    return;
-                }
+                waitForProductsAndShow(deepPid);
+                return;
             }
 
             // 2) Estado guardado en localStorage
@@ -9829,11 +9972,8 @@
 
             // Si el usuario estaba en el detalle de un producto
             if (state.page === 'detail' && state.detailPid) {
-                var p = getProductById(state.detailPid);
-                if (p) {
-                    setTimeout(function () { showProduct(state.detailPid); }, 80);
-                    return;
-                }
+                waitForProductsAndShow(state.detailPid);
+                return;
             }
 
             // Si el usuario estaba en el catálogo, navegar allí y restaurar filtro
@@ -9841,7 +9981,6 @@
                 setTimeout(function () {
                     navigateTo('catalog');
                     if (state.category && state.category !== 'all') {
-                        // Buscar el botón de la categoría guardada
                         var btns = document.querySelectorAll('.filter-btn');
                         for (var i = 0; i < btns.length; i++) {
                             if (btns[i].dataset.catId === state.category) {
@@ -9850,11 +9989,8 @@
                             }
                         }
                     }
-                    // Restaurar scroll si es posible
-                    if (state.scrollY) {
-                        setTimeout(function () { window.scrollTo(0, state.scrollY); }, 500);
-                    }
                 }, 80);
+                return;
             }
         }
 
@@ -9903,10 +10039,21 @@
 
         /* ── Admin Login ── */
         function openAdminLogin() {
+            // Si ya está logueado como admin o sub_admin, entrar directo
             if (adminLoggedIn) {
                 openAdminPanel();
                 return;
             }
+            
+            // Si el usuario actual es admin o sub_admin, activar adminLoggedIn y entrar SIN pedir contraseña
+            if (CURRENT_CLIENT && CURRENT_CLIENT.role && (CURRENT_CLIENT.role === 'admin' || CURRENT_CLIENT.role === 'sub_admin')) {
+                adminLoggedIn = true;
+                closeAdminLogin(null);
+                openAdminPanel();
+                return;
+            }
+            
+            // Si no es admin/sub_admin, pedir contraseña
             document.getElementById('adminLoginOverlay').classList.add('open');
             document.getElementById('adminPasswordInput').value = '';
             document.getElementById('adminLoginError').style.display = 'none';
@@ -10076,54 +10223,56 @@
 
         /* ── Inicializar UI según estado de sesión ── */
         function updateClientUI() {
-            var isClient = !!CURRENT_CLIENT;
-            var isAdmin = adminLoggedIn;
-            // Si el perfil del cliente tiene role='admin', tratarlo también
-            // como admin para el renderizado de la UI (tuerquita en vez de
-            // icono de perfil) — el plan dice que el admin no debe ver dos
-            // íconos compitiendo.
-            var clientIsAdminRole = isClient && CURRENT_CLIENT.role === 'admin';
-            // ¿Hay alguna sesión válida (cliente regular o admin)?
-            var hasSession = isClient || isAdmin;
-
-            // Landing: botones auth vs saludo
-            var authBar = document.getElementById('authButtonsBar');
-            var greeting = document.getElementById('heroUserGreeting');
-            var heroName = document.getElementById('heroUserName');
-            if (authBar) authBar.style.display = hasSession ? 'none' : '';
-            if (greeting) greeting.style.display = hasSession ? '' : 'none';
-            if (heroName && isClient) heroName.textContent = CURRENT_CLIENT.nombre.split(' ')[0];
-            else if (heroName && isAdmin) heroName.textContent = 'Admin';
-
-            // Hero CTA "Explorar Catálogo" — solo visible con sesión activa
+            // Botones en el header del catálogo
+            var profileCatalogBtn = document.getElementById('profileCatalogBtn');
+            var adminGearBtn = document.getElementById('adminGearBtn');
+            
+            // Elementos del landing
             var ctaBtn = document.getElementById('cta-button');
-            if (ctaBtn) ctaBtn.style.display = hasSession ? '' : 'none';
-
-            // Mensaje "inicia sesión para ver el catálogo" — al revés
             var authHint = document.getElementById('authRequiredHint');
-            if (authHint) authHint.style.display = hasSession ? 'none' : '';
-
-            // Catálogo: tuerquita vs botón perfil
-            var gearBtn = document.getElementById('adminGearBtn');
-            var profileBtn = document.getElementById('profileCatalogBtn');
-            var catalogGreeting = document.getElementById('catalogUserGreeting');
-
-            // Por defecto: la tuerquita aparece si NO hay cliente regular logueado
-            if (gearBtn) {
-                gearBtn.style.display = (isClient && !clientIsAdminRole) ? 'none' : '';
-            }
-            // El icono de perfil solo aparece para clientes regulares (no admin)
-            if (profileBtn) {
-                profileBtn.style.display = (isClient && !clientIsAdminRole) ? '' : 'none';
-                if (catalogGreeting && isClient) {
-                    catalogGreeting.textContent = CURRENT_CLIENT.nombre.split(' ')[0];
+            var authBar = document.getElementById('authButtonsBar');
+            var heroGreeting = document.getElementById('heroUserGreeting');
+            var heroName = document.getElementById('heroUserName');
+            
+            if (CURRENT_CLIENT) {
+                var role = CURRENT_CLIENT.role || 'cliente';
+                var isAdminRole = (role === 'admin' || role === 'sub_admin');
+                
+                // Ocultar elementos de autenticación en landing
+                if (authHint) authHint.style.display = 'none';
+                if (authBar) authBar.style.display = 'none';
+                
+                // Mostrar saludo en landing
+                if (heroGreeting) heroGreeting.style.display = '';
+                if (heroName) heroName.textContent = CURRENT_CLIENT.nombre.split(' ')[0];
+                
+                // Mostrar botón "Explorar Catálogo"
+                if (ctaBtn) {
+                    ctaBtn.style.display = '';
+                    ctaBtn.onclick = function() { showCatalog(); };
                 }
+                
+                // Lógica para botones en el catálogo:
+                // - Cliente: ve botón de perfil (profileCatalogBtn)
+                // - Admin/Sub-admin: ve botón de admin (adminGearBtn)
+                if (profileCatalogBtn) {
+                    profileCatalogBtn.style.display = isAdminRole ? 'none' : '';
+                }
+                if (adminGearBtn) {
+                    adminGearBtn.style.display = isAdminRole ? '' : 'none';
+                }
+                
+            } else {
+                // Sin sesión: ocultar todo
+                if (authHint) authHint.style.display = '';
+                if (authBar) authBar.style.display = '';
+                if (heroGreeting) heroGreeting.style.display = 'none';
+                if (ctaBtn) ctaBtn.style.display = 'none';
+                if (profileCatalogBtn) profileCatalogBtn.style.display = 'none';
+                if (adminGearBtn) adminGearBtn.style.display = 'none';
             }
-
-            // Si es admin logueado por contraseña: mostrar tuerquita siempre
-            if (isAdmin && gearBtn) gearBtn.style.display = '';
-
-            // Contador de clientes en landing
+            
+            applyRoleBasedUI();
             loadClientCounter();
         }
 
@@ -10248,8 +10397,10 @@
         async function submitLogin() {
             var cedulaInput = document.getElementById('loginCedula');
             var telefonoInput = document.getElementById('loginTelefono');
-            var cedula = (cedulaInput.value || '').trim();
-            var telefono = (telefonoInput.value || '').trim();
+            var cedulaRaw = (cedulaInput.value || '').trim();
+            var telefonoRaw = (telefonoInput.value || '').trim();
+            var cedula = sanitizeCedula(cedulaRaw);
+            var telefono = sanitizePhone(telefonoRaw);
             var errorEl = document.getElementById('loginError');
             var btn = document.getElementById('loginSubmitBtn');
 
@@ -10261,14 +10412,14 @@
             errorEl.style.display = 'none';
 
             var hasError = false;
-            if (!cedula) {
-                document.getElementById('errLoginCedula').textContent = 'La cédula es obligatoria.';
+            if (!cedula || !isCedulaValid(cedula)) {
+                document.getElementById('errLoginCedula').textContent = 'Cédula inválida. Use solo números (7-9 dígitos). Ej: 31550230';
                 document.getElementById('errLoginCedula').style.display = 'block';
                 cedulaInput.style.borderColor = '#e63946';
                 hasError = true;
             }
-            if (!telefono) {
-                document.getElementById('errLoginTelefono').textContent = 'El teléfono es obligatorio.';
+            if (!telefono || !isPhoneValid(telefono)) {
+                document.getElementById('errLoginTelefono').textContent = 'Teléfono inválido. Use formato venezolano de 11 dígitos empezando con 04. Ej: 04245961533';
                 document.getElementById('errLoginTelefono').style.display = 'block';
                 telefonoInput.style.borderColor = '#e63946';
                 hasError = true;
@@ -10289,11 +10440,11 @@
                     .maybeSingle();
 
                 if (error || !data) {
-                    document.getElementById('errLoginCedula').textContent = 'No existe una cuenta con esta cédula.';
+                document.getElementById('errLoginCedula').textContent = 'No existe una cuenta con esa cédula en este catálogo.';
                     document.getElementById('errLoginCedula').style.display = 'block';
                     cedulaInput.style.borderColor = '#e63946';
                 } else if (data.telefono !== telefono) {
-                    document.getElementById('errLoginTelefono').textContent = 'Teléfono incorrecto. Intenta de nuevo.';
+                    document.getElementById('errLoginTelefono').textContent = 'La cédula y el teléfono no coinciden con una cuenta existente.';
                     document.getElementById('errLoginTelefono').style.display = 'block';
                     telefonoInput.style.borderColor = '#e63946';
                 } else {
@@ -10327,8 +10478,10 @@
             var cedulaInput = document.getElementById('regCedula');
             var telefonoInput = document.getElementById('regTelefono');
             var nombre = (nombreInput.value || '').trim();
-            var cedula = (cedulaInput.value || '').trim();
-            var telefono = (telefonoInput.value || '').trim();
+            var cedulaRaw = (cedulaInput.value || '').trim();
+            var telefonoRaw = (telefonoInput.value || '').trim();
+            var cedula = sanitizeCedula(cedulaRaw);
+            var telefono = sanitizePhone(telefonoRaw);
             var direccion = (document.getElementById('regDireccion').value || '').trim();
             var errorEl = document.getElementById('registerError');
             var btn = document.getElementById('registerSubmitBtn');
@@ -10349,22 +10502,50 @@
                 nombreInput.style.borderColor = '#e63946';
                 hasError = true;
             }
-            if (!cedula) {
-                document.getElementById('errRegCedula').textContent = 'La cédula es obligatoria.';
-                document.getElementById('errRegCedula').style.display = 'block';
-                cedulaInput.style.borderColor = '#e63946';
-                hasError = true;
-            } else if (!/^[0-9]+$/.test(cedula)) {
-                document.getElementById('errRegCedula').textContent = 'La cédula solo debe contener números.';
+            if (!cedula || !isCedulaValid(cedula)) {
+                document.getElementById('errRegCedula').textContent = 'Cédula inválida. Use solo números (7-9 dígitos). Ej: 31550230';
                 document.getElementById('errRegCedula').style.display = 'block';
                 cedulaInput.style.borderColor = '#e63946';
                 hasError = true;
             }
-            if (!telefono) {
-                document.getElementById('errRegTelefono').textContent = 'El teléfono es obligatorio.';
+            if (!telefono || !isPhoneValid(telefono)) {
+                document.getElementById('errRegTelefono').textContent = 'Teléfono inválido. Use formato venezolano de 11 dígitos empezando con 04. Ej: 04245961533';
                 document.getElementById('errRegTelefono').style.display = 'block';
                 telefonoInput.style.borderColor = '#e63946';
                 hasError = true;
+            }
+            // Duplicados: cedula o teléfono ya registrado en este tenant
+            if (!hasError && TENANT) {
+                // Verificar duplicado de cédula
+                var { data: cedulaExists, error: cedulaErr } = await supabase
+                    .from('perfiles')
+                    .select('id')
+                    .eq('tenant_id', TENANT.id)
+                    .eq('cedula', cedula)
+                    .maybeSingle();
+                if (cedulaErr) { /* ignore, proceed to next checks */ }
+                if (cedulaExists) {
+                    document.getElementById('errRegCedula').textContent = 'Esta cédula ya está registrada en este catálogo.';
+                    document.getElementById('errRegCedula').style.display = 'block';
+                    cedulaInput.style.borderColor = '#e63946';
+                    hasError = true;
+                }
+                // Verificar duplicado de teléfono
+                if (!hasError) {
+                    var { data: phoneExists, error: phoneErr } = await supabase
+                        .from('perfiles')
+                        .select('id')
+                        .eq('tenant_id', TENANT.id)
+                        .eq('telefono', telefono)
+                        .maybeSingle();
+                    if (phoneErr) { /* ignore */ }
+                    if (phoneExists) {
+                        document.getElementById('errRegTelefono').textContent = 'Este teléfono ya está registrado en este catálogo.';
+                        document.getElementById('errRegTelefono').style.display = 'block';
+                        telefonoInput.style.borderColor = '#e63946';
+                        hasError = true;
+                    }
+                }
             }
             if (hasError) return;
 
@@ -10431,19 +10612,99 @@
         }
 
         /* ── MODAL DE PERFIL ── */
-        function openProfileModal() {
+        async function openProfileModal() {
             if (!CURRENT_CLIENT) return;
             document.getElementById('profileModalOverlay').classList.add('open');
             document.getElementById('profileAvatarInitial').textContent = (CURRENT_CLIENT.nombre || '?').charAt(0).toUpperCase();
             document.getElementById('profileAvatarName').textContent = CURRENT_CLIENT.nombre;
             document.getElementById('profileAvatarSub').textContent = 'C.I.: ' + CURRENT_CLIENT.cedula;
             document.getElementById('profileNombre').value = CURRENT_CLIENT.nombre || '';
-            document.getElementById('profileTelefono').value = CURRENT_CLIENT.telefono || '';
             document.getElementById('profileDireccion').value = CURRENT_CLIENT.direccion || '';
             document.getElementById('profileSaveStatus').textContent = '';
 
-            // ── Mostrar badge de cupón si el cupón está activo ──
-            renderProfileCouponBadge();
+            // Restaurar botón de guardar a estado inicial
+            var saveBtn = document.getElementById('profileSaveBtn');
+            if (saveBtn) {
+                saveBtn.textContent = '💾';
+                saveBtn.style.background = 'transparent';
+                saveBtn.style.border = '2px solid var(--primary)';
+                saveBtn.style.color = 'var(--primary)';
+                saveBtn.disabled = false;
+            }
+
+            // Mostrar/ocultar botón de eliminación según rol
+            var role = CURRENT_CLIENT.role || 'cliente';
+            var deleteBtn = document.querySelector('.btn-profile-delete-request');
+            if (deleteBtn) {
+                deleteBtn.style.display = (role === 'cliente') ? '' : 'none';
+            }
+
+            // ── Cargar config de cupón y mostrar badge ──
+            await loadCouponConfigForProfile();
+            
+            // Verificar si ya tiene solicitud de eliminación pendiente
+            await checkDeletionRequestStatus();
+        }
+
+        async function checkDeletionRequestStatus() {
+            if (!CURRENT_CLIENT || !TENANT) return;
+            
+            var deleteBtn = document.querySelector('.btn-profile-delete-request');
+            var container = deleteBtn ? deleteBtn.parentNode : null;
+            
+            // Buscar o crear elemento de mensaje
+            var msgEl = document.getElementById('delReqProfileMsg');
+            if (!msgEl && container) {
+                msgEl = document.createElement('div');
+                msgEl.id = 'delReqProfileMsg';
+                msgEl.style.cssText = 'padding:10px;background:#f0fff0;color:#2d8a4e;border-radius:8px;font-size:12px;text-align:center;margin-top:8px;';
+                container.appendChild(msgEl);
+            }
+
+            try {
+                var { data, error } = await supabase
+                    .from('deletion_requests')
+                    .select('id, status')
+                    .eq('tenant_id', TENANT.id)
+                    .eq('user_id', CURRENT_CLIENT.id)
+                    .eq('status', 'pending')
+                    .maybeSingle();
+
+                if (data) {
+                    // Ya tiene solicitud pendiente
+                    if (deleteBtn) deleteBtn.style.display = 'none';
+                    if (msgEl) {
+                        msgEl.innerHTML = '✅ <strong>Solicitud de eliminación enviada</strong><br>El administrador revisará tu petición pronto.';
+                        msgEl.style.display = 'block';
+                    }
+                } else {
+                    // No tiene solicitud pendiente
+                    if (deleteBtn) deleteBtn.style.display = '';
+                    if (msgEl) msgEl.style.display = 'none';
+                }
+            } catch (e) {
+                console.error('Error verificando solicitud:', e);
+            }
+        }
+
+        async function loadCouponConfigForProfile() {
+            try {
+                if (!TENANT) return;
+                var { data } = await supabase
+                    .from('config')
+                    .select('coupon_enabled, coupon_purchases, coupon_discount')
+                    .eq('tenant_id', TENANT.id)
+                    .maybeSingle();
+                if (data) {
+                    COUPON_CONFIG.enabled = !!data.coupon_enabled;
+                    COUPON_CONFIG.purchases = parseInt(data.coupon_purchases) || 5;
+                    COUPON_CONFIG.discount = parseInt(data.coupon_discount) || 10;
+                }
+                renderProfileCouponBadge();
+            } catch (e) {
+                console.error('Error cargando cupón:', e);
+                renderProfileCouponBadge();
+            }
         }
 
         /* Renderiza (o actualiza) el badge de cupón en el modal de perfil */
@@ -10479,26 +10740,118 @@
             }
         }
 
+        /* ══ SOLICITUD DE ELIMINACIÓN DE CUENTA ══ */
+        function requestAccountDeletion() {
+            if (!CURRENT_CLIENT) return;
+            var overlay = document.getElementById('deleteRequestOverlay');
+            if (!overlay) {
+                console.error('Modal de eliminación no encontrado');
+                return;
+            }
+            document.getElementById('delReqUserName').textContent = CURRENT_CLIENT.nombre;
+            document.getElementById('delReqUserCedula').textContent = CURRENT_CLIENT.cedula;
+            document.getElementById('delReqUserPhone').textContent = CURRENT_CLIENT.telefono;
+            document.getElementById('delReqReason').value = '';
+            var statusEl = document.getElementById('delReqStatus');
+            if (statusEl) {
+                statusEl.textContent = '';
+                statusEl.style.display = 'none';
+            }
+            document.getElementById('delReqSubmitBtn').disabled = false;
+            document.getElementById('delReqSubmitBtn').textContent = '🗑️ Enviar Solicitud';
+            overlay.classList.add('open');
+        }
+
+        function closeDeleteRequestModal(event) {
+            if (event === null || event.target === document.getElementById('deleteRequestOverlay')) {
+                document.getElementById('deleteRequestOverlay').classList.remove('open');
+            }
+        }
+
+        async function submitDeletionRequest() {
+            if (!CURRENT_CLIENT || !TENANT) return;
+            var reason = (document.getElementById('delReqReason').value || '').trim();
+            var statusEl = document.getElementById('delReqStatus');
+            var btn = document.getElementById('delReqSubmitBtn');
+            var modalBody = document.querySelector('#deleteRequestOverlay .auth-modal-body');
+            var modalActions = document.querySelector('#deleteRequestOverlay .profile-actions');
+
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            try {
+                // Verificar si ya tiene una solicitud pendiente
+                var { data: existing, error: checkErr } = await supabase
+                    .from('deletion_requests')
+                    .select('id, status')
+                    .eq('tenant_id', TENANT.id)
+                    .eq('user_id', CURRENT_CLIENT.id)
+                    .eq('status', 'pending')
+                    .maybeSingle();
+
+                if (existing) {
+                    statusEl.textContent = '⚠️ Ya tienes una solicitud pendiente. El administrador debe revisarla primero.';
+                    statusEl.style.color = '#e63946';
+                    statusEl.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar Solicitud';
+                    return;
+                }
+
+                var { data, error } = await supabase
+                    .from('deletion_requests')
+                    .insert([{
+                        tenant_id: TENANT.id,
+                        user_id: CURRENT_CLIENT.id,
+                        reason: reason,
+                        status: 'pending'
+                    }])
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Error completo:', error);
+                    throw error;
+                }
+
+                // Mostrar confirmación dinámica
+                if (modalBody) modalBody.innerHTML = 
+                    '<div style="text-align:center;padding:30px 20px;">' +
+                    '<div style="font-size:48px;margin-bottom:16px;">✅</div>' +
+                    '<h4 style="color:#2d8a4e;margin:0 0 10px;">¡Solicitud Enviada!</h4>' +
+                    '<p style="font-size:13px;color:var(--text-light);margin:0;">El administrador revisará tu petición pronto.</p>' +
+                    '</div>';
+                if (modalActions) modalActions.innerHTML = '<button onclick="closeDeleteRequestModal(null)" style="flex:1;padding:9px 14px;border-radius:50px;border:1.5px solid var(--primary);background:white;color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Cerrar</button>';
+            } catch (e) {
+                statusEl.textContent = '❌ Error: ' + (e.message || 'desconocido');
+                statusEl.style.color = '#e63946';
+                statusEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Enviar Solicitud';
+            }
+        }
+
         async function saveProfileChanges() {
             if (!CURRENT_CLIENT) return;
             var nombre = (document.getElementById('profileNombre').value || '').trim();
-            var telefono = (document.getElementById('profileTelefono').value || '').trim();
             var direccion = (document.getElementById('profileDireccion').value || '').trim();
             var statusEl = document.getElementById('profileSaveStatus');
+            var saveBtn = document.getElementById('profileSaveBtn');
 
-            if (!nombre || !telefono) {
-                statusEl.textContent = '⚠️ Nombre y teléfono son obligatorios.';
+            if (!nombre) {
+                statusEl.textContent = '⚠️ El nombre es obligatorio.';
                 statusEl.style.color = '#e63946';
                 return;
             }
 
+            if (saveBtn) { saveBtn.disabled = true; }
             statusEl.textContent = 'Guardando...';
             statusEl.style.color = 'var(--text-light)';
 
             try {
                 var { data, error } = await supabase
                     .from('perfiles')
-                    .update({ nombre: nombre, telefono: telefono, direccion: direccion })
+                    .update({ nombre: nombre, direccion: direccion })
                     .eq('id', CURRENT_CLIENT.id)
                     .eq('tenant_id', TENANT.id)
                     .select()
@@ -10509,15 +10862,27 @@
                 CURRENT_CLIENT = data;
                 saveClientSession(data);
                 updateClientUI();
-                statusEl.textContent = '✅ Guardado correctamente';
-                statusEl.style.color = '#2d8a4e';
+                
+                // Mostrar confirmación verde
+                if (saveBtn) {
+                    saveBtn.textContent = '✅';
+                    saveBtn.style.background = '#2d8a4e';
+                    saveBtn.style.borderColor = '#2d8a4e';
+                    saveBtn.style.color = 'white';
+                }
+                setTimeout(function() {
+                    document.getElementById('profileModalOverlay').classList.remove('open');
+                }, 1200);
+                
                 document.getElementById('profileAvatarInitial').textContent = (nombre).charAt(0).toUpperCase();
                 document.getElementById('profileAvatarName').textContent = nombre;
             } catch (e) {
-                statusEl.textContent = '❌ Error al guardar: ' + (e.message || 'desconocido');
+                if (saveBtn) { saveBtn.disabled = false; }
+                statusEl.textContent = '❌ Error: ' + (e.message || 'desconocido');
                 statusEl.style.color = '#e63946';
             }
         }
+
 
         /* ══════════════════════════════════════════════════════════════════
            ESTADÍSTICAS DE CLIENTES EN EL PANEL ADMIN
@@ -10531,37 +10896,42 @@
             numEl.textContent = '...';
             listEl.innerHTML = '<div class="stats-empty">Cargando...</div>';
 
-            // Cargar config de cupón (siempre fresco al abrir vista de usuarios)
-            await loadCouponConfig();
-            renderCouponConfigAdmin();
+            try {
+                // Cargar config de cupón y solicitudes de eliminación
+                await loadCouponConfig();
+                renderCouponConfigAdmin();
+                await loadDeletionRequests();
+            } catch(e) { console.error('Error cargando datos:', e); }
 
             try {
                 var { data, error } = await supabase
                     .from('perfiles')
                     .select('*')
                     .eq('tenant_id', TENANT.id)
-                    .eq('role', 'cliente')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                var clientes = data || [];
+                var users = data || [];
+                var clientes = users.filter(function(u) { return u.role === 'cliente'; });
                 numEl.textContent = clientes.length;
 
-                if (clientes.length === 0) {
-                    listEl.innerHTML = '<div class="stats-empty">Aún no hay clientes registrados.</div>';
+                if (users.length === 0) {
+                    listEl.innerHTML = '<div class="stats-empty">Aún no hay usuarios registrados.</div>';
                     return;
                 }
 
                 var html = '';
-                for (var i = 0; i < clientes.length; i++) {
-                    var c = clientes[i];
+                for (var i = 0; i < users.length; i++) {
+                    var c = users[i];
                     var initial = (c.nombre || '?').charAt(0).toUpperCase();
                     var date = c.created_at ? new Date(c.created_at).toLocaleDateString('es-VE') : '';
+                    var role = c.role || 'cliente';
+                    var roleColor = role === 'admin' ? '#e63946' : (role === 'sub_admin' ? '#f0ad4e' : '#2d8a4e');
 
                     // Badge de cupón por cliente
                     var couponHtml = '';
-                    if (COUPON_CONFIG.enabled) {
+                    if (COUPON_CONFIG.enabled && role === 'cliente') {
                         var remaining = getCouponRemaining(c);
                         if (remaining > 0) {
                             couponHtml = '<div class="stats-client-coupon">🎟️ Cupón: ' + remaining + ' de ' + COUPON_CONFIG.purchases + ' compras restantes</div>';
@@ -10570,12 +10940,41 @@
                         }
                     }
 
-                    html += '<div class="stats-client-row">' +
-                        '<div class="stats-client-avatar">' + initial + '</div>' +
-                        '<div class="stats-client-info">' +
+                    // Selector de rol (solo para admin)
+                    var roleSelector = '';
+                    if (CURRENT_CLIENT && CURRENT_CLIENT.role === 'admin') {
+                        roleSelector = '<select onchange="updateUserRole(\'' + c.id + '\', this.value)" style="padding:4px 8px;border-radius:6px;border:1px solid #ddd;font-size:11px;margin-top:4px;">' +
+                            '<option value="cliente" ' + (role === 'cliente' ? 'selected' : '') + '>Cliente</option>' +
+                            '<option value="sub_admin" ' + (role === 'sub_admin' ? 'selected' : '') + '>Sub Admin</option>' +
+                            '<option value="admin" ' + (role === 'admin' ? 'selected' : '') + '>Admin</option>' +
+                            '</select>';
+                    }
+
+                    // Buscar solicitud de eliminación pendiente para este usuario
+                    var deletionReq = DELETION_REQUESTS.find(function(r) { return r.user_id === c.id && r.status === 'pending'; });
+                    var deletionHtml = '';
+                    if (deletionReq && isFullAdmin()) {
+                        deletionHtml = '<div style="margin-top:6px;padding:6px 8px;background:#fff0f0;border-radius:6px;font-size:11px;">' +
+                            '⚠️ <strong>Solicitud de eliminación</strong>' +
+                            (deletionReq.reason ? '<div style="margin-top:2px;color:#666;">Razón: ' + escapeHtml(deletionReq.reason) + '</div>' : '') +
+                            '<div style="margin-top:6px;display:flex;gap:4px;">' +
+                            '<button onclick="approveDeletionRequest(\'' + deletionReq.id + '\')" style="padding:3px 8px;background:#e63946;color:white;border:none;border-radius:4px;font-size:10px;cursor:pointer;">🗑️ Aprobar</button>' +
+                            '<button onclick="rejectDeletionRequest(\'' + deletionReq.id + '\')" style="padding:3px 8px;background:#6c757d;color:white;border:none;border-radius:4px;font-size:10px;cursor:pointer;">❌ Rechazar</button>' +
+                            '</div></div>';
+                    } else if (deletionReq) {
+                        var statusText = deletionReq.status === 'approved' ? '✅ Aprobada' : '❌ Rechazada';
+                        deletionHtml = '<div style="margin-top:6px;font-size:10px;color:var(--text-light);">' + statusText + '</div>';
+                    }
+
+                    html += '<div class="stats-client-row" style="flex-wrap:wrap;border-left:4px solid ' + (deletionReq ? '#e63946' : 'transparent') + ';">' +
+                        '<div class="stats-client-avatar" style="background:' + roleColor + '20;color:' + roleColor + ';">' + initial + '</div>' +
+                        '<div class="stats-client-info" style="flex:1;">' +
                         '<div class="stats-client-name">' + escapeHtml(c.nombre) + '</div>' +
                         '<div class="stats-client-sub">C.I.: ' + escapeHtml(c.cedula) + ' · ' + escapeHtml(c.telefono || '—') + '</div>' +
+                        '<div style="font-size:11px;margin-top:2px;"><span style="background:' + roleColor + '20;color:' + roleColor + ';padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;">' + role.toUpperCase() + '</span></div>' +
                         couponHtml +
+                        roleSelector +
+                        deletionHtml +
                         '</div>' +
                         '<div style="font-size:10px;color:var(--text-light);flex-shrink:0;">' + date + '</div>' +
                         '</div>';
@@ -10641,6 +11040,56 @@
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;');
+        }
+
+        /* ══ PERMISOS DE ADMIN/SUB_ADMIN ══ */
+        function hasAdminAccess() {
+            if (!CURRENT_CLIENT) return false;
+            var role = CURRENT_CLIENT.role || 'cliente';
+            return role === 'admin' || role === 'sub_admin';
+        }
+
+        function isFullAdmin() {
+            if (!CURRENT_CLIENT) return false;
+            return (CURRENT_CLIENT.role || 'cliente') === 'admin';
+        }
+
+        function applyRoleBasedUI() {
+            // Ocultar/mostrar elementos según el rol
+            if (!CURRENT_CLIENT) return;
+
+            var isAdmin = isFullAdmin();
+            var hasAccess = hasAdminAccess();
+            var role = CURRENT_CLIENT.role || 'cliente';
+
+            // Botón de admin en el header: visible para admin y sub_admin
+            var adminBtn = document.getElementById('adminBtn');
+            if (adminBtn) {
+                adminBtn.style.display = hasAccess ? '' : 'none';
+            }
+
+            // Perfil: mostrar opciones según rol
+            var profileRoleBadge = document.getElementById('profileRoleBadge');
+            if (profileRoleBadge) {
+                profileRoleBadge.textContent = role.toUpperCase();
+                profileRoleBadge.style.display = 'inline-block';
+            }
+
+            // En el panel admin, ocultar opciones exclusivas de admin si es sub_admin
+            if (hasAccess && document.getElementById('adminPanel')) {
+                // Selector de vista: ambos pueden ver productos y usuarios
+                // Pero sub_admin NO puede gestionar roles ni ver solicitudes de eliminación
+                var deletionSection = document.getElementById('deletionRequestsSection');
+                if (deletionSection) {
+                    deletionSection.style.display = isAdmin ? '' : 'none';
+                }
+
+                // Ocultar opciones de rol para sub_admin (no puede cambiar roles)
+                var roleSelectors = document.querySelectorAll('select[onchange*="updateUserRole"]');
+                for (var i = 0; i < roleSelectors.length; i++) {
+                    roleSelectors[i].style.display = isAdmin ? '' : 'none';
+                }
+            }
         }
 
         /* ══════════════════════════════════════════════════════════════════
@@ -10760,6 +11209,92 @@
                     document.getElementById('adminCustomRateInput').value = parseFloat(data.custom_rate);
                 }
             } catch (e) { }
+        }
+
+        /* ══ GESTIÓN DE SOLICITUDES DE ELIMINACIÓN (INTEGRADO EN FILAS) ══ */
+        var DELETION_REQUESTS = [];
+
+        async function loadDeletionRequests() {
+            if (!TENANT) return;
+            try {
+                var { data, error } = await supabase
+                    .from('deletion_requests')
+                    .select('id, user_id, reason, status, created_at')
+                    .eq('tenant_id', TENANT.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                DELETION_REQUESTS = data || [];
+            } catch (e) {
+                console.error('Error cargando solicitudes de eliminación:', e);
+            }
+        }
+
+        async function approveDeletionRequest(requestId) {
+            if (!confirm('⚠️ ¿Estás seguro de APROBAR la eliminación de esta cuenta?\n\nEsta acción NO se puede deshacer.')) return;
+
+            try {
+                var req = DELETION_REQUESTS.find(function (r) { return r.id === requestId; });
+                if (!req) throw new Error('Solicitud no encontrada');
+
+                // 1. Actualizar estado
+                var { error: updErr } = await supabase
+                    .from('deletion_requests')
+                    .update({ status: 'approved', updated_at: new Date().toISOString() })
+                    .eq('id', requestId);
+                if (updErr) throw updErr;
+
+                // 2. Eliminar usuario
+                var { error: delErr } = await supabase
+                    .from('perfiles')
+                    .delete()
+                    .eq('id', req.user_id)
+                    .eq('tenant_id', TENANT.id);
+                if (delErr) throw delErr;
+
+                alert('✅ Cuenta eliminada exitosamente.');
+                await loadDeletionRequests();
+                await loadAdminStats();
+            } catch (e) {
+                alert('❌ Error: ' + (e.message || 'desconocido'));
+            }
+        }
+
+        async function rejectDeletionRequest(requestId) {
+            if (!confirm('¿Rechazar esta solicitud de eliminación?')) return;
+
+            try {
+                var { error } = await supabase
+                    .from('deletion_requests')
+                    .update({ status: 'rejected', updated_at: new Date().toISOString() })
+                    .eq('id', requestId);
+                if (error) throw error;
+
+                alert('✅ Solicitud rechazada.');
+                await loadDeletionRequests();
+                await loadAdminStats();
+            } catch (e) {
+                alert('❌ Error: ' + (e.message || 'desconocido'));
+            }
+        }
+
+        /* ══ GESTIÓN DE ROLES ══ */
+        async function updateUserRole(userId, newRole) {
+            if (!confirm('¿Cambiar el rol de este usuario a "' + newRole + '"?')) return;
+
+            try {
+                var { error } = await supabase
+                    .from('perfiles')
+                    .update({ role: newRole, updated_at: new Date().toISOString() })
+                    .eq('id', userId)
+                    .eq('tenant_id', TENANT.id);
+                if (error) throw error;
+
+                alert('✅ Rol actualizado a: ' + newRole);
+                await loadAdminStats();
+            } catch (e) {
+                alert('❌ Error: ' + (e.message || 'desconocido'));
+            }
         }
 
         function selectRateType(type, skipSave) {
@@ -12437,6 +12972,59 @@
             }
         }
 
+    
+        // ── FUNCIONES DE MANEJO DE ERROR DE CONEXIÓN ──
+        let lastErrorDetails = "";
+
+        function showConnectionError(reason, error) {
+            const overlay = document.getElementById('connectionErrorOverlay');
+            const content = document.getElementById('techDetailsContent');
+            if (!overlay || !content) return;
+            lastErrorDetails = `Motivo: ${reason}\n` +
+                               `Error: ${error.message || error}\n` +
+                               `Timestamp: ${new Date().toISOString()}\n` +
+                               `URL: ${window.location.href}\n` +
+                               `UserAgent: ${navigator.userAgent}\n` +
+                               `Tenant: ${getTenantSlugFromURL()}`;
+            content.textContent = lastErrorDetails;
+            overlay.classList.add('active');
+        }
+
+        function hideConnectionError() {
+            const overlay = document.getElementById('connectionErrorOverlay');
+            if (overlay) overlay.classList.remove('active');
+            const box = document.getElementById('techDetailsBox');
+            if (box) box.classList.remove('active');
+        }
+
+        function retryInitializeApp() {
+            initializeApp();
+        }
+
+        function toggleTechDetails() {
+            const box = document.getElementById('techDetailsBox');
+            if (box) box.classList.toggle('active');
+        }
+
+        async function copyTechDetails() {
+            const btn = document.querySelector('.btn-copy-tech');
+            try {
+                await navigator.clipboard.writeText(lastErrorDetails);
+                const originalText = btn.textContent;
+                btn.textContent = '¡Copiado!';
+                setTimeout(() => { btn.textContent = originalText; }, 2000);
+            } catch (err) {
+                console.error('Error al copiar:', err);
+            }
+        }
+
+        window.addEventListener('offline', function() {
+            showConnectionError('Sin conexión', new Error('Dispositivo fuera de línea.'));
+        });
+
+        window.testError = function() {
+            showConnectionError('Simulación', new Error('Prueba del panel.'));
+        };
     </script>
 </body>
 
